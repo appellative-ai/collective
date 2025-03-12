@@ -30,7 +30,7 @@ func ExampleEphemeralResolver() {
 	name := "test:thing/string"
 	s := "test Ephemeral resolver"
 
-	r := NewEphemeralResolver(true, true)
+	r := NewEphemeralResolver()
 	//fmt.Printf("test: NewEphemeralResolver() -> [status:%v]\n", status)
 
 	status := r.PutContent(name, "author", s, 1)
