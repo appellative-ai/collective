@@ -6,7 +6,7 @@ import (
 )
 
 func ExampleLoadResolver() {
-	r := content.NewEphemeralResolver()
+	r := content.NewEphemeralResolver(false, false)
 	status := loadResolver(r)
 	fmt.Printf("test: loadResolver() -> [status:%v]\n", status)
 

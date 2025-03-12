@@ -67,8 +67,8 @@ type Resolution interface {
 }
 
 // NewEphemeralResolver - in memory resolver
-func NewEphemeralResolver() Resolution {
-	return initializedEphemeralResolver("")
+func NewEphemeralResolver(activity, notify bool) Resolution {
+	return initializedEphemeralResolver("", activity, notify)
 }
 
 // Resolve - generic typed resolution

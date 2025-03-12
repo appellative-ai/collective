@@ -10,11 +10,17 @@ import (
 //func InitializedEphemeralResolver(dir string) Resolution {}
 
 // initializedEphemeralResolver - in memory resolver, initialized with state
-func initializedEphemeralResolver(dir string) Resolution {
+func initializedEphemeralResolver(dir string, activity, notify bool) Resolution {
 	r := new(resolution)
-	r.notifier = messaging.Notify
-	r.activity = func(hostName string, agent messaging.Agent, event, source string, content any) {
-		fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), event, source, content)
+	if notify {
+		r.notifier = messaging.Notify
+	} else {
+		r.notifier = func(event messaging.Event) {}
+	}
+	if activity {
+		r.activity = func(hostName string, agent messaging.Agent, event, source string, content any) {
+			fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), event, source, content)
+		}
 	}
 	r.agent = newContentAgent(true, nil)
 	r.agent.notifier = r.notifier
