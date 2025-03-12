@@ -11,7 +11,7 @@ const (
 	ProfileName = "resiliency:type/domain/metrics/profile"
 )
 
-func loadProfile(r content.Resolution) *messaging.Status {
+func LoadProfile(r content.Resolution) *messaging.Status {
 	buf, err := iox.ReadFile(testrsc.ResiliencyTrafficProfile1)
 	if err != nil {
 		return messaging.NewStatusError(messaging.StatusIOError, err, "")

@@ -20,7 +20,7 @@ func Startup() {
 	if !status.OK() {
 		fmt.Printf("error on loading Resolver: %v\n", status)
 	}
-	status = loadProfile(content.Resolver)
+	status = LoadProfile(content.Resolver)
 	if !status.OK() {
 		fmt.Printf("error on loading Resolver: %v\n", status)
 	}
