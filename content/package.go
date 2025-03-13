@@ -62,6 +62,7 @@ func NewEphemeralResolver() Resolution {
 	return initializedEphemeralResolver(true, true)
 }
 
+// NewConfigEphemeralResolver - in memory resolver
 func NewConfigEphemeralResolver(activity, notify bool) Resolution {
 	return initializedEphemeralResolver(activity, notify)
 }
