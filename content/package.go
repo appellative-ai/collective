@@ -58,10 +58,10 @@ type ResolutionKey struct {
 
 // Resolution - in the real world
 type Resolution interface {
-	GetContent(name string, version int) ([]byte, *messaging.Status)
-	PutContent(name, author string, content any, version int) *messaging.Status
-	GetMap(name string) (map[string]string, *messaging.Status)
-	PutMap(name, author string, m map[string]string) *messaging.Status
+	GetValue(name string, version int) ([]byte, *messaging.Status)
+	PutValue(name, author string, content any, version int) *messaging.Status
+	GetAttributes(name string) (map[string]string, *messaging.Status)
+	PutAttributes(name, author string, m map[string]string) *messaging.Status
 	AddActivity(agent messaging.Agent, event, source string, content any)
 	Notify(e messaging.Event)
 }
@@ -82,7 +82,7 @@ func Resolve[T any](name string, version int, resolver Resolution) (T, *messagin
 	if resolver == nil {
 		return t, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", name)), Name)
 	}
-	body, status := resolver.GetContent(name, version)
+	body, status := resolver.GetValue(name, version)
 	if !status.OK() {
 		return t, status
 	}

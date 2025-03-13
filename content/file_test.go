@@ -114,7 +114,7 @@ func _ExampleFileLoad() {
 func ExampleEphemeralLoad() {
 	name1 := "resiliency:thing/operative/agent/gradient"
 	name2 := "resiliency:thing/operative/agent/threshold"
-	dir := "file:///c:/Users/markb/GitHub/domain/testrsc/files/resiliency"
+	dir := "file:///c:/Users/markb/GitHub/collective/testrsc/files/resiliency"
 
 	r := initializedEphemeralResolver(dir, true, true)
 	//fmt.Printf("test: NewEphemeralResolver() -> [status:%v]\n", status)

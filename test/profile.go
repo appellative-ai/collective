@@ -16,5 +16,5 @@ func LoadProfile(r content.Resolution) *messaging.Status {
 	if err != nil {
 		return messaging.NewStatusError(messaging.StatusIOError, err, "")
 	}
-	return r.PutContent(ProfileName, "author", buf, 1)
+	return r.PutValue(ProfileName, "author", buf, 1)
 }

@@ -114,7 +114,7 @@ func (a *agentT) load(dir string) *messaging.Status {
 	return messaging.StatusOK()
 }
 
-func (a *agentT) getContent(name string, version int) (buf []byte, status *messaging.Status) {
+func (a *agentT) getValue(name string, version int) (buf []byte, status *messaging.Status) {
 	if name == "" || version <= 0 {
 		return nil, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
@@ -134,7 +134,7 @@ func (a *agentT) getContent(name string, version int) (buf []byte, status *messa
 	return buf, messaging.StatusOK()
 }
 
-func (a *agentT) putContent(name, author string, buf []byte, version int) *messaging.Status {
+func (a *agentT) putValue(name, author string, buf []byte, version int) *messaging.Status {
 	if name == "" || author == "" || buf == nil || version <= 0 {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
@@ -148,7 +148,7 @@ func (a *agentT) putContent(name, author string, buf []byte, version int) *messa
 	return status
 }
 
-func (a *agentT) getMap(name string) (map[string]string, *messaging.Status) {
+func (a *agentT) getAttributes(name string) (map[string]string, *messaging.Status) {
 	if name == "" {
 		return nil, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("map name [%v] is empty", name)), a.Uri())
 	}
@@ -169,7 +169,7 @@ func (a *agentT) getMap(name string) (map[string]string, *messaging.Status) {
 	return nil, messaging.StatusNotFound().SetAgent(a.Uri())
 }
 
-func (a *agentT) putMap(name, author string, m map[string]string) *messaging.Status {
+func (a *agentT) putAttributes(name, author string, m map[string]string) *messaging.Status {
 	if name == "" || author == "" || m == nil {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid argument name [%v],author [%v] or map", name, author)), a.Uri())
 	}

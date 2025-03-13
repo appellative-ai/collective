@@ -42,13 +42,13 @@ func newHttpResolver() Resolution {
 	return r
 }
 
-// GetContent - resolution get
-func (r *resolution) GetContent(name string, version int) ([]byte, *messaging.Status) {
-	return r.agent.getContent(name, version)
+// GetValue - resolution get
+func (r *resolution) GetValue(name string, version int) ([]byte, *messaging.Status) {
+	return r.agent.getValue(name, version)
 }
 
-// PutContent - resolution put
-func (r *resolution) PutContent(name, author string, content any, version int) *messaging.Status {
+// PutValue - resolution put
+func (r *resolution) PutValue(name, author string, content any, version int) *messaging.Status {
 	var buf []byte
 
 	switch ptr := content.(type) {
@@ -70,17 +70,17 @@ func (r *resolution) PutContent(name, author string, content any, version int) *
 			return messaging.NewStatusError(messaging.StatusJsonEncodeError, err, r.agent.Uri())
 		}
 	}
-	return r.agent.putContent(name, author, buf, version)
+	return r.agent.putValue(name, author, buf, version)
 }
 
-// GetMap - resolution get
-func (r *resolution) GetMap(name string) (map[string]string, *messaging.Status) {
-	return r.agent.getMap(name)
+// GetAttributes - resolution get
+func (r *resolution) GetAttributes(name string) (map[string]string, *messaging.Status) {
+	return r.agent.getAttributes(name)
 }
 
-// PutMap - resolution put
-func (r *resolution) PutMap(name, author string, m map[string]string) *messaging.Status {
-	return r.agent.putMap(name, author, m)
+// PutAttributes - resolution put
+func (r *resolution) PutAttributes(name, author string, m map[string]string) *messaging.Status {
+	return r.agent.putAttributes(name, author, m)
 }
 
 // AddActivity - resolution activity

@@ -12,7 +12,7 @@ func loadResolver(resolver content.Resolution) *messaging.Status {
 	if err != nil {
 		return messaging.NewStatusError(messaging.StatusIOError, err, "")
 	}
-	status := resolver.PutContent(ResiliencyInterpret, "author", buf, 1)
+	status := resolver.PutValue(ResiliencyInterpret, "author", buf, 1)
 	if !status.OK() {
 		return status
 	}
@@ -20,5 +20,5 @@ func loadResolver(resolver content.Resolution) *messaging.Status {
 	if err != nil {
 		return messaging.NewStatusError(messaging.StatusIOError, err, "")
 	}
-	return resolver.PutContent(ResiliencyThreshold, "author", buf, 1)
+	return resolver.PutValue(ResiliencyThreshold, "author", buf, 1)
 }
