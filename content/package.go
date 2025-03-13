@@ -9,13 +9,18 @@ import (
 	"time"
 )
 
-const (
-	ResourceUri       = "urn:content"
-	ResolutionKeyName = "resolution-key"
-)
-
 // HttpExchange - exchange type
 type HttpExchange func(r *http.Request) (*http.Response, error)
+
+// Resolution - in the real world
+type Resolution interface {
+	GetValue(name string, version int) ([]byte, *messaging.Status)
+	PutValue(name, author string, content any, version int) *messaging.Status
+	GetAttributes(name string) (map[string]string, *messaging.Status)
+	PutAttributes(name, author string, m map[string]string) *messaging.Status
+	AddActivity(agent messaging.Agent, event, source string, content any)
+	Notify(e messaging.Event)
+}
 
 // Resolver - content resolution in the real world
 var (
@@ -47,32 +52,18 @@ func Startup(uri []string, do HttpExchange, hostName string) {
 }
 
 func Shutdown() {
-
-}
-
-// ResolutionKey -
-type ResolutionKey struct {
-	Name    string `json:"name"`
-	Version int    `json:"version"`
-}
-
-// Resolution - in the real world
-type Resolution interface {
-	GetValue(name string, version int) ([]byte, *messaging.Status)
-	PutValue(name, author string, content any, version int) *messaging.Status
-	GetAttributes(name string) (map[string]string, *messaging.Status)
-	PutAttributes(name, author string, m map[string]string) *messaging.Status
-	AddActivity(agent messaging.Agent, event, source string, content any)
-	Notify(e messaging.Event)
+	if r, ok := any(Resolver).(*resolution); ok {
+		r.agent.Shutdown()
+	}
 }
 
 // NewEphemeralResolver - in memory resolver
 func NewEphemeralResolver() Resolution {
-	return initializedEphemeralResolver("", true, true)
+	return initializedEphemeralResolver(true, true)
 }
 
 func NewConfigEphemeralResolver(activity, notify bool) Resolution {
-	return initializedEphemeralResolver("", activity, notify)
+	return initializedEphemeralResolver(activity, notify)
 }
 
 // Resolve - generic typed resolution

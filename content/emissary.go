@@ -10,13 +10,11 @@ func emissaryAttend(agent *agentT) {
 	var paused = false
 	if paused {
 	}
-	ticker := messaging.NewTicker(messaging.Emissary, agent.duration)
-
-	ticker.Start(-1)
+	agent.ticker.Start(-1)
 	for {
 		select {
-		case <-ticker.C():
-			agent.dispatch(ticker, messaging.TickEvent)
+		case <-agent.ticker.C():
+			agent.dispatch(agent.ticker, messaging.TickEvent)
 		default:
 		}
 		select {
@@ -28,8 +26,7 @@ func emissaryAttend(agent *agentT) {
 			case messaging.ResumeEvent:
 				paused = false
 			case messaging.ShutdownEvent:
-				ticker.Stop()
-				agent.dispatch(agent.emissary, msg.Event())
+				agent.emissaryFinalize()
 				return
 			default:
 			}

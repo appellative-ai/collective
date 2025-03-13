@@ -21,7 +21,7 @@ func masterAttend(agent *agentT) {
 			case messaging.ResumeEvent:
 				paused = false
 			case messaging.ShutdownEvent:
-				agent.dispatch(agent.emissary, msg.Event())
+				agent.masterFinalize()
 				return
 			default:
 			}

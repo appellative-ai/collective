@@ -6,6 +6,12 @@ import (
 	"sync"
 )
 
+// resolutionKey -
+type resolutionKey struct {
+	Name    string `json:"name"`
+	Version int    `json:"version"`
+}
+
 type content struct {
 	body []byte
 }
@@ -21,7 +27,7 @@ func newContentCache() *contentT {
 }
 
 func (c *contentT) get(name string, version int) ([]byte, error) {
-	key := ResolutionKey{Name: name, Version: version}
+	key := resolutionKey{Name: name, Version: version}
 	value, ok := c.m.Load(key)
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("content [%v] [%v] not found", name, version))
@@ -33,5 +39,5 @@ func (c *contentT) get(name string, version int) ([]byte, error) {
 }
 
 func (c *contentT) put(name string, body []byte, version int) {
-	c.m.Store(ResolutionKey{Name: name, Version: version}, content{body: body})
+	c.m.Store(resolutionKey{Name: name, Version: version}, content{body: body})
 }

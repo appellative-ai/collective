@@ -6,6 +6,11 @@ import (
 	"sync"
 )
 
+const (
+	resourceUri       = "urn:content"
+	resolutionKeyName = "resolution-key"
+)
+
 type mapT struct {
 	m *sync.Map
 }
@@ -33,9 +38,9 @@ func (c *mapT) put(name string, m map[string]string) error {
 	}
 	var ok bool
 	if name == "" {
-		name, ok = m[ResolutionKeyName]
+		name, ok = m[resolutionKeyName]
 		if !ok {
-			return errors.New(fmt.Sprintf("map key %v is not found in map", ResolutionKeyName))
+			return errors.New(fmt.Sprintf("map key %v is not found in map", resolutionKeyName))
 		}
 	}
 	c.m.Store(name, m)

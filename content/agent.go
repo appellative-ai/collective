@@ -24,6 +24,7 @@ type agentT struct {
 	mapCache  *mapT
 	resolver  resolutionFunc
 
+	ticker     *messaging.Ticker
 	emissary   *messaging.Channel
 	master     *messaging.Channel
 	notifier   messaging.NotifyFunc
@@ -42,7 +43,7 @@ func newContentAgent(ephemeral bool, dispatcher messaging.Dispatcher) *agentT {
 	} else {
 		a.resolver = httpResolution
 	}
-
+	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	a.master = messaging.NewMasterChannel()
 	a.dispatcher = dispatcher
@@ -67,6 +68,9 @@ func (a *agentT) Message(m *messaging.Message) {
 	case messaging.Emissary:
 		a.emissary.Send(m)
 	case messaging.Master:
+		a.master.Send(m)
+	case messaging.Control:
+		a.emissary.Send(m)
 		a.master.Send(m)
 	default:
 		a.emissary.Send(m)
@@ -101,17 +105,13 @@ func (a *agentT) dispatch(channel any, event string) {
 	messaging.Dispatch(a, a.dispatcher, channel, event)
 }
 
-func (a *agentT) load(dir string) *messaging.Status {
-	if dir == "" {
-		return messaging.StatusOK()
-	}
-	err := loadContent(a.cache, dir)
-	if err != nil {
-		status := messaging.NewStatusError(messaging.StatusIOError, err, a.Uri())
-		a.notify(status)
-		return status
-	}
-	return messaging.StatusOK()
+func (a *agentT) emissaryFinalize() {
+	a.emissary.Close()
+	a.ticker.Stop()
+}
+
+func (a *agentT) masterFinalize() {
+	a.master.Close()
 }
 
 func (a *agentT) getValue(name string, version int) (buf []byte, status *messaging.Status) {

@@ -3,22 +3,16 @@ package test
 import (
 	"github.com/behavioral-ai/collective/content"
 	"github.com/behavioral-ai/collective/testrsc"
-	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
+	url2 "net/url"
 )
 
 func loadResolver(resolver content.Resolution) *messaging.Status {
-	buf, err := iox.ReadFile(testrsc.ResiliencyInterpret1)
-	if err != nil {
-		return messaging.NewStatusError(messaging.StatusIOError, err, "")
-	}
-	status := resolver.PutValue(ResiliencyInterpret, "author", buf, 1)
+	url, _ := url2.Parse(testrsc.ResiliencyInterpret1)
+	status := resolver.PutValue(ResiliencyInterpret, "author", url, 1)
 	if !status.OK() {
 		return status
 	}
-	buf, err = iox.ReadFile(testrsc.ResiliencyThreshold1)
-	if err != nil {
-		return messaging.NewStatusError(messaging.StatusIOError, err, "")
-	}
-	return resolver.PutValue(ResiliencyThreshold, "author", buf, 1)
+	url, _ = url2.Parse(testrsc.ResiliencyThreshold)
+	return resolver.PutValue(ResiliencyThreshold, "author", url, 1)
 }

@@ -6,11 +6,8 @@ import (
 	"time"
 )
 
-// InitializedEphemeralResolver - in memory resolver, initialized with state
-//func InitializedEphemeralResolver(dir string) Resolution {}
-
 // initializedEphemeralResolver - in memory resolver, initialized with state
-func initializedEphemeralResolver(dir string, activity, notify bool) Resolution {
+func initializedEphemeralResolver(activity, notify bool) Resolution {
 	r := new(resolution)
 	if notify {
 		r.notifier = messaging.Notify
@@ -24,9 +21,6 @@ func initializedEphemeralResolver(dir string, activity, notify bool) Resolution 
 	}
 	r.agent = newContentAgent(true, nil)
 	r.agent.notifier = r.notifier
-	if dir != "" {
-		r.agent.load(dir)
-	}
 	r.agent.Run()
 	return r
 }
