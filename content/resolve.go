@@ -2,7 +2,9 @@ package content
 
 import (
 	"encoding/json"
+	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
+	"net/url"
 )
 
 type text struct {
@@ -50,11 +52,10 @@ func (r *resolution) GetValue(name string, version int) ([]byte, *messaging.Stat
 // PutValue - resolution put
 func (r *resolution) PutValue(name, author string, content any, version int) *messaging.Status {
 	var buf []byte
+	var err error
 
 	switch ptr := content.(type) {
 	case string:
-		var err error
-
 		v := text{ptr}
 		buf, err = json.Marshal(v)
 		if err != nil {
@@ -62,9 +63,12 @@ func (r *resolution) PutValue(name, author string, content any, version int) *me
 		}
 	case []byte:
 		buf = ptr
+	case *url.URL:
+		buf, err = iox.ReadFile(ptr)
+		if err != nil {
+			return messaging.NewStatusError(messaging.StatusIOError, err, r.agent.Uri())
+		}
 	default:
-		var err error
-
 		buf, err = json.Marshal(ptr)
 		if err != nil {
 			return messaging.NewStatusError(messaging.StatusJsonEncodeError, err, r.agent.Uri())
