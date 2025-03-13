@@ -18,6 +18,7 @@ type agentT struct {
 	running   bool
 	ephemeral bool
 	agentId   string
+	hostName  string
 	uri       []string
 	duration  time.Duration
 	cache     *contentT

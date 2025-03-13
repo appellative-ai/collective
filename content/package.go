@@ -24,8 +24,7 @@ type Resolution interface {
 
 // Resolver - content resolution in the real world
 var (
-	appHostName string
-	Resolver    = newHttpResolver()
+	Resolver = newHttpResolver()
 )
 
 func init() {
@@ -41,12 +40,12 @@ func init() {
 
 // Startup - run the agents
 func Startup(uri []string, do HttpExchange, hostName string) {
-	appHostName = hostName
 	if r, ok := any(Resolver).(*resolution); ok {
 		if do != nil {
 			r.do = do
 		}
 		r.agent.uri = uri
+		r.agent.hostName = hostName
 		r.agent.Run()
 	}
 }
@@ -55,16 +54,6 @@ func Shutdown() {
 	if r, ok := any(Resolver).(*resolution); ok {
 		r.agent.Shutdown()
 	}
-}
-
-// NewEphemeralResolver - in memory resolver
-func NewEphemeralResolver() Resolution {
-	return initializedEphemeralResolver(true, true)
-}
-
-// NewConfigEphemeralResolver - in memory resolver
-func NewConfigEphemeralResolver(activity, notify bool) Resolution {
-	return initializedEphemeralResolver(activity, notify)
 }
 
 // Resolve - generic typed resolution
@@ -94,4 +83,14 @@ func Resolve[T any](name string, version int, resolver Resolution) (T, *messagin
 		}
 	}
 	return t, messaging.StatusOK()
+}
+
+// NewEphemeralResolver - in memory resolver
+func NewEphemeralResolver() Resolution {
+	return initializedEphemeralResolver(true, true)
+}
+
+// NewConfigEphemeralResolver - in memory resolver
+func NewConfigEphemeralResolver(activity, notify bool) Resolution {
+	return initializedEphemeralResolver(activity, notify)
 }
