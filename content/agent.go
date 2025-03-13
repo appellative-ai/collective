@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	Name            = "resiliency:agent/domain/content/content"
-	agentUri        = Name
+	agentName       = "resiliency:agent/domain/content/content"
+	agentUri        = agentName
 	defaultDuration = time.Second * 10
 )
 
@@ -58,7 +58,7 @@ func (a *agentT) String() string { return a.Uri() }
 func (a *agentT) Uri() string { return a.agentId }
 
 // Name - agent name
-func (a *agentT) Name() string { return Name }
+func (a *agentT) Name() string { return agentName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
