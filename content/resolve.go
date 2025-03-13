@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
+	"net/http"
 	"net/url"
 )
 
@@ -58,11 +59,11 @@ func (r *resolution) PutValue(name, author string, content any, version int) *me
 
 	if name == "" {
 		err = errors.New(fmt.Sprintf("name is empty on call to PutValue()"))
-		return messaging.NewStatusError(messaging.StatusInvalidContent, err, r.agent.Uri())
+		return messaging.NewStatusError(http.StatusBadRequest, err, r.agent.Uri())
 	}
 	if content == nil {
 		err = errors.New(fmt.Sprintf("content is nil on call to PutValue() for name : %v", name))
-		return messaging.NewStatusError(messaging.StatusInvalidContent, err, r.agent.Uri())
+		return messaging.NewStatusError(http.StatusNoContent, err, r.agent.Uri())
 	}
 	switch ptr := content.(type) {
 	case string:
@@ -86,7 +87,7 @@ func (r *resolution) PutValue(name, author string, content any, version int) *me
 	}
 	if len(buf) == 0 {
 		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for name : %v", name))
-		return messaging.NewStatusError(messaging.StatusInvalidContent, err, r.agent.Uri())
+		return messaging.NewStatusError(http.StatusNoContent, err, r.agent.Uri())
 	}
 	return r.agent.putValue(name, author, buf, version)
 }
