@@ -90,7 +90,7 @@ func (r *resolution) PutAttributes(name, author string, m map[string]string) *me
 // AddActivity - resolution activity
 func (r *resolution) AddActivity(agent messaging.Agent, event, source string, content any) {
 	if r.activity != nil {
-		r.activity(appHostName, agent, event, source, content)
+		r.activity(r.agent.hostName, agent, event, source, content)
 	} else {
 		// TODO: add call to append activity, include appHostName
 	}
