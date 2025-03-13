@@ -13,6 +13,6 @@ func loadResolver(resolver content.Resolution) *messaging.Status {
 	if !status.OK() {
 		return status
 	}
-	url, _ = url2.Parse(testrsc.ResiliencyThreshold)
+	url, _ = url2.Parse(testrsc.ResiliencyThreshold1)
 	return resolver.PutValue(ResiliencyThreshold, "author", url, 1)
 }
