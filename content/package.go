@@ -14,10 +14,10 @@ type HttpExchange func(r *http.Request) (*http.Response, error)
 
 // Resolution - in the real world
 type Resolution interface {
-	GetValue(name string, version int) ([]byte, *messaging.Status)
-	PutValue(name, author string, content any, version int) *messaging.Status
-	GetAttributes(name string) (map[string]string, *messaging.Status)
-	PutAttributes(name, author string, m map[string]string) *messaging.Status
+	GetValue(nsName string, version int) ([]byte, *messaging.Status)
+	PutValue(nsName, author string, content any, version int) *messaging.Status
+	GetAttributes(nsName string) (map[string]string, *messaging.Status)
+	PutAttributes(nsName, author string, m map[string]string) *messaging.Status
 	AddActivity(agent messaging.Agent, event, source string, content any)
 	Notify(e messaging.Event)
 }
@@ -39,7 +39,7 @@ func init() {
 }
 
 // Startup - run the agents
-func Startup(uri []string, do HttpExchange, hostName string) {
+func Startup(uri []string, do HttpExchange, hostName string) messaging.Agent {
 	if r, ok := any(Resolver).(*resolution); ok {
 		if do != nil {
 			r.do = do
@@ -47,7 +47,9 @@ func Startup(uri []string, do HttpExchange, hostName string) {
 		r.agent.uri = uri
 		r.agent.hostName = hostName
 		r.agent.Run()
+		return r.agent
 	}
+	return nil
 }
 
 func Shutdown() {
@@ -57,22 +59,22 @@ func Shutdown() {
 }
 
 // Resolve - generic typed resolution
-func Resolve[T any](name string, version int, resolver Resolution) (T, *messaging.Status) {
+func Resolve[T any](nsName string, version int, resolver Resolution) (T, *messaging.Status) {
 	var t T
 
 	if resolver == nil {
-		return t, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", name)), agentName)
+		return t, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", nsName)), AgentNamespaceName)
 	}
-	body, status := resolver.GetValue(name, version)
+	body, status := resolver.GetValue(nsName, version)
 	if !status.OK() {
 		return t, status
 	}
 	if len(body) == 0 {
-		return t, messaging.NewStatusMessage(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", name), agentName)
+		return t, messaging.NewStatusMessage(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", nsName), AgentNamespaceName)
 	}
 	switch ptr := any(&t).(type) {
 	case *string:
-		t1, status1 := Resolve[text](name, version, resolver)
+		t1, status1 := Resolve[text](nsName, version, resolver)
 		if !status1.OK() {
 			return t, status1
 		}
@@ -82,7 +84,7 @@ func Resolve[T any](name string, version int, resolver Resolution) (T, *messagin
 	default:
 		err := json.Unmarshal(body, ptr)
 		if err != nil {
-			return t, messaging.NewStatusError(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, name)), agentName)
+			return t, messaging.NewStatusError(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, nsName)), AgentNamespaceName)
 		}
 	}
 	return t, messaging.StatusOK()

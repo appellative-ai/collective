@@ -48,21 +48,21 @@ func newHttpResolver() Resolution {
 }
 
 // GetValue - resolution get
-func (r *resolution) GetValue(name string, version int) ([]byte, *messaging.Status) {
-	return r.agent.getValue(name, version)
+func (r *resolution) GetValue(nsName string, version int) ([]byte, *messaging.Status) {
+	return r.agent.getValue(nsName, version)
 }
 
 // PutValue - resolution put
-func (r *resolution) PutValue(name, author string, content any, version int) *messaging.Status {
+func (r *resolution) PutValue(nsName, author string, content any, version int) *messaging.Status {
 	var buf []byte
 	var err error
 
-	if name == "" {
-		err = errors.New(fmt.Sprintf("name is empty on call to PutValue()"))
+	if nsName == "" {
+		err = errors.New(fmt.Sprintf("nsName is empty on call to PutValue()"))
 		return messaging.NewStatusError(http.StatusBadRequest, err, r.agent.Uri())
 	}
 	if content == nil {
-		err = errors.New(fmt.Sprintf("content is nil on call to PutValue() for name : %v", name))
+		err = errors.New(fmt.Sprintf("content is nil on call to PutValue() for nsName : %v", nsName))
 		return messaging.NewStatusError(http.StatusNoContent, err, r.agent.Uri())
 	}
 	switch ptr := content.(type) {
@@ -86,20 +86,20 @@ func (r *resolution) PutValue(name, author string, content any, version int) *me
 		}
 	}
 	if len(buf) == 0 {
-		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for name : %v", name))
+		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for nsName : %v", nsName))
 		return messaging.NewStatusError(http.StatusNoContent, err, r.agent.Uri())
 	}
-	return r.agent.putValue(name, author, buf, version)
+	return r.agent.putValue(nsName, author, buf, version)
 }
 
 // GetAttributes - resolution get
-func (r *resolution) GetAttributes(name string) (map[string]string, *messaging.Status) {
-	return r.agent.getAttributes(name)
+func (r *resolution) GetAttributes(nsName string) (map[string]string, *messaging.Status) {
+	return r.agent.getAttributes(nsName)
 }
 
 // PutAttributes - resolution put
-func (r *resolution) PutAttributes(name, author string, m map[string]string) *messaging.Status {
-	return r.agent.putAttributes(name, author, m)
+func (r *resolution) PutAttributes(nsName, author string, m map[string]string) *messaging.Status {
+	return r.agent.putAttributes(nsName, author, m)
 }
 
 // AddActivity - resolution activity

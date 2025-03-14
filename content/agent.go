@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	agentName       = "resiliency:agent/domain/content/content"
-	agentUri        = agentName
-	defaultDuration = time.Second * 10
+	AgentNamespaceName = "resiliency:agent/domain/content/content"
+	agentUri           = AgentNamespaceName
+	defaultDuration    = time.Second * 10
 )
 
 type agentT struct {
@@ -58,7 +58,7 @@ func (a *agentT) String() string { return a.Uri() }
 func (a *agentT) Uri() string { return a.agentId }
 
 // Name - agent name
-func (a *agentT) Name() string { return agentName }
+func (a *agentT) Name() string { return AgentNamespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
