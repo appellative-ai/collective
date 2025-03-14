@@ -4,13 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	http2 "github.com/behavioral-ai/collective/http"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"time"
 )
-
-// HttpExchange - exchange type
-type HttpExchange func(r *http.Request) (*http.Response, error)
 
 // Resolution - in the real world
 type Resolution interface {
@@ -39,7 +37,7 @@ func init() {
 }
 
 // Startup - run the agents
-func Startup(uri []string, do HttpExchange, hostName string) messaging.Agent {
+func Startup(uri []string, do http2.Exchange, hostName string) messaging.Agent {
 	if r, ok := any(Resolver).(*resolution); ok {
 		if do != nil {
 			r.do = do

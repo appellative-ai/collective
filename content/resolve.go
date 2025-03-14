@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	http2 "github.com/behavioral-ai/collective/http"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
@@ -34,7 +35,7 @@ type resolutionFunc func(method, name, author string, body []byte, version int) 
 type addActivityFunc func(hostName string, agent messaging.Agent, event, source string, content any)
 
 type resolution struct {
-	do       HttpExchange
+	do       http2.Exchange
 	notifier messaging.NotifyFunc
 	activity addActivityFunc
 	hosts    []string

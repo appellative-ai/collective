@@ -3,6 +3,7 @@ package content
 import (
 	"errors"
 	"fmt"
+	http2 "github.com/behavioral-ai/collective/http"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"time"
@@ -42,7 +43,7 @@ func newContentAgent(ephemeral bool, dispatcher messaging.Dispatcher) *agentT {
 	if ephemeral {
 		a.resolver = fileResolution
 	} else {
-		a.resolver = httpResolution
+		a.resolver = http2.Resolution
 	}
 	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
