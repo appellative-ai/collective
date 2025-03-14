@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	http2 "github.com/behavioral-ai/collective/http"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"time"
@@ -23,6 +22,7 @@ type Resolution interface {
 // Resolver - content resolution in the real world
 var (
 	Resolver = newHttpResolver()
+	Agent    messaging.Agent
 )
 
 func init() {
@@ -33,26 +33,8 @@ func init() {
 		r.activity = func(hostName string, agent messaging.Agent, event, source string, content any) {
 			fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), event, source, content)
 		}
-	}
-}
-
-// Startup - run the agents
-func Startup(uri []string, do http2.Exchange, hostName string) messaging.Agent {
-	if r, ok := any(Resolver).(*resolution); ok {
-		if do != nil {
-			r.do = do
-		}
-		r.agent.uri = uri
-		r.agent.hostName = hostName
 		r.agent.Run()
-		return r.agent
-	}
-	return nil
-}
-
-func Shutdown() {
-	if r, ok := any(Resolver).(*resolution); ok {
-		r.agent.Shutdown()
+		Agent = r.agent
 	}
 }
 

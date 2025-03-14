@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	http2 "github.com/behavioral-ai/collective/http"
-	"github.com/behavioral-ai/core/iox"
+
+	"github.com/behavioral-ai/core/io"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"net/url"
@@ -35,7 +35,7 @@ type resolutionFunc func(method, name, author string, body []byte, version int) 
 type addActivityFunc func(hostName string, agent messaging.Agent, event, source string, content any)
 
 type resolution struct {
-	do       http2.Exchange
+	//do       http2.Exchange
 	notifier messaging.NotifyFunc
 	activity addActivityFunc
 	hosts    []string
@@ -76,7 +76,7 @@ func (r *resolution) PutValue(nsName, author string, content any, version int) *
 	case []byte:
 		buf = ptr
 	case *url.URL:
-		buf, err = iox.ReadFile(ptr)
+		buf, err = io.ReadFile(ptr)
 		if err != nil {
 			return messaging.NewStatusError(messaging.StatusIOError, err, r.agent.Uri())
 		}

@@ -3,6 +3,7 @@ package content
 import (
 	"fmt"
 	"github.com/behavioral-ai/core/messaging"
+	"net/http"
 	"time"
 )
 
@@ -23,4 +24,13 @@ func initializedEphemeralResolver(activity, notify bool) Resolution {
 	r.agent.notifier = r.notifier
 	r.agent.Run()
 	return r
+}
+
+// ephemeralResolution - is read only and returns "not found" on gets
+func ephemeralResolution(method, name, _ string, _ []byte, version int) ([]byte, *messaging.Status) {
+	// file resolution is read only
+	if method == http.MethodPut {
+		return nil, messaging.StatusOK()
+	}
+	return nil, messaging.StatusNotFound()
 }

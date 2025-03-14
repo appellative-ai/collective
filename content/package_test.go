@@ -3,7 +3,24 @@ package content
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
+
+// Exchange - exchange type
+type Exchange func(r *http.Request) (*http.Response, error)
+
+func Initialize(uri []string, do Exchange, hostName string) {
+}
+
+func HostName() string {
+	return ""
+}
+
+type agentT2 struct {
+	hostName string
+	uri      []string
+	do       Exchange
+}
 
 func ExampleResolveString() {
 	name := "test:thing:text@2"
