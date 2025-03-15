@@ -13,5 +13,5 @@ const (
 
 func LoadProfile(r content.Resolution) *messaging.Status {
 	url, _ := url2.Parse(testrsc.ResiliencyTrafficProfile1)
-	return r.PutValue(ProfileName, "author", url, 1)
+	return r.AddValue(ProfileName, "author", url, 1)
 }
