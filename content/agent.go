@@ -135,7 +135,7 @@ func (a *agentT) getValue(name string, version int) (buf []byte, status *messagi
 	return buf, messaging.StatusOK()
 }
 
-func (a *agentT) putValue(name, author string, buf []byte, version int) *messaging.Status {
+func (a *agentT) addValue(name, author string, buf []byte, version int) *messaging.Status {
 	if name == "" || author == "" || buf == nil || version <= 0 {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
@@ -170,7 +170,7 @@ func (a *agentT) getAttributes(name string) (map[string]string, *messaging.Statu
 	return nil, messaging.StatusNotFound().SetAgent(a.Uri())
 }
 
-func (a *agentT) putAttributes(name, author string, m map[string]string) *messaging.Status {
+func (a *agentT) addAttributes(name, author string, m map[string]string) *messaging.Status {
 	if name == "" || author == "" || m == nil {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid argument name [%v],author [%v] or map", name, author)), a.Uri())
 	}

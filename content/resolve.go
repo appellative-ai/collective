@@ -53,8 +53,8 @@ func (r *resolution) GetValue(nsName string, version int) ([]byte, *messaging.St
 	return r.agent.getValue(nsName, version)
 }
 
-// PutValue - resolution put
-func (r *resolution) PutValue(nsName, author string, content any, version int) *messaging.Status {
+// AddValue - resolution add
+func (r *resolution) AddValue(nsName, author string, content any, version int) *messaging.Status {
 	var buf []byte
 	var err error
 
@@ -90,17 +90,17 @@ func (r *resolution) PutValue(nsName, author string, content any, version int) *
 		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for nsName : %v", nsName))
 		return messaging.NewStatusError(http.StatusNoContent, err, r.agent.Uri())
 	}
-	return r.agent.putValue(nsName, author, buf, version)
+	return r.agent.addValue(nsName, author, buf, version)
 }
 
-// GetAttributes - resolution get
+// GetAttributes - get attributes
 func (r *resolution) GetAttributes(nsName string) (map[string]string, *messaging.Status) {
 	return r.agent.getAttributes(nsName)
 }
 
-// PutAttributes - resolution put
-func (r *resolution) PutAttributes(nsName, author string, m map[string]string) *messaging.Status {
-	return r.agent.putAttributes(nsName, author, m)
+// AddAttributes - add attributes
+func (r *resolution) AddAttributes(nsName, author string, m map[string]string) *messaging.Status {
+	return r.agent.addAttributes(nsName, author, m)
 }
 
 // AddActivity - resolution activity

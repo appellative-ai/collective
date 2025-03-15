@@ -50,7 +50,7 @@ func ExampleEphemeralResolver() {
 	r := NewEphemeralResolver()
 	//fmt.Printf("test: NewEphemeralResolver() -> [status:%v]\n", status)
 
-	status := r.PutValue(name, "author", s, 1)
+	status := r.AddValue(name, "author", s, 1)
 	fmt.Printf("test: Resolver.Put() -> [status:%v]\n", status)
 
 	v, status1 := Resolve[string](name, 1, r)

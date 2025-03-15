@@ -10,18 +10,18 @@ func ExampleResolution_PutValue() {
 	urn := "type/test"
 	r := NewEphemeralResolver()
 
-	status := r.PutValue("", "author", nil, 1)
+	status := r.AddValue("", "author", nil, 1)
 	fmt.Printf("test: PutValue_Name() -> [status:%v]\n", status)
 
-	status = r.PutValue(urn, "author", nil, 1)
+	status = r.AddValue(urn, "author", nil, 1)
 	fmt.Printf("test: PutValue_Name() -> [status:%v]\n", status)
 
 	var buff []byte
-	status = r.PutValue(urn, "author", buff, 1)
+	status = r.AddValue(urn, "author", buff, 1)
 	fmt.Printf("test: PutValue_Name() -> [status:%v]\n", status)
 
 	url, _ := url2.Parse(testrsc.ResiliencyTrafficProfile1)
-	status = r.PutValue(urn, "author", url, 1)
+	status = r.AddValue(urn, "author", url, 1)
 	fmt.Printf("test: PutValue() -> [status:%v]\n", status)
 
 	buf, status1 := r.GetValue(urn, 1)
