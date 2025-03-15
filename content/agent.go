@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	AgentNamespaceName = "resiliency:agent/domain/content/content"
+	AgentNamespaceName = "resiliency:agent/behavioral-ai/collective/content"
 	agentUri           = AgentNamespaceName
 	defaultDuration    = time.Second * 10
 )
