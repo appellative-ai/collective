@@ -103,8 +103,8 @@ func (r *resolution) PutAttributes(nsName, author string, m map[string]string) *
 	return r.agent.putAttributes(nsName, author, m)
 }
 
-// AddActivity - resolution activity
-func (r *resolution) AddActivity(agent messaging.Agent, event, source string, content any) {
+// AppendActivity - resolution activity
+func (r *resolution) AppendActivity(agent messaging.Agent, event, source string, content any) {
 	if r.activity != nil {
 		r.activity(r.agent.hostName, agent, event, source, content)
 	} else {
