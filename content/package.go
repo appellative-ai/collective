@@ -9,13 +9,18 @@ import (
 	"time"
 )
 
+const (
+	NsNameKey  = "name"
+	VersionKey = "ver"
+)
+
 // Resolution - in the real world
 type Resolution interface {
 	GetValue(nsName string, version int) ([]byte, *messaging.Status)
 	PutValue(nsName, author string, content any, version int) *messaging.Status
 	GetAttributes(nsName string) (map[string]string, *messaging.Status)
 	PutAttributes(nsName, author string, m map[string]string) *messaging.Status
-	AppendActivity(agent messaging.Agent, event, source string, content any)
+	AddActivity(agent messaging.Agent, event, source string, content any)
 	Notify(e messaging.Event)
 }
 

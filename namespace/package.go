@@ -4,15 +4,15 @@ import (
 	"github.com/behavioral-ai/core/messaging"
 )
 
-// Appender - append
-type Appender struct {
+// Adder - add
+type Adder struct {
 	Thing    func(nsName, author string) *messaging.Status
 	Relation func(nsName1, nsName2, author string) *messaging.Status
 }
 
-// Append -
-var Append = func() *Appender {
-	return &Appender{
+// Add -
+var Add = func() *Adder {
+	return &Adder{
 		Thing: func(nsName, author string) *messaging.Status {
 			return messaging.StatusBadRequest()
 		},

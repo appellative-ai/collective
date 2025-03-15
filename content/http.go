@@ -29,8 +29,8 @@ func httpResolution(method, nsName, author string, value []byte, version int) ([
 
 func get(nsName string, version int) (*http.Response, *messaging.Status) {
 	v := make(url.Values)
-	v.Set("name", nsName)
-	v.Set("version", strconv.Itoa(version))
+	v.Set(NsNameKey, nsName)
+	v.Set(VersionKey, strconv.Itoa(version))
 	http.NewRequest(http.MethodGet, "https://collective/res?"+v.Encode(), nil)
 	//resp, status := http2.Do(req)
 	return nil, messaging.StatusNotFound()
