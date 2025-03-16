@@ -39,7 +39,7 @@ func ExampleResolveString() {
 	}
 
 	//Output:
-	//test: Resolve[text]() -> [Bad Request [err:error: BadRequest - resolver is nil for : test:thing:text@2] [agent:resiliency:agent/domain/content/content]] [{}]
+	//test: Resolve[text]() -> [Bad Request [err:error: BadRequest - resolver is nil for : test:thing:text@2] [agent:resiliency:agent/behavioral-ai/collective/content]] [{}]
 
 }
 
@@ -62,6 +62,6 @@ func ExampleEphemeralResolver() {
 	//Output:
 	//test: Resolver.Put() -> [status:OK]
 	//test: Resolve[string] -> [status:OK] [test Ephemeral resolver]
-	//test: Resolve[string] -> [status:Not Found [msg:name test:thing/string and version 2] [agent:resiliency:agent/domain/content/content]] []
+	//test: Resolve[string] -> [status:Not Found [msg:name test:thing/string and version 2] [agent:resiliency:agent/behavioral-ai/collective/content]] []
 
 }

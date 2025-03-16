@@ -28,9 +28,9 @@ func ExampleResolution_PutValue() {
 	fmt.Printf("test: GetValue() -> [status:%v] [%v]\n", status1, len(buf) > 0)
 
 	//Output:
-	//test: PutValue_Name() -> [status:Bad Request [err:nsName is empty on call to PutValue()] [agent:resiliency:agent/domain/content/content]]
-	//test: PutValue_Name() -> [status:No Content [err:content is nil on call to PutValue() for nsName : type/test] [agent:resiliency:agent/domain/content/content]]
-	//test: PutValue_Name() -> [status:No Content [err:content is empty on call to PutValue() for nsName : type/test] [agent:resiliency:agent/domain/content/content]]
+	//test: PutValue_Name() -> [status:Bad Request [err:nsName is empty on call to PutValue()] [agent:resiliency:agent/behavioral-ai/collective/content]]
+	//test: PutValue_Name() -> [status:No Content [err:content is nil on call to PutValue() for nsName : type/test] [agent:resiliency:agent/behavioral-ai/collective/content]]
+	//test: PutValue_Name() -> [status:No Content [err:content is empty on call to PutValue() for nsName : type/test] [agent:resiliency:agent/behavioral-ai/collective/content]]
 	//test: PutValue() -> [status:OK]
 	//test: GetValue() -> [status:OK] [true]
 
