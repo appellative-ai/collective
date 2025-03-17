@@ -1,17 +1,17 @@
 package namespace
 
 import (
-	http2 "github.com/behavioral-ai/core/http"
 	"github.com/behavioral-ai/core/messaging"
 )
 
 var (
-	Agent    messaging.Agent
-	Exchange http2.Exchange
+	Agent messaging.Agent
+	agent *agentT
 )
 
 func init() {
-	Exchange = http2.Do
+	agent = newAgent(nil)
+	Agent = agent
 }
 
 // Adder - add
@@ -24,10 +24,10 @@ type Adder struct {
 var Add = func() *Adder {
 	return &Adder{
 		Thing: func(nsName, author string) *messaging.Status {
-			return messaging.StatusBadRequest()
+			return agent.addThing(nsName, author)
 		},
 		Relation: func(nsName1, nsName2, author string) *messaging.Status {
-			return messaging.StatusBadRequest()
+			return agent.addRelation(nsName1, nsName2, author)
 		},
 	}
 }()

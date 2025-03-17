@@ -1,15 +1,39 @@
 package timeseries
 
 import (
-	http2 "github.com/behavioral-ai/core/http"
+	"errors"
+	"fmt"
 	"github.com/behavioral-ai/core/messaging"
+	"net/http"
 )
 
 var (
-	Agent    messaging.Agent
-	Exchange http2.Exchange
+	Agent messaging.Agent
+	agent *agentT
 )
 
 func init() {
-	Exchange = http2.Do
+	agent = newAgent(nil)
+	Agent = agent
 }
+
+// Interface -
+type Interface struct {
+	Rollup func(origin Origin) *messaging.Status
+	Add    func(events []Event) *messaging.Status
+}
+
+// Functions -
+var Functions = func() *Interface {
+	return &Interface{
+		Rollup: func(origin Origin) *messaging.Status {
+			return agent.rollup(origin)
+		},
+		Add: func(events []Event) *messaging.Status {
+			if len(events) == 0 {
+				return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument events are empty")), agent.Uri())
+			}
+			return agent.addEvents(events)
+		},
+	}
+}()
