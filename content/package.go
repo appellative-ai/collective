@@ -61,7 +61,7 @@ var Resolver = func() *Resolution {
 }()
 
 // Resolve - generic typed resolution
-func Resolve[T any](nsName string, version int, resolver Resolution1) (T, *messaging.Status) {
+func Resolve[T any](nsName string, version int, resolver *Resolution) (T, *messaging.Status) {
 	var t T
 
 	if resolver == nil {

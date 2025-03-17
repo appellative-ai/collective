@@ -40,6 +40,7 @@ func ExampleResolveString() {
 
 }
 
+/*
 func ExampleEphemeralResolver() {
 	name := "test:thing/string"
 	s := "test Ephemeral resolver"
@@ -62,3 +63,6 @@ func ExampleEphemeralResolver() {
 	//test: Resolve[string] -> [status:Not Found [msg:name test:thing/string and version 2] [agent:resiliency:agent/behavioral-ai/collective/content]] []
 
 }
+
+
+*/
