@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	http2 "github.com/behavioral-ai/core/http"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"time"
@@ -28,9 +29,11 @@ type Resolution interface {
 var (
 	Resolver = newHttpResolver()
 	Agent    messaging.Agent
+	Exchange http2.Exchange
 )
 
 func init() {
+	Exchange = http2.Do
 	if r, ok := any(Resolver).(*resolution); ok {
 		// Testing
 		r.notifier = messaging.Notify
