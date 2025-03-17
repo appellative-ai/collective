@@ -7,13 +7,23 @@ import (
 	http2 "github.com/behavioral-ai/core/http"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
-	"time"
 )
 
 const (
 	NsNameKey  = "name"
 	VersionKey = "ver"
 )
+
+type ActivityFunc func(hostName string, agent messaging.Agent, event, source string, content any)
+type NotifyFunc func(e messaging.Event)
+type DispatchFunc func(agent messaging.Agent, channel, event string)
+
+type Agent2 interface {
+	messaging.Agent
+	SetAddActivity(fn ActivityFunc)
+	SetNotify(e messaging.Event)
+	SetDispatch(dispatcher messaging.Dispatcher)
+}
 
 // Resolution - in the real world
 type Resolution interface {
@@ -27,23 +37,17 @@ type Resolution interface {
 
 // Resolver - content resolution in the real world
 var (
-	Resolver = newHttpResolver()
+	Resolver Resolution
 	Agent    messaging.Agent
 	Exchange http2.Exchange
 )
 
 func init() {
 	Exchange = http2.Do
-	if r, ok := any(Resolver).(*resolution); ok {
-		// Testing
-		r.notifier = messaging.Notify
-		r.agent.notifier = r.notifier
-		r.activity = func(hostName string, agent messaging.Agent, event, source string, content any) {
-			fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), event, source, content)
-		}
-		r.agent.Run()
-		Agent = r.agent
-	}
+	r := newHttpResolver()
+	Resolver = r
+	Agent = r.agent
+	r.agent.Run()
 }
 
 // Resolve - generic typed resolution
@@ -76,14 +80,4 @@ func Resolve[T any](nsName string, version int, resolver Resolution) (T, *messag
 		}
 	}
 	return t, messaging.StatusOK()
-}
-
-// NewEphemeralResolver - in memory resolver
-func NewEphemeralResolver() Resolution {
-	return initializedEphemeralResolver(true, true)
-}
-
-// NewConfigEphemeralResolver - in memory resolver
-func NewConfigEphemeralResolver(activity, notify bool) Resolution {
-	return initializedEphemeralResolver(activity, notify)
 }

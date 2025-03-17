@@ -15,36 +15,22 @@ type text struct {
 	Value string
 }
 
-/*
-func toAgent(resolver Resolution) messaging.Agent {
-	if resolver == nil {
-		return nil
-	}
-	if r, ok := any(resolver).(resolution); ok {
-		return r.agent
-	}
-	return nil
-}
-
-*/
-
 // resolutionFunc - data store function
-type resolutionFunc func(method, name, author string, body []byte, version int) ([]byte, *messaging.Status)
+//type resolutionFunc func(method, name, author string, body []byte, version int) ([]byte, *messaging.Status)
 
 // addActivityFunc -
 type addActivityFunc func(hostName string, agent messaging.Agent, event, source string, content any)
 
 type resolution struct {
-	//do       http2.Exchange
 	notifier messaging.NotifyFunc
 	activity addActivityFunc
 	hosts    []string
 	agent    *agentT
 }
 
-func newHttpResolver() Resolution {
+func newHttpResolver() *resolution {
 	r := new(resolution)
-	r.agent = newContentAgent(false, nil)
+	r.agent = newContentAgent(nil)
 	return r
 }
 
@@ -105,18 +91,10 @@ func (r *resolution) AddAttributes(nsName, author string, m map[string]string) *
 
 // AddActivity - resolution activity
 func (r *resolution) AddActivity(agent messaging.Agent, event, source string, content any) {
-	if r.activity != nil {
-		r.activity(r.agent.hostName, agent, event, source, content)
-	} else {
-		// TODO: add call to append activity, include appHostName
-	}
+	r.agent.addActivity(agent, event, source, content)
 }
 
 // Notify - resolution notify
 func (r *resolution) Notify(e messaging.Event) {
-	if r.notifier != nil {
-		r.notifier(e)
-	} else {
-		// TODO: add call to notify, include appHostName
-	}
+	r.agent.notification(e)
 }

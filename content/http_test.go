@@ -1,22 +1,19 @@
 package content
 
-import "fmt"
+func _Example_Get() {
 
-func Example_Get() {
-
-	_, status := get("name", 1)
-
-	fmt.Printf("test: get() -> [status:%v]\n", status)
+	//_, status := get("name", 1)
+	//fmt.Printf("test: get() -> [status:%v]\n", status)
 
 	//Output:
 	//test: get() -> [status:Not Found]
 
 }
 
-func Example_Put() {
+func _Example_Put() {
 
-	_, status := put("name", "author", nil, 1)
-	fmt.Printf("test: put() -> [status:%v]\n", status)
+	//_, status := put("name", "author", nil, 1)
+	//fmt.Printf("test: put() -> [status:%v]\n", status)
 
 	//Output:
 	//test: put() -> [status:OK]

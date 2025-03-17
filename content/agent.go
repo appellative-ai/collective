@@ -15,15 +15,13 @@ const (
 )
 
 type agentT struct {
-	running   bool
-	ephemeral bool
-	agentId   string
-	hostName  string
-	uri       []string
-	duration  time.Duration
-	cache     *contentT
-	mapCache  *mapT
-	resolver  resolutionFunc
+	running  bool
+	agentId  string
+	hostName string
+	uri      []string
+	duration time.Duration
+	cache    *contentT
+	mapCache *mapT
 
 	ticker     *messaging.Ticker
 	emissary   *messaging.Channel
@@ -32,18 +30,12 @@ type agentT struct {
 	dispatcher messaging.Dispatcher
 }
 
-func newContentAgent(ephemeral bool, dispatcher messaging.Dispatcher) *agentT {
+func newContentAgent(dispatcher messaging.Dispatcher) *agentT {
 	a := new(agentT)
-	a.ephemeral = ephemeral
 	a.agentId = agentUri
 	a.duration = defaultDuration
 	a.cache = newContentCache()
 	a.mapCache = newMapCache()
-	if ephemeral {
-		a.resolver = ephemeralResolution
-	} else {
-		a.resolver = httpResolution
-	}
 	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	a.master = messaging.NewMasterChannel()
@@ -125,7 +117,7 @@ func (a *agentT) getValue(name string, version int) (buf []byte, status *messagi
 		return buf, messaging.StatusOK()
 	}
 	// Cache miss
-	buf, status = a.resolver(http.MethodGet, name, "", nil, version)
+	buf, status = httpGetContent(name, version)
 	if !status.OK() {
 		status.SetAgent(a.Uri())
 		status.SetMessage(fmt.Sprintf("name %v and version %v", name, version))
@@ -139,7 +131,7 @@ func (a *agentT) addValue(name, author string, buf []byte, version int) *messagi
 	if name == "" || author == "" || buf == nil || version <= 0 {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
-	_, status := a.resolver(http.MethodPut, name, author, buf, version)
+	_, status := httpPutContent(name, author, buf, version)
 	if !status.OK() {
 		status.SetAgent(a.Uri())
 		status.SetMessage(fmt.Sprintf("name %v and version %v", name, version))
@@ -158,7 +150,7 @@ func (a *agentT) getAttributes(name string) (map[string]string, *messaging.Statu
 		return m, messaging.StatusOK()
 	}
 	// Cache miss
-	buf, status := a.resolver(http.MethodGet, name, "", nil, 1)
+	buf, status := httpGetContent(name, 1)
 	if !status.OK() {
 		status.SetAgent(a.Uri())
 		status.SetMessage(fmt.Sprintf("map name [%v] not found", name))
@@ -174,15 +166,20 @@ func (a *agentT) addAttributes(name, author string, m map[string]string) *messag
 	if name == "" || author == "" || m == nil {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid argument name [%v],author [%v] or map", name, author)), a.Uri())
 	}
-	/*
-		_, status := a.resolver(http.MethodPut, name, author, nil, 1)
-		if !status.OK() {
-			return status.SetAgent(a.Uri())
-		}
-	*/
+
 	err := a.mapCache.put(name, m)
 	if err == nil {
 		return messaging.StatusOK()
 	}
+	//buf,status := httpPutContent(name,author,)
 	return messaging.StatusBadRequest().SetAgent(a.Uri())
+}
+
+func (a *agentT) addActivity(agent messaging.Agent, event, source string, content any) {
+	httpAddActivity(a.hostName, agent.Uri(), event, source, content)
+
+}
+
+func (a *agentT) notification(e messaging.Event) {
+	httpNotify(e)
 }

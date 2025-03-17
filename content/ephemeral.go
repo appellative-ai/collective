@@ -7,6 +7,16 @@ import (
 	"time"
 )
 
+// NewEphemeralResolver - in memory resolver
+func NewEphemeralResolver() Resolution {
+	return initializedEphemeralResolver(true, true)
+}
+
+// NewConfigEphemeralResolver - in memory resolver
+func NewConfigEphemeralResolver(activity, notify bool) Resolution {
+	return initializedEphemeralResolver(activity, notify)
+}
+
 // initializedEphemeralResolver - in memory resolver, initialized with state
 func initializedEphemeralResolver(activity, notify bool) Resolution {
 	r := new(resolution)
@@ -20,7 +30,7 @@ func initializedEphemeralResolver(activity, notify bool) Resolution {
 			fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), event, source, content)
 		}
 	}
-	r.agent = newContentAgent(true, nil)
+	r.agent = newContentAgent(nil)
 	r.agent.notifier = r.notifier
 	r.agent.Run()
 	return r
