@@ -9,16 +9,12 @@ import (
 	"net/http"
 )
 
-type ActivityFunc func(hostName, agentUri, event, source string, content any)
-
 // Resolution - in the real world
 type Resolution interface {
 	GetValue(nsName string, version int) ([]byte, *messaging.Status)
 	AddValue(nsName, author string, content any, version int) *messaging.Status
 	GetAttributes(nsName string) (map[string]string, *messaging.Status)
 	AddAttributes(nsName, author string, m map[string]string) *messaging.Status
-	AddActivity(agent messaging.Agent, event, source string, content any)
-	//Notify(e messaging.Event)
 }
 
 // Resolver - content resolution in the real world
@@ -34,14 +30,6 @@ func init() {
 	Resolver = r
 	Agent = r.agent
 	r.agent.Run()
-}
-
-func Override(activity ActivityFunc, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) {
-	if agent, ok := any(Resolver).(*agentT); ok {
-		agent.activity = activity
-		agent.notifier = notifier
-		agent.dispatcher = dispatcher
-	}
 }
 
 // Resolve - generic typed resolution
