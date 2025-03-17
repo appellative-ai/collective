@@ -30,7 +30,7 @@ func initializedEphemeralResolver(activity, notify bool) Resolution {
 			fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), event, source, content)
 		}
 	}
-	r.agent = newContentAgent()
+	r.agent = newContentAgent(nil)
 	r.agent.notifier = r.notifier
 	r.agent.Run()
 	return r

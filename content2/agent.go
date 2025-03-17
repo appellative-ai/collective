@@ -31,7 +31,7 @@ type agentT struct {
 	activity   ActivityFunc
 }
 
-func newContentAgent() *agentT {
+func newContentAgent(dispatcher messaging.Dispatcher) *agentT {
 	a := new(agentT)
 	a.agentId = agentUri
 	a.duration = defaultDuration
@@ -40,6 +40,7 @@ func newContentAgent() *agentT {
 	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	a.master = messaging.NewMasterChannel()
+	a.dispatcher = dispatcher
 	return a
 }
 
@@ -63,12 +64,8 @@ func (a *agentT) Message(m *messaging.Message) {
 	case messaging.Master:
 		a.master.Send(m)
 	case messaging.Control:
-		if m.ContentType() == messaging.ContentTypeEvent {
-			a.notify(messaging.EventContent(m))
-		} else {
-			a.emissary.Send(m)
-			a.master.Send(m)
-		}
+		a.emissary.Send(m)
+		a.master.Send(m)
 	default:
 		a.emissary.Send(m)
 	}
@@ -95,14 +92,7 @@ func (a *agentT) Shutdown() {
 }
 
 func (a *agentT) notify(e messaging.Event) {
-	if e == nil {
-		return
-	}
-	if a.notifier != nil {
-		a.notifier(e)
-	} else {
-		httpNotify(e)
-	}
+	a.notifier(e)
 }
 
 func (a *agentT) dispatch(channel any, event string) {
@@ -191,5 +181,13 @@ func (a *agentT) addActivity(agent messaging.Agent, event, source string, conten
 		a.activity(a.hostName, agent.Uri(), event, source, content)
 	} else {
 		httpAddActivity(a.hostName, agent.Uri(), event, source, content)
+	}
+}
+
+func (a *agentT) notification(e messaging.Event) {
+	if a.notifier != nil {
+		a.notifier(e)
+	} else {
+		httpNotify(e)
 	}
 }

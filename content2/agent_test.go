@@ -3,7 +3,7 @@ package content
 import "fmt"
 
 func ExampleNewAgent() {
-	a := newContentAgent()
+	a := newContentAgent(nil)
 
 	fmt.Printf("test: newHttpAgent() -> [%v]\n", a)
 

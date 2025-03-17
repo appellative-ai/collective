@@ -30,7 +30,7 @@ type resolution struct {
 
 func newHttpResolver() *resolution {
 	r := new(resolution)
-	r.agent = newContentAgent()
+	r.agent = newContentAgent(nil)
 	return r
 }
 
@@ -99,4 +99,6 @@ func (r *resolution) AddActivity(agent messaging.Agent, event, source string, co
 func (r *resolution) Notify(e messaging.Event) {
 	r.agent.notification(e)
 }
+
+
 */
