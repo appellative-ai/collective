@@ -1,30 +1,29 @@
 package content
 
 import (
-	"context"
-	"github.com/behavioral-ai/collective/module"
-	"github.com/behavioral-ai/core/io"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 )
 
 func httpGetContent(nsName string, version int) ([]byte, *messaging.Status) {
-	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, module.ContentURL(nsName, version), nil)
-	if err != nil {
-		return nil, messaging.NewStatusError(messaging.StatusInvalidArgument, err, AgentNamespaceName)
-	}
-	resp, err1 := Exchange(req)
-	if err1 != nil {
-		return nil, messaging.NewStatusError(resp.StatusCode, err1, AgentNamespaceName)
-	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, messaging.NewStatus(resp.StatusCode)
-	}
-	buf, err2 := io.ReadAll(resp.Body, resp.Header)
-	if err2 != nil {
-		return nil, messaging.NewStatusError(resp.StatusCode, err2, AgentNamespaceName)
-	}
-	return buf, messaging.StatusNotFound()
+	/*
+		req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, module.ContentURL(nsName, version), nil)
+		if err != nil {
+			return nil, messaging.NewStatusError(messaging.StatusInvalidArgument, err, AgentNamespaceName)
+		}
+		resp, err1 := Exchange(req)
+		if err1 != nil {
+			return nil, messaging.NewStatusError(resp.StatusCode, err1, AgentNamespaceName)
+		}
+		if resp.StatusCode != http.StatusOK {
+			return nil, messaging.NewStatus(resp.StatusCode)
+		}
+		buf, err2 := io.ReadAll(resp.Body, resp.Header)
+		if err2 != nil {
+			return nil, messaging.NewStatusError(resp.StatusCode, err2, AgentNamespaceName)
+		}
+	*/
+	return nil, messaging.StatusNotFound()
 }
 
 func httpPutContent(nsName, author string, value []byte, version int) (*http.Response, *messaging.Status) {
