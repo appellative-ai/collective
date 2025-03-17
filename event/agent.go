@@ -90,9 +90,9 @@ func (a *agentT) Shutdown() {
 	}
 }
 
-func (a *agentT) addActivity(e *messaging.ActivityItem) {
+func (a *agentT) addActivity(e messaging.ActivityItem) {
 	if a.activity != nil {
-		a.activity(*e)
+		a.activity(e)
 	} else {
 		httpAddActivity("", e.Agent.Uri(), e.Event, e.Source, e.Content)
 	}
