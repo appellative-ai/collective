@@ -14,16 +14,7 @@ const (
 	VersionKey = "ver"
 )
 
-type ActivityFunc func(hostName string, agent messaging.Agent, event, source string, content any)
-type NotifyFunc func(e messaging.Event)
-type DispatchFunc func(agent messaging.Agent, channel, event string)
-
-type Agent2 interface {
-	messaging.Agent
-	SetAddActivity(fn ActivityFunc)
-	SetNotify(e messaging.Event)
-	SetDispatch(dispatcher messaging.Dispatcher)
-}
+type ActivityFunc func(hostName, agentUri, event, source string, content any)
 
 // Resolution - in the real world
 type Resolution interface {
@@ -48,6 +39,14 @@ func init() {
 	Resolver = r
 	Agent = r.agent
 	r.agent.Run()
+}
+
+func Override(activity ActivityFunc, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) {
+	if agent, ok := any(Resolver).(*agentT); ok {
+		agent.activity = activity
+		agent.notifier = notifier
+		agent.dispatcher = dispatcher
+	}
 }
 
 // Resolve - generic typed resolution

@@ -28,6 +28,7 @@ type agentT struct {
 	master     *messaging.Channel
 	notifier   messaging.NotifyFunc
 	dispatcher messaging.Dispatcher
+	activity   ActivityFunc
 }
 
 func newContentAgent(dispatcher messaging.Dispatcher) *agentT {
@@ -176,10 +177,17 @@ func (a *agentT) addAttributes(name, author string, m map[string]string) *messag
 }
 
 func (a *agentT) addActivity(agent messaging.Agent, event, source string, content any) {
-	httpAddActivity(a.hostName, agent.Uri(), event, source, content)
-
+	if a.activity != nil {
+		a.activity(a.hostName, agent.Uri(), event, source, content)
+	} else {
+		httpAddActivity(a.hostName, agent.Uri(), event, source, content)
+	}
 }
 
 func (a *agentT) notification(e messaging.Event) {
-	httpNotify(e)
+	if a.notifier != nil {
+		a.notifier(e)
+	} else {
+		httpNotify(e)
+	}
 }
