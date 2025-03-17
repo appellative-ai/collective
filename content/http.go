@@ -2,18 +2,14 @@ package content
 
 import (
 	"context"
+	"github.com/behavioral-ai/collective/module"
 	"github.com/behavioral-ai/core/io"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
-	"net/url"
-	"strconv"
 )
 
 func httpGetContent(nsName string, version int) ([]byte, *messaging.Status) {
-	v := make(url.Values)
-	v.Set(NsNameKey, nsName)
-	v.Set(VersionKey, strconv.Itoa(version))
-	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, "https://collective/content?"+v.Encode(), nil)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, module.ContentURL(nsName, version), nil)
 	if err != nil {
 		return nil, messaging.NewStatusError(messaging.StatusInvalidArgument, err, AgentNamespaceName)
 	}

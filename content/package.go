@@ -9,11 +9,6 @@ import (
 	"net/http"
 )
 
-const (
-	NsNameKey  = "name"
-	VersionKey = "ver"
-)
-
 type ActivityFunc func(hostName, agentUri, event, source string, content any)
 
 // Resolution - in the real world
