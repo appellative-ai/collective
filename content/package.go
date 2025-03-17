@@ -9,8 +9,8 @@ import (
 	"net/http"
 )
 
-// Resolution - in the real world
-type Resolution interface {
+// Resolution1 - in the real world
+type Resolution1 interface {
 	GetValue(nsName string, version int) ([]byte, *messaging.Status)
 	AddValue(nsName, author string, content any, version int) *messaging.Status
 	GetAttributes(nsName string) (map[string]string, *messaging.Status)
@@ -19,21 +19,49 @@ type Resolution interface {
 
 // Resolver - content resolution in the real world
 var (
-	Resolver Resolution
-	Agent    messaging.Agent
-	Exchange http2.Exchange
+	Resolver1 Resolution1
+	Agent     messaging.Agent
+	agent     *agentT
+	Exchange  http2.Exchange
 )
 
 func init() {
 	Exchange = http2.Do
 	r := newHttpResolver()
-	Resolver = r
-	Agent = r.agent
-	r.agent.Run()
+	agent = r.agent
+	Resolver1 = r
+	Agent = agent
+	agent.Run()
 }
 
+// Resolution - in the real world
+type Resolution struct {
+	GetValue      func(nsName string, version int) ([]byte, *messaging.Status)
+	AddValue      func(nsName, author string, content any, version int) *messaging.Status
+	GetAttributes func(nsName string) (map[string]string, *messaging.Status)
+	AddAttributes func(nsName, author string, m map[string]string) *messaging.Status
+}
+
+// Resolver -
+var Resolver = func() *Resolution {
+	return &Resolution{
+		GetValue: func(nsName string, version int) ([]byte, *messaging.Status) {
+			return agent.getValue(nsName, version)
+		},
+		AddValue: func(nsName, author string, content any, version int) *messaging.Status {
+			return agent.addValue(nsName, author, content, version)
+		},
+		GetAttributes: func(nsName string) (map[string]string, *messaging.Status) {
+			return agent.getAttributes(nsName)
+		},
+		AddAttributes: func(nsName, author string, m map[string]string) *messaging.Status {
+			return agent.addAttributes(nsName, author, m)
+		},
+	}
+}()
+
 // Resolve - generic typed resolution
-func Resolve[T any](nsName string, version int, resolver Resolution) (T, *messaging.Status) {
+func Resolve[T any](nsName string, version int, resolver Resolution1) (T, *messaging.Status) {
 	var t T
 
 	if resolver == nil {

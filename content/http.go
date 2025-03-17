@@ -24,7 +24,7 @@ func httpGetContent(nsName string, version int) ([]byte, *messaging.Status) {
 	if err2 != nil {
 		return nil, messaging.NewStatusError(resp.StatusCode, err2, AgentNamespaceName)
 	}
-	return buf, nil
+	return buf, messaging.StatusNotFound()
 }
 
 func httpPutContent(nsName, author string, value []byte, version int) (*http.Response, *messaging.Status) {

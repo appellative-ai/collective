@@ -8,17 +8,17 @@ import (
 )
 
 // NewEphemeralResolver - in memory resolver
-func NewEphemeralResolver() Resolution {
+func NewEphemeralResolver() Resolution1 {
 	return initializedEphemeralResolver(true, true)
 }
 
 // NewConfigEphemeralResolver - in memory resolver
-func NewConfigEphemeralResolver(activity, notify bool) Resolution {
+func NewConfigEphemeralResolver(activity, notify bool) Resolution1 {
 	return initializedEphemeralResolver(activity, notify)
 }
 
 // initializedEphemeralResolver - in memory resolver, initialized with state
-func initializedEphemeralResolver(activity, notify bool) Resolution {
+func initializedEphemeralResolver(activity, notify bool) Resolution1 {
 	r := new(resolution)
 	if notify {
 		r.notifier = messaging.Notify

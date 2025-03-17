@@ -1,10 +1,13 @@
 package content
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/behavioral-ai/core/io"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -127,9 +130,47 @@ func (a *agentT) getValue(name string, version int) (buf []byte, status *messagi
 	return buf, messaging.StatusOK()
 }
 
-func (a *agentT) addValue(name, author string, buf []byte, version int) *messaging.Status {
-	if name == "" || author == "" || buf == nil || version <= 0 {
+func (a *agentT) addValue(name, author string, content any, version int) *messaging.Status {
+	if name == "" || author == "" || content == nil || version <= 0 {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
+	}
+	/*
+		if nsName == "" {
+			err = errors.New(fmt.Sprintf("nsName is empty on call to PutValue()"))
+			return messaging.NewStatusError(http.StatusBadRequest, err, r.agent.Uri())
+		}
+		if content == nil {
+			err = errors.New(fmt.Sprintf("content is nil on call to PutValue() for nsName : %v", nsName))
+			return messaging.NewStatusError(http.StatusNoContent, err, r.agent.Uri())
+		}
+
+	*/
+	var buf []byte
+	var err error
+
+	switch ptr := content.(type) {
+	case string:
+		v := text{ptr}
+		buf, err = json.Marshal(v)
+		if err != nil {
+			return messaging.NewStatusError(messaging.StatusJsonEncodeError, err, a.Uri())
+		}
+	case []byte:
+		buf = ptr
+	case *url.URL:
+		buf, err = io.ReadFile(ptr)
+		if err != nil {
+			return messaging.NewStatusError(messaging.StatusIOError, err, a.Uri())
+		}
+	default:
+		buf, err = json.Marshal(ptr)
+		if err != nil {
+			return messaging.NewStatusError(messaging.StatusJsonEncodeError, err, a.Uri())
+		}
+	}
+	if len(buf) == 0 {
+		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for nsName : %v", name))
+		return messaging.NewStatusError(http.StatusNoContent, err, a.Uri())
 	}
 	_, status := httpPutContent(name, author, buf, version)
 	if !status.OK() {
@@ -166,11 +207,10 @@ func (a *agentT) addAttributes(name, author string, m map[string]string) *messag
 	if name == "" || author == "" || m == nil {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid argument name [%v],author [%v] or map", name, author)), a.Uri())
 	}
-
 	err := a.mapCache.put(name, m)
 	if err == nil {
 		return messaging.StatusOK()
 	}
 	//buf,status := httpPutContent(name,author,)
-	return messaging.StatusBadRequest().SetAgent(a.Uri())
+	return messaging.StatusOK() //BadRequest().SetAgent(a.Uri())
 }
