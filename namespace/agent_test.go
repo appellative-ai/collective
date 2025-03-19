@@ -5,9 +5,9 @@ import "fmt"
 func ExampleNewAgent() {
 	a := newAgent(nil)
 
-	fmt.Printf("test: newHttpAgent() -> [%v]\n", a)
+	fmt.Printf("test: newAgent() -> [%v]\n", a)
 
 	//Output:
-	//test: newHttpAgent() -> [resiliency:agent/behavioral-ai/collective/content]
+	//test: newAgent() -> [resiliency:agent/behavioral-ai/collective/namespace]
 
 }

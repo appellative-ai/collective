@@ -17,26 +17,27 @@ const (
 
 type agentT struct {
 	running  bool
-	agentId  string
 	hostName string
 	uri      []string
 	duration time.Duration
 
-	ticker     *messaging.Ticker
-	emissary   *messaging.Channel
-	master     *messaging.Channel
-	notifier   messaging.NotifyFunc
-	dispatcher messaging.Dispatcher
+	handler  messaging.Agent
+	ticker   *messaging.Ticker
+	emissary *messaging.Channel
+	master   *messaging.Channel
 }
 
-func newAgent(dispatcher messaging.Dispatcher) *agentT {
+func newAgent(handler messaging.Agent) *agentT {
 	a := new(agentT)
-	a.agentId = agentUri
 	a.duration = defaultDuration
+	if handler != nil {
+		a.handler = handler
+	} else {
+		a.handler = event.Agent
+	}
 	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	a.master = messaging.NewMasterChannel()
-	a.dispatcher = dispatcher
 	return a
 }
 
@@ -74,16 +75,8 @@ func (a *agentT) Run() {
 	a.running = true
 }
 
-func (a *agentT) notify(e event.NotifyItem) {
-	if a.notifier != nil {
-		a.notifier(e)
-	} else {
-		httpNotify(e)
-	}
-}
-
-func (a *agentT) dispatch(channel any, event string) {
-	messaging.Dispatch(a, a.dispatcher, channel, event)
+func (a *agentT) dispatch(channel any, event1 string) {
+	a.handler.Message(event.NewDispatchMessage(a, channel, event1))
 }
 
 func (a *agentT) emissaryFinalize() {

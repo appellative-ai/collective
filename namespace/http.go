@@ -16,9 +16,3 @@ func httpPutRelation(nsName1, nsName2, author string) (*http.Response, *messagin
 	//resp,status := http2.Do(req)
 	return nil, messaging.StatusOK()
 }
-
-func httpNotify(e messaging.Event) (*http.Response, *messaging.Status) {
-	//req, _ := http.NewRequest(http.MethodPut, "", io.Nnil)
-	//resp,status := http2.Do(req)
-	return nil, messaging.StatusOK()
-}
