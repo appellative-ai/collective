@@ -3,6 +3,7 @@ package namespace
 import (
 	"errors"
 	"fmt"
+	"github.com/behavioral-ai/collective/event"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"time"
@@ -43,14 +44,11 @@ func newAgent(dispatcher messaging.Dispatcher) *agentT {
 func (a *agentT) String() string { return a.Uri() }
 
 // Uri - agent identifier
-func (a *agentT) Uri() string { return a.agentId }
-
-// Name - agent name
-func (a *agentT) Name() string { return AgentNamespaceName }
+func (a *agentT) Uri() string { return AgentNamespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
-	if m == nil {
+	if m == nil || !a.running {
 		return
 	}
 	switch m.Channel() {
@@ -76,17 +74,7 @@ func (a *agentT) Run() {
 	a.running = true
 }
 
-// Shutdown - shutdown the agent
-func (a *agentT) Shutdown() {
-	if !a.emissary.IsClosed() {
-		a.emissary.Send(messaging.Shutdown)
-	}
-	if !a.master.IsClosed() {
-		a.master.Send(messaging.Shutdown)
-	}
-}
-
-func (a *agentT) notify(e messaging.Event) {
+func (a *agentT) notify(e event.NotifyItem) {
 	if a.notifier != nil {
 		a.notifier(e)
 	} else {

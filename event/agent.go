@@ -19,18 +19,21 @@ type agentT struct {
 	ticker     *messaging.Ticker
 	emissary   *messaging.Channel
 	master     *messaging.Channel
-	notifier   messaging.NotifyFunc
-	dispatcher messaging.Dispatcher
-	activity   messaging.ActivityFunc
+	notifier   NotifyFunc
+	dispatcher Dispatcher
+	activity   ActivityFunc
 }
 
-func newAgent(dispatcher messaging.Dispatcher) *agentT {
+func newAgent(notifier NotifyFunc, dispatcher Dispatcher, activity ActivityFunc) *agentT {
 	a := new(agentT)
 	a.agentId = agentUri
 	a.duration = defaultDuration
+
 	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	a.master = messaging.NewMasterChannel()
+	a.dispatcher = dispatcher
+	a.notifier = notifier
 	a.dispatcher = dispatcher
 	return a
 }
@@ -39,14 +42,11 @@ func newAgent(dispatcher messaging.Dispatcher) *agentT {
 func (a *agentT) String() string { return a.Uri() }
 
 // Uri - agent identifier
-func (a *agentT) Uri() string { return a.agentId }
-
-// Name - agent name
-func (a *agentT) Name() string { return AgentNamespaceName }
+func (a *agentT) Uri() string { return AgentNamespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
-	if m == nil {
+	if m == nil || !a.running {
 		return
 	}
 	switch m.Channel() {
@@ -55,12 +55,16 @@ func (a *agentT) Message(m *messaging.Message) {
 	case messaging.Master:
 		a.master.Send(m)
 	case messaging.Control:
-		if m.ContentType() == messaging.ContentTypeNotify {
-			a.notify(messaging.NotifyContent(m))
+		if m.ContentType() == ContentTypeNotify {
+			a.notify(NotifyContent(m))
 			return
 		}
-		if m.ContentType() == messaging.ContentTypeActivity {
-			a.addActivity(messaging.ActivityContent(m))
+		if m.ContentType() == ContentTypeActivity {
+			a.addActivity(ActivityContent(m))
+			return
+		}
+		if m.ContentType() == ContentTypeDispatch {
+			a.dispatch(DispatchContent(m))
 			return
 		}
 		a.emissary.Send(m)
@@ -80,17 +84,7 @@ func (a *agentT) Run() {
 	a.running = true
 }
 
-// Shutdown - shutdown the agent
-func (a *agentT) Shutdown() {
-	if !a.emissary.IsClosed() {
-		a.emissary.Send(messaging.Shutdown)
-	}
-	if !a.master.IsClosed() {
-		a.master.Send(messaging.Shutdown)
-	}
-}
-
-func (a *agentT) addActivity(e messaging.ActivityItem) {
+func (a *agentT) addActivity(e ActivityItem) {
 	if a.activity != nil {
 		a.activity(e)
 	} else {
@@ -98,10 +92,7 @@ func (a *agentT) addActivity(e messaging.ActivityItem) {
 	}
 }
 
-func (a *agentT) notify(e messaging.NotifyItem) {
-	if e == nil {
-		return
-	}
+func (a *agentT) notify(e NotifyItem) {
 	if a.notifier != nil {
 		a.notifier(e)
 	} else {
@@ -109,8 +100,16 @@ func (a *agentT) notify(e messaging.NotifyItem) {
 	}
 }
 
-func (a *agentT) dispatch(channel any, event string) {
-	messaging.Dispatch(a, a.dispatcher, channel, event)
+func (a *agentT) dispatch(e DispatchItem) {
+	if a.dispatcher != nil {
+		a.dispatcher.Dispatch(a, e.Channel, e.Event)
+	}
+}
+
+func (a *agentT) dispatchArgs(channel any, event string) {
+	if a.dispatcher != nil {
+		a.dispatcher.Dispatch(a, channel, event)
+	}
 }
 
 func (a *agentT) emissaryFinalize() {

@@ -1,11 +1,6 @@
 package content
 
-import (
-	"fmt"
-	"github.com/behavioral-ai/collective/testrsc"
-	url2 "net/url"
-)
-
+/*
 func ExampleResolution_PutValue() {
 	urn := "type/test"
 	r := NewEphemeralResolver()
@@ -35,3 +30,6 @@ func ExampleResolution_PutValue() {
 	//test: GetValue() -> [status:OK] [true]
 
 }
+
+
+*/

@@ -5,6 +5,16 @@ import (
 	"github.com/behavioral-ai/core/messaging"
 )
 
+const (
+	ContentTypeNotify   = "application/notify"
+	ContentTypeActivity = "application/activity"
+	ContentTypeDispatch = "application/dispatch"
+
+	NotifyEvent   = "event:notify"
+	ActivityEvent = "event:activity"
+	DispatchEvent = "event:dispatch"
+)
+
 // Agent - content resolution in the real world
 var (
 	Agent    messaging.Agent
@@ -13,20 +23,6 @@ var (
 
 func init() {
 	Exchange = http2.Do
-	Agent = newAgent(nil)
+	Agent = newAgent(nil, nil, nil)
 	Agent.Run()
-}
-
-func Override(activity messaging.ActivityFunc, notifier messaging.NotifyFunc, dispatcher messaging.Dispatcher) {
-	if agent, ok := any(Agent).(*agentT); ok {
-		if activity != nil {
-			agent.activity = activity
-		}
-		if notifier != nil {
-			agent.notifier = notifier
-		}
-		if dispatcher != nil {
-			agent.dispatcher = dispatcher
-		}
-	}
 }

@@ -6,7 +6,7 @@ import (
 
 // emissary attention
 func emissaryAttend(agent *agentT) {
-	agent.dispatch(agent.emissary, messaging.StartupEvent)
+	agent.dispatchArgs(agent.emissary, messaging.StartupEvent)
 	var paused = false
 	if paused {
 	}
@@ -14,12 +14,12 @@ func emissaryAttend(agent *agentT) {
 	for {
 		select {
 		case <-agent.ticker.C():
-			agent.dispatch(agent.ticker, messaging.TickEvent)
+			agent.dispatchArgs(agent.ticker, messaging.TickEvent)
 		default:
 		}
 		select {
 		case msg := <-agent.emissary.C:
-			agent.dispatch(agent.emissary, msg.Event())
+			agent.dispatchArgs(agent.emissary, msg.Event())
 			switch msg.Event() {
 			case messaging.PauseEvent:
 				paused = true

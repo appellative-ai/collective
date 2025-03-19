@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/behavioral-ai/collective/event"
 	"github.com/behavioral-ai/core/io"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
@@ -19,31 +20,31 @@ const (
 
 type agentT struct {
 	running  bool
-	agentId  string
 	hostName string
 	uri      []string
 	duration time.Duration
 	cache    *contentT
 	mapCache *mapT
 
-	ticker     *messaging.Ticker
-	emissary   *messaging.Channel
-	master     *messaging.Channel
-	notifier   messaging.NotifyFunc
-	dispatcher messaging.Dispatcher
-	activity   messaging.ActivityFunc
+	handler  messaging.Agent
+	ticker   *messaging.Ticker
+	emissary *messaging.Channel
+	master   *messaging.Channel
 }
 
-func newAgent(dispatcher messaging.Dispatcher) *agentT {
+func newAgent(handler messaging.Agent) *agentT {
 	a := new(agentT)
-	a.agentId = agentUri
 	a.duration = defaultDuration
 	a.cache = newContentCache()
 	a.mapCache = newMapCache()
+	if handler == nil {
+		a.handler = event.Agent
+	} else {
+		a.handler = handler
+	}
 	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	a.master = messaging.NewMasterChannel()
-	a.dispatcher = dispatcher
 	return a
 }
 
@@ -51,14 +52,11 @@ func newAgent(dispatcher messaging.Dispatcher) *agentT {
 func (a *agentT) String() string { return a.Uri() }
 
 // Uri - agent identifier
-func (a *agentT) Uri() string { return a.agentId }
-
-// Name - agent name
-func (a *agentT) Name() string { return AgentNamespaceName }
+func (a *agentT) Uri() string { return AgentNamespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
-	if m == nil {
+	if m == nil || !a.running {
 		return
 	}
 	switch m.Channel() {
@@ -67,9 +65,6 @@ func (a *agentT) Message(m *messaging.Message) {
 	case messaging.Master:
 		a.master.Send(m)
 	case messaging.Control:
-		if m.ContentType() == messaging.ContentTypeNotify || m.ContentType() == messaging.ContentTypeActivity {
-			return
-		}
 		a.emissary.Send(m)
 		a.master.Send(m)
 	default:
@@ -87,18 +82,8 @@ func (a *agentT) Run() {
 	a.running = true
 }
 
-// Shutdown - shutdown the agent
-func (a *agentT) Shutdown() {
-	if !a.emissary.IsClosed() {
-		a.emissary.Send(messaging.Shutdown)
-	}
-	if !a.master.IsClosed() {
-		a.master.Send(messaging.Shutdown)
-	}
-}
-
-func (a *agentT) dispatch(channel any, event string) {
-	messaging.Dispatch(a, a.dispatcher, channel, event)
+func (a *agentT) dispatch(channel any, event1 string) {
+	a.handler.Message(event.NewDispatchMessage(a, channel, event1))
 }
 
 func (a *agentT) emissaryFinalize() {

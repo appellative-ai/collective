@@ -1,9 +1,9 @@
-package event
+package eventtest
 
 import "fmt"
 
 func ExampleNewAgent() {
-	a := newAgent(nil, nil, nil)
+	a := newAgent(nil)
 
 	fmt.Printf("test: newAgent() -> [%v]\n", a)
 
