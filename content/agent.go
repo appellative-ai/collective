@@ -18,6 +18,10 @@ const (
 	defaultDuration    = time.Second * 10
 )
 
+type text struct {
+	Value string
+}
+
 type agentT struct {
 	running  bool
 	hostName string

@@ -19,17 +19,18 @@ type Resolution1 interface {
 
 // Resolver - content resolution in the real world
 var (
-	Resolver1 Resolution1
-	Agent     messaging.Agent
-	agent     *agentT
-	Exchange  http2.Exchange
+	//Resolver1 Resolution1
+	Agent    messaging.Agent
+	agent    *agentT
+	Exchange http2.Exchange
 )
 
 func init() {
 	Exchange = http2.Do
-	r := newHttpResolver()
-	agent = r.agent
-	Resolver1 = r
+	agent = newAgent(nil)
+	//r := newHttpResolver()
+	//agent = r.agent
+	//Resolver1 = r
 	Agent = agent
 	agent.Run()
 }
