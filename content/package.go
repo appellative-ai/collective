@@ -17,9 +17,8 @@ type Resolution1 interface {
 	AddAttributes(nsName, author string, m map[string]string) *messaging.Status
 }
 
-// Resolver - content resolution in the real world
+// Agent - content resolution in the real world
 var (
-	//Resolver1 Resolution1
 	Agent    messaging.Agent
 	agent    *agentT
 	Exchange http2.Exchange
@@ -28,11 +27,12 @@ var (
 func init() {
 	Exchange = http2.Do
 	agent = newAgent(nil)
+	//Resolver1 Resolution1
 	//r := newHttpResolver()
 	//agent = r.agent
 	//Resolver1 = r
 	Agent = agent
-	agent.Run()
+	agent.Message(messaging.StartupMessage)
 }
 
 // Resolution - in the real world
@@ -73,7 +73,7 @@ func Resolve[T any](nsName string, version int, resolver *Resolution) (T, *messa
 		return t, status
 	}
 	if len(body) == 0 {
-		return t, messaging.NewStatusMessage(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", nsName), AgentNamespaceName)
+		return t, messaging.NewStatusWithMessage(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", nsName), AgentNamespaceName)
 	}
 	switch ptr := any(&t).(type) {
 	case *string:
