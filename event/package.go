@@ -24,5 +24,5 @@ var (
 func init() {
 	Exchange = http2.Do
 	Agent = newAgent(nil, nil, nil)
-	Agent.Run()
+	Agent.Message(messaging.StartupMessage)
 }

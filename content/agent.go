@@ -24,8 +24,6 @@ type text struct {
 
 type agentT struct {
 	running  bool
-	hostName string
-	uri      []string
 	duration time.Duration
 	cache    *contentT
 	mapCache *mapT
@@ -63,6 +61,17 @@ func (a *agentT) Message(m *messaging.Message) {
 	if m == nil || !a.running {
 		return
 	}
+	if m.Event() == messaging.ConfigEvent {
+		a.configure(m)
+		return
+	}
+	if m.Event() == messaging.StartupEvent {
+		a.run()
+		return
+	}
+	if !a.running {
+		return
+	}
 	switch m.Channel() {
 	case messaging.Emissary:
 		a.emissary.Send(m)
@@ -76,8 +85,17 @@ func (a *agentT) Message(m *messaging.Message) {
 	}
 }
 
+func (a *agentT) configure(m *messaging.Message) {
+	cfg := messaging.ConfigMapContent(m)
+	if cfg == nil {
+		messaging.Reply(m, messaging.ConfigEmptyStatusError(a), a.Uri())
+	}
+	// configure
+	messaging.Reply(m, messaging.StatusOK(), a.Uri())
+}
+
 // Run - run the agent
-func (a *agentT) Run() {
+func (a *agentT) run() {
 	if a.running {
 		return
 	}
