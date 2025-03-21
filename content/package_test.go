@@ -3,10 +3,10 @@ package content
 import (
 	"encoding/json"
 	"fmt"
-	http2 "github.com/behavioral-ai/core/http"
+	"github.com/behavioral-ai/core/httpx"
 )
 
-func Initialize(uri []string, do http2.Exchange, hostName string) {
+func Initialize(uri []string, do httpx.Exchange, hostName string) {
 }
 
 func HostName() string {
@@ -16,7 +16,7 @@ func HostName() string {
 type agentT2 struct {
 	hostName string
 	uri      []string
-	do       http2.Exchange
+	do       httpx.Exchange
 }
 
 func ExampleResolveString() {

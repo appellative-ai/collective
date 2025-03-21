@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/behavioral-ai/collective/event"
-	"github.com/behavioral-ai/core/io"
+	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"net/url"
@@ -165,7 +165,7 @@ func (a *agentT) addValue(name, author string, content any, version int) *messag
 	case []byte:
 		buf = ptr
 	case *url.URL:
-		buf, err = io.ReadFile(ptr)
+		buf, err = iox.ReadFile(ptr)
 		if err != nil {
 			return messaging.NewStatusError(messaging.StatusIOError, err, a.Uri())
 		}

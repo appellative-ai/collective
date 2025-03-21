@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	http2 "github.com/behavioral-ai/core/http"
+	"github.com/behavioral-ai/core/httpx"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 )
@@ -21,11 +21,11 @@ type Resolution1 interface {
 var (
 	Agent    messaging.Agent
 	agent    *agentT
-	Exchange http2.Exchange
+	Exchange httpx.Exchange
 )
 
 func init() {
-	Exchange = http2.Do
+	Exchange = httpx.Do
 	agent = newAgent(nil)
 	//Resolver1 Resolution1
 	//r := newHttpResolver()

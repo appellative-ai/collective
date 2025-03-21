@@ -1,7 +1,7 @@
 package event
 
 import (
-	http2 "github.com/behavioral-ai/core/http"
+	"github.com/behavioral-ai/core/httpx"
 	"github.com/behavioral-ai/core/messaging"
 )
 
@@ -18,11 +18,11 @@ const (
 // Agent - content resolution in the real world
 var (
 	Agent    messaging.Agent
-	Exchange http2.Exchange
+	Exchange httpx.Exchange
 )
 
 func init() {
-	Exchange = http2.Do
+	Exchange = httpx.Do
 	Agent = newAgent(nil, nil, nil)
 	Agent.Message(messaging.StartupMessage)
 }

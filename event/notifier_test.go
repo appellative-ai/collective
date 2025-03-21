@@ -19,7 +19,7 @@ func ExampleNotify() {
 }
 
 func ExampleNotifyMessage() {
-	status := messaging.NewStatusMessage(http.StatusTeapot, "test message", "agent/test")
+	status := messaging.NewStatusWithMessage(http.StatusTeapot, "test message", "agent/test")
 	m := NewNotifyMessage(status)
 	e := NotifyContent(m)
 	fmt.Printf("test: NotifyContent() -> [%v]\n", e)
@@ -45,7 +45,7 @@ func ExampleNewStatusError() {
 }
 
 func ExampleNewStatusMessage() {
-	s := messaging.NewStatusMessage(http.StatusOK, "successfully change ticker duration", "test:agent")
+	s := messaging.NewStatusWithMessage(http.StatusOK, "successfully change ticker duration", "test:agent")
 	fmt.Printf("test: NewStatusMessage() -> [%v]\n", s)
 
 	if _, ok := any(s).(NotifyItem); ok {
