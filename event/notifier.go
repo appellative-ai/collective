@@ -11,12 +11,13 @@ type NotifyItem interface {
 	Type() string
 	Status() string
 	Message() string
+	RequestId() string
 }
 
 type NotifyFunc func(e NotifyItem)
 
 func Notify(e NotifyItem) {
-	fmt.Printf("notify-> %v [%v] [%v] [%v] [%v]\n", FmtRFC3339Millis(time.Now().UTC()), e.AgentId(), e.Type(), e.Status(), e.Message())
+	fmt.Printf("notify-> %v [%v] [%v] [%v] [%v] [%v]\n", FmtRFC3339Millis(time.Now().UTC()), e.AgentId(), e.Type(), e.RequestId(), e.Status(), e.Message())
 }
 
 type Notifier interface {
