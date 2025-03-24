@@ -38,21 +38,14 @@ func (a *agentT) Message(m *messaging.Message) {
 	if m == nil {
 		return
 	}
-	switch m.Channel() {
-	case messaging.Control:
-		if m.ContentType() == eventing.ContentTypeNotify {
-			a.notifier(eventing.NotifyContent(m))
-			return
-		}
-		if m.ContentType() == eventing.ContentTypeActivity {
-			a.activity(eventing.ActivityContent(m))
-			return
-		}
-		if m.ContentType() == eventing.ContentTypeDispatch {
-			e := eventing.DispatchContent(m)
-			a.dispatcher.Dispatch(e.Agent, e.Channel, e.Event)
-			return
-		}
+	switch m.Event() {
+	case eventing.NotifyEvent:
+		a.notifier(eventing.NotifyContent(m))
+	case eventing.ActivityEvent:
+		a.activity(eventing.ActivityContent(m))
+	case eventing.DispatchEvent:
+		e := eventing.DispatchContent(m)
+		a.dispatcher.Dispatch(e.Agent, e.Channel, e.Event)
 	default:
 	}
 }

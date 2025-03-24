@@ -29,7 +29,6 @@ func newAgent(notifier NotifyFunc, dispatcher Dispatcher, activity ActivityFunc)
 	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	a.master = messaging.NewMasterChannel()
-	a.dispatcher = dispatcher
 	a.notifier = notifier
 	a.dispatcher = dispatcher
 	return a
@@ -57,24 +56,25 @@ func (a *agentT) Message(m *messaging.Message) {
 	if !a.running {
 		return
 	}
+	switch m.Event() {
+	case NotifyEvent:
+		a.notifier(NotifyContent(m))
+		return
+	case ActivityEvent:
+		a.activity(ActivityContent(m))
+		return
+	case DispatchEvent:
+		e := DispatchContent(m)
+		a.dispatcher.Dispatch(e.Agent, e.Channel, e.Event)
+		return
+	default:
+	}
 	switch m.Channel() {
 	case messaging.Emissary:
 		a.emissary.Send(m)
 	case messaging.Master:
 		a.master.Send(m)
 	case messaging.Control:
-		if m.ContentType() == ContentTypeNotify {
-			a.notify(NotifyContent(m))
-			return
-		}
-		if m.ContentType() == ContentTypeActivity {
-			a.addActivity(ActivityContent(m))
-			return
-		}
-		if m.ContentType() == ContentTypeDispatch {
-			a.dispatch(DispatchContent(m))
-			return
-		}
 		a.emissary.Send(m)
 		a.master.Send(m)
 	default:
