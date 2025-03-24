@@ -112,8 +112,8 @@ func (a *agentT) addThing(nsName, author string) *messaging.Status {
 	}
 	_, status := httpPutThing(nsName, author)
 	if !status.OK() {
-		status.SetAgent(a.Uri())
-		status.SetMessage(fmt.Sprintf("name %v", nsName))
+		status.WithAgent(a.Uri())
+		status.WithMessage(fmt.Sprintf("name %v", nsName))
 		return status
 	}
 	return status
@@ -125,8 +125,8 @@ func (a *agentT) addRelation(nsName1, nsName2, author string) *messaging.Status 
 	}
 	_, status := httpPutRelation(nsName1, nsName2, author)
 	if !status.OK() {
-		status.SetAgent(a.Uri())
-		status.SetMessage(fmt.Sprintf("name1 %v", nsName1))
+		status.WithAgent(a.Uri())
+		status.WithMessage(fmt.Sprintf("name1 %v", nsName1))
 		return status
 	}
 	return status

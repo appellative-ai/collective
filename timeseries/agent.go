@@ -109,8 +109,8 @@ func (a *agentT) masterFinalize() {
 func (a *agentT) rollup(origin Origin) *messaging.Status {
 	_, status := httpRollup(origin)
 	if !status.OK() {
-		status.SetAgent(a.Uri())
-		status.SetMessage(fmt.Sprintf("name %v", origin))
+		status.WithAgent(a.Uri())
+		status.WithMessage(fmt.Sprintf("name %v", origin))
 		return status
 	}
 	return status
@@ -122,8 +122,8 @@ func (a *agentT) addEvents(events []Event) *messaging.Status {
 	}
 	_, status := httpPutEvents(events)
 	if !status.OK() {
-		status.SetAgent(a.Uri())
-		status.SetMessage(fmt.Sprintf("events"))
+		status.WithAgent(a.Uri())
+		status.WithMessage(fmt.Sprintf("events"))
 		return status
 	}
 	return status

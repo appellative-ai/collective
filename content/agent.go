@@ -129,8 +129,8 @@ func (a *agentT) getValue(name string, version int) (buf []byte, status *messagi
 	// Cache miss
 	buf, status = httpGetContent(name, version)
 	if !status.OK() {
-		status.SetAgent(a.Uri())
-		status.SetMessage(fmt.Sprintf("name %v and version %v", name, version))
+		status.WithAgent(a.Uri())
+		status.WithMessage(fmt.Sprintf("name %v and version %v", name, version))
 		return nil, status
 	}
 	a.cache.put(name, buf, version)
@@ -181,8 +181,8 @@ func (a *agentT) addValue(name, author string, content any, version int) *messag
 	}
 	_, status := httpPutContent(name, author, buf, version)
 	if !status.OK() {
-		status.SetAgent(a.Uri())
-		status.SetMessage(fmt.Sprintf("name %v and version %v", name, version))
+		status.WithAgent(a.Uri())
+		status.WithMessage(fmt.Sprintf("name %v and version %v", name, version))
 		return status
 	}
 	a.cache.put(name, buf, version)
@@ -200,14 +200,14 @@ func (a *agentT) getAttributes(name string) (map[string]string, *messaging.Statu
 	// Cache miss
 	buf, status := httpGetContent(name, 1)
 	if !status.OK() {
-		status.SetAgent(a.Uri())
-		status.SetMessage(fmt.Sprintf("map name [%v] not found", name))
+		status.WithAgent(a.Uri())
+		status.WithMessage(fmt.Sprintf("map name [%v] not found", name))
 		return nil, status
 	}
 	// TODO : parse buf into map
 	if len(buf) > 0 {
 	}
-	return nil, messaging.StatusNotFound().SetAgent(a.Uri())
+	return nil, messaging.StatusNotFound().WithAgent(a.Uri())
 }
 
 func (a *agentT) addAttributes(name, author string, m map[string]string) *messaging.Status {
@@ -219,5 +219,5 @@ func (a *agentT) addAttributes(name, author string, m map[string]string) *messag
 		return messaging.StatusOK()
 	}
 	//buf,status := httpPutContent(name,author,)
-	return messaging.StatusOK() //BadRequest().SetAgent(a.Uri())
+	return messaging.StatusOK() //BadRequest().WithAgent(a.Uri())
 }
