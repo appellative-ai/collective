@@ -16,7 +16,7 @@ type NotifyItem interface {
 
 type NotifyFunc func(e NotifyItem)
 
-func Notify(e NotifyItem) {
+func OutputNotify(e NotifyItem) {
 	fmt.Printf("notify-> %v [%v] [%v] [%v] [%v] [%v]\n", FmtRFC3339Millis(time.Now().UTC()), e.AgentId(), e.Type(), e.RequestId(), e.Status(), e.Message())
 }
 
