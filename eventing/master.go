@@ -1,4 +1,4 @@
-package event
+package eventing
 
 import (
 	"github.com/behavioral-ai/core/messaging"

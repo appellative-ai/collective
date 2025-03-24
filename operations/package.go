@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/behavioral-ai/collective/content"
-	"github.com/behavioral-ai/collective/event"
+	"github.com/behavioral-ai/collective/eventing"
 	"github.com/behavioral-ai/collective/namespace"
 	"github.com/behavioral-ai/collective/timeseries"
 	"github.com/behavioral-ai/core/messaging"
@@ -53,7 +53,7 @@ func NotifyURL() string {
 func Configure(m *messaging.Message) {
 	if m.Event() == messaging.ConfigEvent && m.ContentType() == messaging.ContentTypeMap {
 		content.Agent.Message(m)
-		event.Agent.Message(m)
+		eventing.Agent.Message(m)
 		namespace.Agent.Message(m)
 		timeseries.Agent.Message(m)
 	}
@@ -81,7 +81,7 @@ func Message(event string) error {
 			Agent.Message(messaging.ResumeMessage)
 		}
 	default:
-		return errors.New(fmt.Sprintf("operations.Message() -> [%v] [%v]", "error: invalid event", event))
+		return errors.New(fmt.Sprintf("operations.Message() -> [%v] [%v]", "error: invalid eventing", event))
 	}
 	return nil
 }

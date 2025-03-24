@@ -1,4 +1,4 @@
-package event
+package eventing
 
 import (
 	"fmt"
@@ -73,7 +73,7 @@ func (t *traceDispatch) Dispatch(agent messaging.Agent, channel any, event strin
 	}
 	fmt.Printf("trace -> %v [%v] [%v] [%v]\n", FmtRFC3339Millis(time.Now().UTC()), id, name, event)
 	//} else {
-	//	fmt.Printf("trace -> %v [%v] [%v] [%v] [%v]\n", FmtRFC3339Millis(time.Now().UTC()), channel, event, id, activity)
+	//	fmt.Printf("trace -> %v [%v] [%v] [%v] [%v]\n", FmtRFC3339Millis(time.Now().UTC()), channel, eventing, id, activity)
 	//}
 }
 

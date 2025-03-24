@@ -1,11 +1,11 @@
-package event
+package eventing
 
 import "fmt"
 
 func ExampleActivity() {
 	a := ActivityItem{
 		Agent:   nil,
-		Event:   "event",
+		Event:   "eventing",
 		Source:  "source",
 		Content: nil,
 	}
@@ -14,7 +14,7 @@ func ExampleActivity() {
 	//fmt.Printf("test: Activity() -> [%v]\n",Activity(a))
 
 	//Output:
-	//active-> 2025-03-17T19:29:39.162Z [<nil>] [event] [source] [<nil>]
+	//active-> 2025-03-17T19:29:39.162Z [<nil>] [eventing] [source] [<nil>]
 
 }
 
@@ -22,7 +22,7 @@ func ExampleActivityMessage() {
 	//status := NewStatusMessage(http.StatusTeapot, "test message", "agent/test")
 	m := NewActivityMessage(ActivityItem{
 		Agent:   nil,
-		Event:   "event",
+		Event:   "eventing",
 		Source:  "source",
 		Content: nil,
 	})
@@ -30,6 +30,6 @@ func ExampleActivityMessage() {
 	fmt.Printf("test: ActivityContent() -> [%v]\n", e)
 
 	//Output:
-	//test: ActivityContent() -> [{<nil> event source <nil>}]
+	//test: ActivityContent() -> [{<nil> eventing source <nil>}]
 
 }

@@ -11,8 +11,8 @@ const (
 )
 
 // Testing
-//r.activity = func(hostName string, agent messaging.Agent, event, source string, content any) {
-//	fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), event, source, content)
+//r.activity = func(hostName string, agent messaging.Agent, eventing, source string, content any) {
+//	fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), eventing, source, content)
 //}
 
 func Startup() {

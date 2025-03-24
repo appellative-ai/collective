@@ -1,4 +1,4 @@
-package event
+package eventing
 
 import (
 	"github.com/behavioral-ai/core/messaging"
@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	AgentNamespaceName = "resiliency:agent/behavioral-ai/collective/event"
+	AgentNamespaceName = "resiliency:agent/behavioral-ai/collective/eventing"
 	defaultDuration    = time.Second * 10
 )
 

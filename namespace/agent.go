@@ -3,7 +3,7 @@ package namespace
 import (
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/collective/event"
+	"github.com/behavioral-ai/collective/eventing"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"time"
@@ -31,7 +31,7 @@ func newAgent(handler messaging.Agent) *agentT {
 	if handler != nil {
 		a.handler = handler
 	} else {
-		a.handler = event.Agent
+		a.handler = eventing.Agent
 	}
 	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
@@ -94,7 +94,7 @@ func (a *agentT) run() {
 }
 
 func (a *agentT) dispatch(channel any, event1 string) {
-	a.handler.Message(event.NewDispatchMessage(a, channel, event1))
+	a.handler.Message(eventing.NewDispatchMessage(a, channel, event1))
 }
 
 func (a *agentT) emissaryFinalize() {

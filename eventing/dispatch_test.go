@@ -1,4 +1,4 @@
-package event
+package eventing
 
 import (
 	"fmt"
@@ -42,8 +42,8 @@ func ExampleTraceDispatch_Event() {
 
 	//Output:
 	//test: Dispatch() -> []
-	//trace -> 2024-11-24T18:46:04.697Z [<nil>] [] [event:shutdown]
-	//test: Dispatch() -> [event:shutdown]
-	//test: Dispatch() -> [channel:] [event:observation]
+	//trace -> 2024-11-24T18:46:04.697Z [<nil>] [] [eventing:shutdown]
+	//test: Dispatch() -> [eventing:shutdown]
+	//test: Dispatch() -> [channel:] [eventing:observation]
 
 }

@@ -1,4 +1,4 @@
-package event
+package eventing
 
 import (
 	"strconv"

@@ -2,7 +2,7 @@ package operations
 
 import (
 	"github.com/behavioral-ai/collective/content"
-	"github.com/behavioral-ai/collective/event"
+	"github.com/behavioral-ai/collective/eventing"
 	"github.com/behavioral-ai/collective/namespace"
 	"github.com/behavioral-ai/collective/timeseries"
 	"github.com/behavioral-ai/core/messaging"
@@ -29,7 +29,7 @@ func newAgent() *agentT {
 
 	a.agents = messaging.NewExchange()
 	a.agents.RegisterMailbox(content.Agent)
-	a.agents.RegisterMailbox(event.Agent)
+	a.agents.RegisterMailbox(eventing.Agent)
 	a.agents.RegisterMailbox(namespace.Agent)
 	a.agents.RegisterMailbox(timeseries.Agent)
 

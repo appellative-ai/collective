@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/collective/event"
+	"github.com/behavioral-ai/collective/eventing"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
@@ -40,7 +40,7 @@ func newAgent(handler messaging.Agent) *agentT {
 	a.cache = newContentCache()
 	a.mapCache = newMapCache()
 	if handler == nil {
-		a.handler = event.Agent
+		a.handler = eventing.Agent
 	} else {
 		a.handler = handler
 	}
@@ -105,7 +105,7 @@ func (a *agentT) run() {
 }
 
 func (a *agentT) dispatch(channel any, event1 string) {
-	a.handler.Message(event.NewDispatchMessage(a, channel, event1))
+	a.handler.Message(eventing.NewDispatchMessage(a, channel, event1))
 }
 
 func (a *agentT) emissaryFinalize() {

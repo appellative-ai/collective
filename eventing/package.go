@@ -1,4 +1,4 @@
-package event
+package eventing
 
 import (
 	"github.com/behavioral-ai/core/httpx"
@@ -10,9 +10,9 @@ const (
 	ContentTypeActivity = "application/activity"
 	ContentTypeDispatch = "application/dispatch"
 
-	NotifyEvent   = "event:notify"
-	ActivityEvent = "event:activity"
-	DispatchEvent = "event:dispatch"
+	NotifyEvent   = "eventing:notify"
+	ActivityEvent = "eventing:activity"
+	DispatchEvent = "eventing:dispatch"
 )
 
 // Agent - content resolution in the real world
