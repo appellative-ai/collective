@@ -41,6 +41,16 @@ var Functions = func() *Interface {
 	}
 }()
 
+//
+// https://thelinuxcode.com/introduction-to-gonum-enabling-scientific-computing-in-go/
+//
+// Linear regression
+//model := stat.LinearRegression(spend, revenue, nil, false)
+//
+//fmt.Println(model.Coeff(1)) // Slope = 9.8
+//fmt.Print("%0.2f", model.Predicted([]float64{100})[0]) // Predicts $968.32 revenue
+// for $100 ad spend
+
 type Sample struct {
 	// Xs is the slice of sample values.
 	Xs []float64
