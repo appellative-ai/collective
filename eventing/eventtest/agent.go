@@ -11,7 +11,11 @@ type agentT struct {
 	dispatcher eventing.Dispatcher
 }
 
-func New(dispatcher eventing.Dispatcher) messaging.Agent {
+func New() messaging.Agent {
+	return newAgent(nil)
+}
+
+func NewWithDispatcher(dispatcher eventing.Dispatcher) messaging.Agent {
 	return newAgent(dispatcher)
 }
 
