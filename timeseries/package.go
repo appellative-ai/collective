@@ -23,7 +23,7 @@ type Interface struct {
 	Add    func(events []Event) *messaging.Status
 
 	LinearRegression func(x, y, weights []float64, origin bool) (alpha, beta float64)
-	Percentile       func(s *Sample, pctile float64) float64
+	Percentile       func(x, weights []float64, sorted bool, pctile float64) float64
 }
 
 // Functions -
