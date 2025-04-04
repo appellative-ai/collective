@@ -9,14 +9,14 @@ var (
 	agent *agentT
 )
 
-func init() {
-	agent = newAgent(nil)
+func Initialize(ops messaging.Agent) {
+	agent = newAgent(ops)
 	Agent = agent
 }
 
 // Interface -
 type Interface struct {
-	Load func(m *messaging.Message)
+	Message func(m *messaging.Message)
 
 	LinearRegression func(x, y, weights []float64, origin bool) (alpha, beta float64)
 	Percentile       func(x, weights []float64, sorted bool, pctile float64) float64
@@ -25,8 +25,8 @@ type Interface struct {
 // Functions -
 var Functions = func() *Interface {
 	return &Interface{
-		Load: func(m *messaging.Message) {
-			agent.Message(m)
+		Message: func(m *messaging.Message) {
+			Agent.Message(m)
 		},
 	}
 }()
