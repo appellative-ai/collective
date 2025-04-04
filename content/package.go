@@ -24,9 +24,9 @@ var (
 	Exchange httpx.Exchange
 )
 
-func init() {
+func Initialize(ops messaging.Agent) {
 	Exchange = httpx.Do
-	agent = newAgent(nil)
+	agent = newAgent(ops)
 	//Resolver1 Resolution1
 	//r := newHttpResolver()
 	//agent = r.agent

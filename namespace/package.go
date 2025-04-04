@@ -9,8 +9,8 @@ var (
 	agent *agentT
 )
 
-func init() {
-	agent = newAgent(nil)
+func Initialize(ops messaging.Agent) {
+	agent = newAgent(ops)
 	Agent = agent
 }
 

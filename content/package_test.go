@@ -6,9 +6,6 @@ import (
 	"github.com/behavioral-ai/core/httpx"
 )
 
-func Initialize(uri []string, do httpx.Exchange, hostName string) {
-}
-
 func HostName() string {
 	return ""
 }
