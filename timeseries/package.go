@@ -1,10 +1,7 @@
 package timeseries
 
 import (
-	"errors"
-	"fmt"
 	"github.com/behavioral-ai/core/messaging"
-	"net/http"
 )
 
 var (
@@ -19,8 +16,7 @@ func init() {
 
 // Interface -
 type Interface struct {
-	Rollup func(origin Origin) *messaging.Status
-	Add    func(events []Event) *messaging.Status
+	Load func(m *messaging.Message)
 
 	LinearRegression func(x, y, weights []float64, origin bool) (alpha, beta float64)
 	Percentile       func(x, weights []float64, sorted bool, pctile float64) float64
@@ -29,14 +25,8 @@ type Interface struct {
 // Functions -
 var Functions = func() *Interface {
 	return &Interface{
-		Rollup: func(origin Origin) *messaging.Status {
-			return agent.rollup(origin)
-		},
-		Add: func(events []Event) *messaging.Status {
-			if len(events) == 0 {
-				return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument events are empty")), agent.Uri())
-			}
-			return agent.addEvents(events)
+		Load: func(m *messaging.Message) {
+			agent.Message(m)
 		},
 	}
 }()
