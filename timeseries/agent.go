@@ -27,11 +27,7 @@ type agentT struct {
 func newAgent(handler messaging.Agent) *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
-	if handler != nil {
-		a.handler = handler
-	} else {
-		a.handler = eventing.Agent
-	}
+	a.handler = eventing.Agent
 
 	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
@@ -91,10 +87,6 @@ func (a *agentT) run() {
 	go masterAttend(a)
 	go emissaryAttend(a)
 	a.running = true
-}
-
-func (a *agentT) dispatch(channel any, event1 string) {
-	a.handler.Message(eventing.NewDispatchMessage(a, channel, event1))
 }
 
 func (a *agentT) emissaryFinalize() {

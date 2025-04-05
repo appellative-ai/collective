@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/collective/eventing"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
@@ -13,9 +12,9 @@ import (
 )
 
 const (
-	AgentNamespaceName = "resiliency:agent/behavioral-ai/collective/content"
-	agentUri           = AgentNamespaceName
-	defaultDuration    = time.Second * 10
+	NamespaceName = "resiliency:agent/behavioral-ai/collective/content"
+	//agentUri           = AgentNamespaceName
+	defaultDuration = time.Second * 10
 )
 
 type text struct {
@@ -39,11 +38,8 @@ func newAgent(handler messaging.Agent) *agentT {
 	a.duration = defaultDuration
 	a.cache = newContentCache()
 	a.mapCache = newMapCache()
-	if handler == nil {
-		a.handler = eventing.Agent
-	} else {
-		a.handler = handler
-	}
+
+	a.handler = handler
 	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	a.master = messaging.NewMasterChannel()
@@ -54,7 +50,7 @@ func newAgent(handler messaging.Agent) *agentT {
 func (a *agentT) String() string { return a.Uri() }
 
 // Uri - agent identifier
-func (a *agentT) Uri() string { return AgentNamespaceName }
+func (a *agentT) Uri() string { return NamespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
@@ -102,10 +98,6 @@ func (a *agentT) run() {
 	go masterAttend(a)
 	go emissaryAttend(a)
 	a.running = true
-}
-
-func (a *agentT) dispatch(channel any, event1 string) {
-	a.handler.Message(eventing.NewDispatchMessage(a, channel, event1))
 }
 
 func (a *agentT) emissaryFinalize() {

@@ -92,10 +92,6 @@ func (a *agentT) run() {
 	a.running = true
 }
 
-func (a *agentT) dispatch(channel any, event1 string) {
-	a.handler.Message(eventing.NewDispatchMessage(a, channel, event1))
-}
-
 func (a *agentT) emissaryFinalize() {
 	a.emissary.Close()
 	a.ticker.Stop()

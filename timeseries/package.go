@@ -1,6 +1,7 @@
 package timeseries
 
 import (
+	"github.com/behavioral-ai/collective/eventing"
 	"github.com/behavioral-ai/core/messaging"
 )
 
@@ -10,14 +11,9 @@ const (
 )
 
 var (
-	Agent messaging.Agent
-	agent *agentT
+	agent                 = newAgent(eventing.Agent)
+	Agent messaging.Agent = agent
 )
-
-func Initialize(ops messaging.Agent) {
-	agent = newAgent(ops)
-	Agent = agent
-}
 
 // Interface -
 type Interface struct {

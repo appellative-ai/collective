@@ -66,14 +66,14 @@ func Resolve[T any](nsName string, version int, resolver *Resolution) (T, *messa
 	var t T
 
 	if resolver == nil {
-		return t, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", nsName)), AgentNamespaceName)
+		return t, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", nsName)), NamespaceName)
 	}
 	body, status := resolver.GetValue(nsName, version)
 	if !status.OK() {
 		return t, status
 	}
 	if len(body) == 0 {
-		return t, messaging.NewStatusWithMessage(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", nsName), AgentNamespaceName)
+		return t, messaging.NewStatusWithMessage(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", nsName), NamespaceName)
 	}
 	switch ptr := any(&t).(type) {
 	case *string:
@@ -87,7 +87,7 @@ func Resolve[T any](nsName string, version int, resolver *Resolution) (T, *messa
 	default:
 		err := json.Unmarshal(body, ptr)
 		if err != nil {
-			return t, messaging.NewStatusError(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, nsName)), AgentNamespaceName)
+			return t, messaging.NewStatusError(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, nsName)), NamespaceName)
 		}
 	}
 	return t, messaging.StatusOK()
