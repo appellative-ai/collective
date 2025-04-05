@@ -35,7 +35,7 @@ func newAgent(dispatcher eventing.Dispatcher) *agentT {
 func (a *agentT) String() string { return a.Uri() }
 
 // Uri - agent identifier
-func (a *agentT) Uri() string { return eventing.AgentNamespaceName }
+func (a *agentT) Uri() string { return eventing.NamespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {

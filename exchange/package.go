@@ -6,18 +6,18 @@ var (
 	exchange = messaging.NewExchange()
 )
 
-func Message(m *messaging.Message) {
-	exchange.Send(m)
-}
-
-func Broadcast(m *messaging.Message) {
-	exchange.Broadcast(m)
-}
-
 func Register(a messaging.Agent) error {
 	return exchange.Register(a)
 }
 
 func Agent(uri string) messaging.Agent {
 	return exchange.Get(uri)
+}
+
+func Message(m *messaging.Message) {
+	exchange.Send(m)
+}
+
+func Broadcast(m *messaging.Message) {
+	exchange.Broadcast(m)
 }
