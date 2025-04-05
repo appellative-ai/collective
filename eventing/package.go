@@ -8,11 +8,9 @@ import (
 const (
 	ContentTypeNotify   = "application/notify"
 	ContentTypeActivity = "application/activity"
-	ContentTypeDispatch = "application/dispatch"
 
 	NotifyEvent   = "eventing:notify"
 	ActivityEvent = "eventing:activity"
-	DispatchEvent = "eventing:dispatch"
 )
 
 // Agent - content resolution in the real world
@@ -23,6 +21,6 @@ var (
 
 func init() {
 	Exchange = httpx.Do
-	Agent = newAgent(nil, nil, nil)
+	Agent = newAgent(nil, nil)
 	Agent.Message(messaging.StartupMessage)
 }

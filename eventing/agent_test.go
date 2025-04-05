@@ -3,7 +3,7 @@ package eventing
 import "fmt"
 
 func ExampleNewAgent() {
-	a := newAgent(nil, nil, nil)
+	a := newAgent(nil, nil)
 
 	fmt.Printf("test: newAgent() -> [%v]\n", a)
 

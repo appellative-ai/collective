@@ -14,15 +14,14 @@ type agentT struct {
 	running  bool
 	duration time.Duration
 
-	ticker     *messaging.Ticker
-	emissary   *messaging.Channel
-	master     *messaging.Channel
-	notifier   NotifyFunc
-	dispatcher Dispatcher
-	activity   ActivityFunc
+	ticker   *messaging.Ticker
+	emissary *messaging.Channel
+	master   *messaging.Channel
+	notifier NotifyFunc
+	activity ActivityFunc
 }
 
-func newAgent(notifier NotifyFunc, dispatcher Dispatcher, activity ActivityFunc) *agentT {
+func newAgent(notifier NotifyFunc, activity ActivityFunc) *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
 
@@ -30,7 +29,6 @@ func newAgent(notifier NotifyFunc, dispatcher Dispatcher, activity ActivityFunc)
 	a.emissary = messaging.NewEmissaryChannel()
 	a.master = messaging.NewMasterChannel()
 	a.notifier = notifier
-	a.dispatcher = dispatcher
 	return a
 }
 
@@ -62,10 +60,6 @@ func (a *agentT) Message(m *messaging.Message) {
 		return
 	case ActivityEvent:
 		a.activity(ActivityContent(m))
-		return
-	case DispatchEvent:
-		e := DispatchContent(m)
-		a.dispatcher.Dispatch(e.Agent, e.Channel, e.Event)
 		return
 	default:
 	}
@@ -114,18 +108,6 @@ func (a *agentT) notify(e NotifyItem) {
 		a.notifier(e)
 	} else {
 		httpNotify(e)
-	}
-}
-
-func (a *agentT) dispatch(e DispatchItem) {
-	if a.dispatcher != nil {
-		a.dispatcher.Dispatch(a, e.Channel, e.Event)
-	}
-}
-
-func (a *agentT) dispatchArgs(channel any, event string) {
-	if a.dispatcher != nil {
-		a.dispatcher.Dispatch(a, channel, event)
 	}
 }
 
