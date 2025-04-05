@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/behavioral-ai/collective/eventing"
+	"github.com/behavioral-ai/collective/operations"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
@@ -12,8 +14,7 @@ import (
 )
 
 const (
-	NamespaceName = "resiliency:agent/behavioral-ai/collective/content"
-	//agentUri           = AgentNamespaceName
+	NamespaceName   = "resiliency:agent/behavioral-ai/collective/content"
 	defaultDuration = time.Second * 10
 )
 
@@ -31,6 +32,11 @@ type agentT struct {
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 	master   *messaging.Channel
+}
+
+func init() {
+	a := newAgent(eventing.Agent)
+	operations.Register(a)
 }
 
 func newAgent(handler messaging.Agent) *agentT {

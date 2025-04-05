@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/behavioral-ai/collective/eventing"
+	"github.com/behavioral-ai/collective/operations"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"time"
@@ -24,10 +25,15 @@ type agentT struct {
 	master   *messaging.Channel
 }
 
+func init() {
+	a := newAgent(eventing.Agent)
+	operations.Register(a)
+}
+
 func newAgent(handler messaging.Agent) *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
-	a.handler = eventing.Agent
+	a.handler = handler
 
 	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()

@@ -1,18 +1,13 @@
-package namespace
+package operations
 
 import (
-	"errors"
-	"fmt"
-	"github.com/behavioral-ai/collective/eventing"
-	"github.com/behavioral-ai/collective/operations"
 	"github.com/behavioral-ai/core/messaging"
-	"net/http"
 	"time"
 )
 
 const (
-	AgentNamespaceName = "resiliency:agent/behavioral-ai/collective/namespace"
-	defaultDuration    = time.Second * 10
+	NamespaceName   = "resiliency:agent/behavioral-ai/collective/operations"
+	defaultDuration = time.Second * 10
 )
 
 type agentT struct {
@@ -23,11 +18,6 @@ type agentT struct {
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 	master   *messaging.Channel
-}
-
-func init() {
-	a := newAgent(eventing.Agent)
-	operations.Register(a)
 }
 
 func newAgent(handler messaging.Agent) *agentT {
@@ -45,7 +35,7 @@ func newAgent(handler messaging.Agent) *agentT {
 func (a *agentT) String() string { return a.Uri() }
 
 // Uri - agent identifier
-func (a *agentT) Uri() string { return AgentNamespaceName }
+func (a *agentT) Uri() string { return NamespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
@@ -102,30 +92,4 @@ func (a *agentT) emissaryFinalize() {
 
 func (a *agentT) masterFinalize() {
 	a.master.Close()
-}
-
-func (a *agentT) addThing(nsName, author string) *messaging.Status {
-	if nsName == "" || author == "" {
-		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v or author %v", nsName, author)), a.Uri())
-	}
-	_, status := httpPutThing(nsName, author)
-	if !status.OK() {
-		status.WithAgent(a.Uri())
-		status.WithMessage(fmt.Sprintf("name %v", nsName))
-		return status
-	}
-	return status
-}
-
-func (a *agentT) addRelation(nsName1, nsName2, author string) *messaging.Status {
-	if nsName1 == "" || author == "" || nsName2 == "" {
-		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name1 %v or name2 %v or author %v", nsName1, nsName2, author)), a.Uri())
-	}
-	_, status := httpPutRelation(nsName1, nsName2, author)
-	if !status.OK() {
-		status.WithAgent(a.Uri())
-		status.WithMessage(fmt.Sprintf("name1 %v", nsName1))
-		return status
-	}
-	return status
 }
