@@ -6,28 +6,18 @@ import (
 )
 
 type agentT struct {
-	notifier   eventing.NotifyFunc
-	activity   eventing.ActivityFunc
-	dispatcher eventing.Dispatcher
+	notifier eventing.NotifyFunc
+	activity eventing.ActivityFunc
 }
 
 func New() messaging.Agent {
-	return newAgent(nil)
+	return newAgent()
 }
 
-func NewWithDispatcher(dispatcher eventing.Dispatcher) messaging.Agent {
-	return newAgent(dispatcher)
-}
-
-func newAgent(dispatcher eventing.Dispatcher) *agentT {
+func newAgent() *agentT {
 	a := new(agentT)
 	a.notifier = eventing.OutputNotify
 	a.activity = eventing.Activity
-	if dispatcher == nil {
-		a.dispatcher = eventing.NewTraceDispatcher()
-	} else {
-		a.dispatcher = dispatcher
-	}
 	return a
 }
 
@@ -47,9 +37,6 @@ func (a *agentT) Message(m *messaging.Message) {
 		a.notifier(eventing.NotifyContent(m))
 	case eventing.ActivityEvent:
 		a.activity(eventing.ActivityContent(m))
-	case eventing.DispatchEvent:
-		e := eventing.DispatchContent(m)
-		a.dispatcher.Dispatch(e.Agent, e.Channel, e.Event)
 	default:
 	}
 }

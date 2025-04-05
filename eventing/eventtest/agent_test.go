@@ -9,11 +9,10 @@ import (
 )
 
 func ExampleNewAgent() {
-	a := newAgent(nil)
+	a := newAgent()
 
 	status := messaging.NewStatusError(http.StatusTeapot, errors.New("error message"), a.Uri())
 	a.Message(eventing.NewNotifyMessage(status))
-	a.Message(eventing.NewDispatchMessage(a, messaging.NewChannel("test"), "event:teapot"))
 	a.Message(eventing.NewActivityMessage(eventing.ActivityItem{
 		Agent:   a,
 		Event:   "activity-event",
