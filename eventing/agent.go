@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	AgentNamespaceName = "resiliency:agent/behavioral-ai/collective/eventing"
-	defaultDuration    = time.Second * 10
+	NamespaceName   = "resiliency:agent/behavioral-ai/collective/eventing"
+	defaultDuration = time.Second * 10
 )
 
 type agentT struct {
@@ -38,7 +38,7 @@ func newAgent(notifier NotifyFunc, dispatcher Dispatcher, activity ActivityFunc)
 func (a *agentT) String() string { return a.Uri() }
 
 // Uri - agent identifier
-func (a *agentT) Uri() string { return AgentNamespaceName }
+func (a *agentT) Uri() string { return NamespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {

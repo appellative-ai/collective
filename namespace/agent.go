@@ -11,7 +11,6 @@ import (
 
 const (
 	AgentNamespaceName = "resiliency:agent/behavioral-ai/collective/namespace"
-	agentUri           = AgentNamespaceName
 	defaultDuration    = time.Second * 10
 )
 
