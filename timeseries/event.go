@@ -3,10 +3,10 @@ package timeseries
 import "time"
 
 type Event struct {
-	Origin     Origin    `json:"origin"`
-	Start      time.Time `json:"start-ts"`
-	Duration   int       `json:"duration"` // milliseconds
-	StatusCode int       `json:"status-code"`
+	Origin     Origin        `json:"origin"`
+	Start      time.Time     `json:"start-ts"`
+	Duration   time.Duration `json:"duration"`
+	StatusCode int           `json:"status-code"`
 }
 
 /*
