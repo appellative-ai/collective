@@ -17,3 +17,7 @@ func Broadcast(m *messaging.Message) {
 func Register(a messaging.Agent) error {
 	return exchange.Register(a)
 }
+
+func Agent(uri string) messaging.Agent {
+	return exchange.Get(uri)
+}
