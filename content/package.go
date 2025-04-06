@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/core/httpx"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 )
@@ -15,24 +14,6 @@ type Resolution1 interface {
 	AddValue(nsName, author string, content any, version int) *messaging.Status
 	GetAttributes(nsName string) (map[string]string, *messaging.Status)
 	AddAttributes(nsName, author string, m map[string]string) *messaging.Status
-}
-
-// Agent - content resolution in the real world
-var (
-	Agent    messaging.Agent
-	agent    *agentT
-	Exchange httpx.Exchange
-)
-
-func Initialize(ops messaging.Agent) {
-	Exchange = httpx.Do
-	agent = newAgent(ops)
-	//Resolver1 Resolution1
-	//r := newHttpResolver()
-	//agent = r.agent
-	//Resolver1 = r
-	Agent = agent
-	agent.Message(messaging.StartupMessage)
 }
 
 // Resolution - in the real world

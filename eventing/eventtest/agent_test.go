@@ -12,13 +12,13 @@ func ExampleNewAgent() {
 	a := newAgent()
 
 	status := messaging.NewStatusError(http.StatusTeapot, errors.New("error message"), a.Uri())
-	a.Message(eventing.NewNotifyMessage(status))
-	a.Message(eventing.NewActivityMessage(eventing.ActivityItem{
+	a.Notify(status)
+	a.AddActivity(eventing.ActivityEvent{
 		Agent:   a,
 		Event:   "activity-event",
 		Source:  "source",
 		Content: nil,
-	}))
+	})
 
 	fmt.Printf("test: newAgent() -> [%v]\n", a)
 

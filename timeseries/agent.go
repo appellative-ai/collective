@@ -15,6 +15,10 @@ const (
 	defaultDuration = time.Second * 10
 )
 
+var (
+	agent *agentT
+)
+
 type agentT struct {
 	running  bool
 	duration time.Duration
@@ -26,8 +30,8 @@ type agentT struct {
 }
 
 func init() {
-	a := newAgent(eventing.Agent)
-	operations.Register(a)
+	agent = newAgent(eventing.Handler)
+	operations.Register(agent)
 }
 
 func newAgent(handler messaging.Agent) *agentT {

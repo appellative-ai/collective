@@ -4,16 +4,6 @@ import (
 	"github.com/behavioral-ai/core/messaging"
 )
 
-var (
-	Agent messaging.Agent
-	agent *agentT
-)
-
-func Initialize(ops messaging.Agent) {
-	agent = newAgent(ops)
-	Agent = agent
-}
-
 // Adder - add
 type Adder struct {
 	Thing    func(nsName, author string) *messaging.Status

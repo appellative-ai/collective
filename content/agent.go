@@ -18,6 +18,10 @@ const (
 	defaultDuration = time.Second * 10
 )
 
+var (
+	agent *agentT
+)
+
 type text struct {
 	Value string
 }
@@ -35,11 +39,11 @@ type agentT struct {
 }
 
 func init() {
-	a := newAgent(eventing.Agent)
-	operations.Register(a)
+	agent = newAgent(eventing.Handler)
+	operations.Register(agent)
 }
 
-func newAgent(handler messaging.Agent) *agentT {
+func newAgent(handler eventing.Agent) *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
 	a.cache = newContentCache()

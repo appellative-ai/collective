@@ -2,32 +2,16 @@ package operations
 
 import (
 	"github.com/behavioral-ai/core/messaging"
-	"time"
 )
 
 const (
-	NamespaceName   = "resiliency:agent/behavioral-ai/collective/operations"
-	defaultDuration = time.Second * 10
+	NamespaceName = "resiliency:agent/behavioral-ai/collective/operations"
 )
 
-type agentT struct {
-	running  bool
-	duration time.Duration
+type agentT struct{}
 
-	handler  messaging.Agent
-	ticker   *messaging.Ticker
-	emissary *messaging.Channel
-	master   *messaging.Channel
-}
-
-func newAgent(handler messaging.Agent) *agentT {
+func newAgent() *agentT {
 	a := new(agentT)
-	a.duration = defaultDuration
-	a.handler = handler
-
-	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
-	a.emissary = messaging.NewEmissaryChannel()
-	a.master = messaging.NewMasterChannel()
 	return a
 }
 
@@ -46,24 +30,6 @@ func (a *agentT) Message(m *messaging.Message) {
 		a.configure(m)
 		return
 	}
-	if m.Event() == messaging.StartupEvent {
-		a.run()
-		return
-	}
-	if !a.running {
-		return
-	}
-	switch m.Channel() {
-	case messaging.Emissary:
-		a.emissary.Send(m)
-	case messaging.Master:
-		a.master.Send(m)
-	case messaging.Control:
-		a.emissary.Send(m)
-		a.master.Send(m)
-	default:
-		a.emissary.Send(m)
-	}
 }
 
 func (a *agentT) configure(m *messaging.Message) {
@@ -73,23 +39,4 @@ func (a *agentT) configure(m *messaging.Message) {
 	}
 	// configure
 	messaging.Reply(m, messaging.StatusOK(), a.Uri())
-}
-
-// Run - run the agent
-func (a *agentT) run() {
-	if a.running {
-		return
-	}
-	go masterAttend(a)
-	go emissaryAttend(a)
-	a.running = true
-}
-
-func (a *agentT) emissaryFinalize() {
-	a.emissary.Close()
-	a.ticker.Stop()
-}
-
-func (a *agentT) masterFinalize() {
-	a.master.Close()
 }

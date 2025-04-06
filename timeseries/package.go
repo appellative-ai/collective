@@ -1,18 +1,12 @@
 package timeseries
 
 import (
-	"github.com/behavioral-ai/collective/eventing"
 	"github.com/behavioral-ai/core/messaging"
 )
 
 const (
 	LoadEvent        = "event:load"
 	ContentTypeEvent = "application/event"
-)
-
-var (
-	agent                 = newAgent(eventing.Agent)
-	Agent messaging.Agent = agent
 )
 
 // Interface -
@@ -27,7 +21,7 @@ type Interface struct {
 var Functions = func() *Interface {
 	return &Interface{
 		Message: func(m *messaging.Message) {
-			Agent.Message(m)
+			agent.Message(m)
 		},
 	}
 }()

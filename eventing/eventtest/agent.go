@@ -10,7 +10,7 @@ type agentT struct {
 	activity eventing.ActivityFunc
 }
 
-func New() messaging.Agent {
+func New() eventing.Agent {
 	return newAgent()
 }
 
@@ -28,18 +28,8 @@ func (a *agentT) String() string { return a.Uri() }
 func (a *agentT) Uri() string { return eventing.NamespaceName }
 
 // Message - message the agent
-func (a *agentT) Message(m *messaging.Message) {
-	if m == nil {
-		return
-	}
-	switch m.Event() {
-	case eventing.NotifyEvent:
-		a.notifier(eventing.NotifyContent(m))
-	case eventing.ActivityEvent:
-		a.activity(eventing.ActivityContent(m))
-	default:
-	}
-}
+func (a *agentT) Message(m *messaging.Message) {}
 
-// Run - run the agent
-func (a *agentT) Run() {}
+func (a *agentT) AddActivity(e eventing.ActivityEvent) { a.activity(e) }
+
+func (a *agentT) Notify(e eventing.NotifyEvent) { a.notifier(e) }

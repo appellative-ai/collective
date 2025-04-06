@@ -1,26 +1,33 @@
 package eventing
 
 import (
-	"github.com/behavioral-ai/core/httpx"
+	"github.com/behavioral-ai/collective/operations"
 	"github.com/behavioral-ai/core/messaging"
 )
 
-const (
-	ContentTypeNotify   = "application/notify"
-	ContentTypeActivity = "application/activity"
+//NotifyEvent         = "eventing:notify"
+//ActivityEvent       = "eventing:activity"
+//ContentTypeNotify         = "application/notify"
+//ContentTypeActivity       = "application/activity"
 
-	NotifyEvent   = "eventing:notify"
-	ActivityEvent = "eventing:activity"
+const (
+	ContentTypeNotifyConfig   = "application/notify-config"
+	ContentTypeActivityConfig = "application/activity-config"
+	NotifyConfigEvent         = "eventing:notify-config"
+	ActivityConfigEvent       = "eventing:activity-config"
 )
 
-// Agent - content resolution in the real world
+type Agent interface {
+	messaging.Agent
+	Notify(e NotifyEvent)
+	AddActivity(e ActivityEvent)
+}
+
 var (
-	Agent    messaging.Agent
-	Exchange httpx.Exchange
+	Handler Agent
 )
 
 func init() {
-	Exchange = httpx.Do
-	Agent = newAgent(nil, nil)
-	Agent.Message(messaging.StartupMessage)
+	Handler = newAgent()
+	operations.Register(Handler)
 }

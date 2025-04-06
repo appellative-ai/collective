@@ -19,22 +19,11 @@ func ExampleNotify() {
 
 }
 
-func ExampleNotifyMessage() {
-	status := messaging.NewStatusWithMessage(http.StatusTeapot, "test message", "agent/test")
-	m := NewNotifyMessage(status)
-	e := NotifyContent(m)
-	fmt.Printf("test: NotifyContent() -> [%v]\n", e)
-
-	//Output:
-	//test: NotifyContent() -> [I'm A Teapot [msg:test message] [agent:agent/test]]
-
-}
-
 func ExampleNewStatusError() {
 	s := messaging.NewStatusError(http.StatusGatewayTimeout, errors.New("rate limited"), "test:agent") //"resiliency:agent/operative/agent1#us-west")
 	fmt.Printf("test: NewStatusError() -> [%v]\n", s)
 
-	if _, ok := any(s).(NotifyItem); ok {
+	if _, ok := any(s).(NotifyEvent); ok {
 		fmt.Printf("test: Event() -> [%v]\n", ok)
 
 	}
@@ -49,7 +38,7 @@ func ExampleNewStatusMessage() {
 	s := messaging.NewStatusWithMessage(http.StatusOK, "successfully change ticker duration", "test:agent")
 	fmt.Printf("test: NewStatusMessage() -> [%v]\n", s)
 
-	if _, ok := any(s).(NotifyItem); ok {
+	if _, ok := any(s).(NotifyEvent); ok {
 		fmt.Printf("test: Event() -> [%v]\n", ok)
 
 	}
