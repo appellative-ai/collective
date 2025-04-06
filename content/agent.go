@@ -32,7 +32,7 @@ type agentT struct {
 	cache    *contentT
 	mapCache *mapT
 
-	handler  messaging.Agent
+	handler  eventing.Agent
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 	master   *messaging.Channel

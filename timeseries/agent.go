@@ -23,7 +23,7 @@ type agentT struct {
 	running  bool
 	duration time.Duration
 
-	handler  messaging.Agent
+	handler  eventing.Agent
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 	master   *messaging.Channel
@@ -34,7 +34,7 @@ func init() {
 	operations.Register(agent)
 }
 
-func newAgent(handler messaging.Agent) *agentT {
+func newAgent(handler eventing.Agent) *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
 	a.handler = handler
