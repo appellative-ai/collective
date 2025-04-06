@@ -17,6 +17,24 @@ const (
 	ActivityConfigEvent       = "eventing:activity-config"
 )
 
+// ActivityEvent -
+type ActivityEvent struct {
+	Agent   messaging.Agent
+	Event   string
+	Source  string
+	Content any
+}
+
+// NotifyEvent -
+type NotifyEvent interface {
+	AgentId() string
+	Type() string
+	Status() string
+	Message() string
+	RequestId() string
+}
+
+// Agent - eventing Agent
 type Agent interface {
 	messaging.Agent
 	Notify(e NotifyEvent)
