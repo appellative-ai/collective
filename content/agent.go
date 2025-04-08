@@ -50,7 +50,7 @@ func newAgent(handler eventing.Agent) *agentT {
 	a.mapCache = newMapCache()
 
 	a.handler = handler
-	a.ticker = messaging.NewTicker(messaging.Emissary, a.duration)
+	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	a.master = messaging.NewMasterChannel()
 	return a
@@ -83,11 +83,11 @@ func (a *agentT) Message(m *messaging.Message) {
 		a.running = false
 	}
 	switch m.Channel() {
-	case messaging.Emissary:
+	case messaging.ChannelEmissary:
 		a.emissary.Send(m)
-	case messaging.Master:
+	case messaging.ChannelMaster:
 		a.master.Send(m)
-	case messaging.Control:
+	case messaging.ChannelControl:
 		a.emissary.Send(m)
 		a.master.Send(m)
 	default:
