@@ -14,8 +14,8 @@ func Agent(uri string) messaging.Agent {
 	return exchange.Get(uri)
 }
 
-func Send(m *messaging.Message) {
-	exchange.Send(m)
+func Message(m *messaging.Message) {
+	exchange.Message(m)
 }
 
 func Broadcast(m *messaging.Message) {
