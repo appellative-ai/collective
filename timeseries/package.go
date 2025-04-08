@@ -50,7 +50,7 @@ type Sample struct {
 }
 
 func NewLoadMessage(e []*Event) *messaging.Message {
-	m := messaging.NewMessage(messaging.Control, LoadEvent)
+	m := messaging.NewMessage(messaging.ChannelControl, LoadEvent)
 	m.SetContent(ContentTypeEvent, e)
 	return m
 }

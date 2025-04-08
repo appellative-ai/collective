@@ -22,7 +22,7 @@ func Activity(a ActivityEvent) {
 }
 
 func NewActivityConfigMessage(fn ActivityFunc) *messaging.Message {
-	m := messaging.NewMessage(messaging.Control, ActivityConfigEvent)
+	m := messaging.NewMessage(messaging.ChannelControl, ActivityConfigEvent)
 	m.SetContent(ContentTypeActivityConfig, fn)
 	return m
 }

@@ -14,7 +14,7 @@ func OutputNotify(e NotifyEvent) {
 }
 
 func NewNotifyConfigMessage(fn NotifyFunc) *messaging.Message {
-	m := messaging.NewMessage(messaging.Control, NotifyConfigEvent)
+	m := messaging.NewMessage(messaging.ChannelControl, NotifyConfigEvent)
 	m.SetContent(ContentTypeNotifyConfig, fn)
 	return m
 }
