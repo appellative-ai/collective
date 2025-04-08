@@ -72,12 +72,8 @@ func (a *agentT) Message(m *messaging.Message) {
 
 // Run - run the agent
 func (a *agentT) run() {
-	if a.running {
-		return
-	}
 	go masterAttend(a)
 	go emissaryAttend(a)
-	a.running = true
 }
 
 func (a *agentT) AddActivity(e ActivityEvent) {
