@@ -1,7 +1,6 @@
 package timeseries
 
-import "time"
-
+/*
 type Event struct {
 	Origin     Origin        `json:"origin"`
 	Path       string        `json:"path"` // uri path
@@ -38,3 +37,6 @@ type Action struct {
 //
 // 2. Latency   - current 95th percentile for latency for a window
 // 3. Gradiant  - current logistic regression gradient for a window
+
+
+*/
