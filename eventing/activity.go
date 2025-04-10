@@ -13,7 +13,7 @@ func (a ActivityEvent) IsEmpty() bool {
 	return a.Agent == nil
 }
 
-func Activity(a ActivityEvent) {
+func OutputActivity(a ActivityEvent) {
 	uri := "<nil>"
 	if a.Agent != nil {
 		uri = a.Agent.Uri()

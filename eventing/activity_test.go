@@ -7,7 +7,7 @@ func ExampleActivity() {
 		Source:  "source",
 		Content: nil,
 	}
-	Activity(a)
+	OutputActivity(a)
 
 	//Output:
 	//active-> 2025-03-17T19:29:39.162Z [<nil>] [eventing] [source] [<nil>]
