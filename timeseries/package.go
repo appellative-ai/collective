@@ -28,6 +28,12 @@ var Functions = func() *Interface {
 		Message: func(m *messaging.Message) {
 			agent.Message(m)
 		},
+		LinearRegression: func(x, y, weights []float64, origin bool) (alpha, beta float64) {
+			return
+		},
+		Percentile: func(x, weights []float64, sorted bool, score float64) Percentile {
+			return Percentile{}
+		},
 	}
 }()
 
