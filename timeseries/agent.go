@@ -1,12 +1,10 @@
 package timeseries
 
 import (
-	"errors"
 	"fmt"
 	"github.com/behavioral-ai/collective/eventing"
 	"github.com/behavioral-ai/collective/operations"
 	"github.com/behavioral-ai/core/messaging"
-	"net/http"
 	"time"
 )
 
@@ -118,6 +116,7 @@ func (a *agentT) rollup(origin Origin) *messaging.Status {
 	return status
 }
 
+/*
 func (a *agentT) addEvents(events []Event) *messaging.Status {
 	if len(events) == 0 {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument events are empty")), a.Uri())
@@ -130,3 +129,6 @@ func (a *agentT) addEvents(events []Event) *messaging.Status {
 	}
 	return status
 }
+
+
+*/

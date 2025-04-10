@@ -63,6 +63,7 @@ type Sample struct {
 	Sorted bool
 }
 
+/*
 func NewLoadMessage(e []*Event) *messaging.Message {
 	m := messaging.NewMessage(messaging.ChannelControl, LoadEvent)
 	m.SetContent(ContentTypeEvent, e)
@@ -78,3 +79,6 @@ func LoadContent(m *messaging.Message) []*Event {
 	}
 	return nil
 }
+
+
+*/
