@@ -9,12 +9,17 @@ const (
 	ContentTypeEvent = "application/event"
 )
 
+type Percentile struct {
+	Score   int // k-th percentile
+	Latency int // milliseconds
+}
+
 // Interface -
 type Interface struct {
 	Message func(m *messaging.Message)
 
 	LinearRegression func(x, y, weights []float64, origin bool) (alpha, beta float64)
-	Percentile       func(x, weights []float64, sorted bool, pctile float64) float64
+	Percentile       func(x, weights []float64, sorted bool, score float64) Percentile
 }
 
 // Functions -
