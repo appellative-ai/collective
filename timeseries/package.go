@@ -19,7 +19,7 @@ type Interface struct {
 	Message func(m *messaging.Message)
 
 	LinearRegression func(x, y, weights []float64, origin bool) (alpha, beta float64)
-	Percentile       func(x, weights []float64, sorted bool, centile *Percentile)
+	Percentile       func(x, weights []float64, sorted bool, pctile float64) float64
 }
 
 // Functions -
@@ -31,11 +31,9 @@ var Functions = func() *Interface {
 		LinearRegression: func(x, y, weights []float64, origin bool) (alpha, beta float64) {
 			return
 		},
-		Percentile: func(x, weights []float64, sorted bool, centile *Percentile) {
-			if centile != nil {
+		Percentile: func(x, weights []float64, sorted bool, pctile float64) float64 {
 
-			}
-			return
+			return 0.0
 		},
 	}
 }()
