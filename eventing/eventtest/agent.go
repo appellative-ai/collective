@@ -17,7 +17,7 @@ func New() eventing.Agent {
 func newAgent() *agentT {
 	a := new(agentT)
 	a.notifier = eventing.OutputNotify
-	a.activity = eventing.Activity
+	a.activity = eventing.OutputActivity
 	return a
 }
 
