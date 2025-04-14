@@ -3,18 +3,7 @@ package content
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/behavioral-ai/core/httpx"
 )
-
-func HostName() string {
-	return ""
-}
-
-type agentT2 struct {
-	hostName string
-	uri      []string
-	do       httpx.Exchange
-}
 
 func ExampleResolveString() {
 	name := "test:thing:text@2"
