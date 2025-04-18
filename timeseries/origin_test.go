@@ -8,7 +8,7 @@ func ExampleNewOrigin() {
 		Zone:       "zone",
 		SubZone:    "sub-zone",
 		Host:       "host",
-		InstanceId: "",
+		InstanceId: "instance-id",
 	}
 	fmt.Printf("test: NewOrigin() -> [%v]\n", o)
 
@@ -44,7 +44,7 @@ func ExampleOrigin_Uri() {
 		Zone:       "zone",
 		SubZone:    "sub-zone",
 		Host:       "host",
-		InstanceId: "",
+		InstanceId: "instance-id",
 	}
 
 	fmt.Printf("test: Origin_Uri_SubZone()       -> [%v]\n", target.Uri("class"))
@@ -64,7 +64,7 @@ func ExampleOrigin_String() {
 		Zone:       "zone",
 		SubZone:    "sub-zone",
 		Host:       "host",
-		InstanceId: "",
+		InstanceId: "instance-id",
 	}
 
 	fmt.Printf("test: Origin_Uri_SubZone()       -> [%v]\n", target)

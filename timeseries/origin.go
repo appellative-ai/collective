@@ -10,7 +10,7 @@ const (
 	ZoneKey       = "zone"
 	SubZoneKey    = "sub-zone"
 	HostKey       = "host"
-	InstanceIdKey = "id"
+	InstanceIdKey = "instance-id"
 	uriFmt        = "%v:%v"
 )
 
