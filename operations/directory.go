@@ -5,9 +5,8 @@ import (
 )
 
 const (
-	contentName    = "resiliency:agent/behavioral-ai/collective/content"
-	namespaceName  = "resiliency:agent/behavioral-ai/collective/namespace"
-	timeseriesName = "resiliency:agent/behavioral-ai/collective/timeseries"
+	contentName   = "resiliency:agent/behavioral-ai/collective/content"
+	namespaceName = "resiliency:agent/behavioral-ai/collective/namespace"
 )
 
 var (
@@ -16,7 +15,7 @@ var (
 )
 
 func validAgent(agent messaging.Agent) bool {
-	if agent.Uri() == contentName || agent.Uri() == namespaceName || agent.Uri() == timeseriesName {
+	if agent.Uri() == contentName || agent.Uri() == namespaceName {
 		return true
 	}
 	return false
