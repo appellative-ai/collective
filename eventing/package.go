@@ -17,7 +17,7 @@ const (
 	ActivityConfigEvent       = "eventing:activity-config"
 )
 
-// ActivityEvent -
+// ActivityEvent - need author??
 type ActivityEvent struct {
 	Agent   messaging.Agent
 	Event   string
