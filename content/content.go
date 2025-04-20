@@ -9,7 +9,7 @@ import (
 // resolutionKey -
 type resolutionKey struct {
 	Name    string `json:"name"`
-	Version int    `json:"version"`
+	Version string `json:"version"`
 }
 
 type content struct {
@@ -26,7 +26,7 @@ func newContentCache() *contentT {
 	return c
 }
 
-func (c *contentT) get(name string, version int) ([]byte, error) {
+func (c *contentT) get(name, version string) ([]byte, error) {
 	key := resolutionKey{Name: name, Version: version}
 	value, ok := c.m.Load(key)
 	if !ok {
@@ -38,6 +38,6 @@ func (c *contentT) get(name string, version int) ([]byte, error) {
 	return nil, nil
 }
 
-func (c *contentT) put(name string, body []byte, version int) {
+func (c *contentT) put(name string, body []byte, version string) {
 	c.m.Store(resolutionKey{Name: name, Version: version}, content{body: body})
 }

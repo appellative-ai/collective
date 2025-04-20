@@ -14,10 +14,10 @@ func ExampleResolveString() {
 		fmt.Printf("test: json.Marshall() -> [err:%v]\n", err)
 	} else {
 		//status :=
-		c.put(name, buf, 1)
+		c.put(name, buf, "1")
 		//fmt.Printf("test: newContentCache.put(1) -> [status:%v]\n", status)
 
-		v, status1 := Resolve[text](name, 1, nil)
+		v, _, status1 := Resolve[text](name, "1", nil)
 		fmt.Printf("test: Resolve[text]() -> [%v] [%v]\n", status1, v)
 	}
 

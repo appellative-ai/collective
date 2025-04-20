@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func httpGetContent(nsName string, version int) ([]byte, *messaging.Status) {
+func httpGetContent(nsName, version string) ([]byte, *messaging.Status) {
 	/*
 		req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, module.ContentURL(nsName, version), nil)
 		if err != nil {
@@ -26,7 +26,7 @@ func httpGetContent(nsName string, version int) ([]byte, *messaging.Status) {
 	return nil, messaging.StatusNotFound()
 }
 
-func httpPutContent(nsName, author string, value []byte, version int) (*http.Response, *messaging.Status) {
+func httpPutContent(nsName, author string, value []byte, version string) (*http.Response, *messaging.Status) {
 	//req, _ := http.NewRequest(http.MethodPut, "", io.Nnil)
 	//resp,status := http2.Do(req)
 	return nil, messaging.StatusOK()

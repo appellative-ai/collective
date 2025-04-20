@@ -119,28 +119,28 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getValue(name string, version int) (buf []byte, status *messaging.Status) {
-	if name == "" || version <= 0 {
-		return nil, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
+func (a *agentT) getValue(name string, version string) (buf []byte, contentType string, status *messaging.Status) {
+	if name == "" {
+		return nil, "", messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
 	var err error
 	buf, err = a.cache.get(name, version)
 	if err == nil {
-		return buf, messaging.StatusOK()
+		return buf, "", messaging.StatusOK()
 	}
 	// Cache miss
 	buf, status = httpGetContent(name, version)
 	if !status.OK() {
 		status.WithAgent(a.Uri())
 		status.WithMessage(fmt.Sprintf("name %v and version %v", name, version))
-		return nil, status
+		return nil, "", status
 	}
 	a.cache.put(name, buf, version)
-	return buf, messaging.StatusOK()
+	return buf, "", messaging.StatusOK()
 }
 
-func (a *agentT) addValue(name, author string, content any, version int) *messaging.Status {
-	if name == "" || author == "" || content == nil || version <= 0 {
+func (a *agentT) addValue(name, author, contentType string, content any, version string) *messaging.Status {
+	if name == "" || author == "" || content == nil {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
 	/*
@@ -200,7 +200,7 @@ func (a *agentT) getAttributes(name string) (map[string]string, *messaging.Statu
 		return m, messaging.StatusOK()
 	}
 	// Cache miss
-	buf, status := httpGetContent(name, 1)
+	buf, status := httpGetContent(name, "1")
 	if !status.OK() {
 		status.WithAgent(a.Uri())
 		status.WithMessage(fmt.Sprintf("map name [%v] not found", name))
