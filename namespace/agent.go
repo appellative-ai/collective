@@ -109,11 +109,11 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) addThing(nsName, author string) *messaging.Status {
-	if nsName == "" || author == "" {
+func (a *agentT) addThing(nsName, cName, author string) *messaging.Status {
+	if nsName == "" {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v or author %v", nsName, author)), a.Uri())
 	}
-	_, status := httpPutThing(nsName, author)
+	_, status := httpPutThing(nsName, cName, author)
 	if !status.OK() {
 		status.WithAgent(a.Uri())
 		status.WithMessage(fmt.Sprintf("name %v", nsName))
@@ -122,14 +122,14 @@ func (a *agentT) addThing(nsName, author string) *messaging.Status {
 	return status
 }
 
-func (a *agentT) addRelation(nsName1, nsName2, author string) *messaging.Status {
-	if nsName1 == "" || author == "" || nsName2 == "" {
-		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name1 %v or name2 %v or author %v", nsName1, nsName2, author)), a.Uri())
+func (a *agentT) addRelation(nsName, cName, thing1, thing2, author string) *messaging.Status {
+	if nsName == "" || thing1 == "" || thing2 == "" {
+		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name1 %v or name2 %v or author %v", thing1, thing2, author)), a.Uri())
 	}
-	_, status := httpPutRelation(nsName1, nsName2, author)
+	_, status := httpPutRelation(nsName, cName, thing1, thing2, author)
 	if !status.OK() {
 		status.WithAgent(a.Uri())
-		status.WithMessage(fmt.Sprintf("name1 %v", nsName1))
+		status.WithMessage(fmt.Sprintf("name1 %v", nsName))
 		return status
 	}
 	return status
