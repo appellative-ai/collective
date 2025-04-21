@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	NamespaceName   = "resiliency:agent/behavioral-ai/collective/content"
+	NamespaceName   = "unn:behavioral-ai.github.com:resiliency:agent/collective/content"
 	defaultDuration = time.Second * 10
 )
 
