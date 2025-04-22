@@ -13,14 +13,15 @@ func ExampleNewContentCache() {
 	if err != nil {
 		fmt.Printf("test: json.Marshall() -> [err:%v]\n", err)
 	} else {
-		var status error //status *messaging.Status
-		c.put(name, buf, "1")
+		//var status error //status *messaging.Status
+		//	var access Accessor{}
+		c.put(name, "res", "1", Accessor{Content: buf})
 		//fmt.Printf("test: newContentCache.put(1) -> [status:%v]\n", status)
 
-		buf, status = c.get(name, "2")
+		_, status := c.get(name, "res", "2")
 		fmt.Printf("test: newContentCache.get(2) -> [status:%v]\n", status)
 
-		buf, status = c.get(name, "1")
+		_, status = c.get(name, "res", "1")
 		fmt.Printf("test: newContentCache.get(1) -> [status:%v]\n", status)
 
 		var v text

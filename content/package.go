@@ -8,12 +8,18 @@ import (
 	"net/http"
 )
 
-type Header map[string]string
+//Hpe Header map[string]string
+
+type Accessor struct {
+	ContentType string
+	Content     any
+}
 
 // Resolution - in the real world
 type Resolution struct {
-	Get func(nsName string, version string) ([]byte, Header, *messaging.Status)
-	Add func(nsName, author string, h Header, content any, version string) *messaging.Status
+	Get  func(nsName, resource, version string) (Accessor, *messaging.Status)
+	Head func(nsName string) (Accessor, *messaging.Status)
+	Add  func(nsName, resource, version, author string, access Accessor) *messaging.Status
 	//GetAttributes func(nsName string) (map[string]string, *messaging.Status)
 	//AddAttributes func(nsName, author string, m map[string]string) *messaging.Status
 }
@@ -21,11 +27,11 @@ type Resolution struct {
 // Resolver -
 var Resolver = func() *Resolution {
 	return &Resolution{
-		Get: func(nsName, version string) ([]byte, Header, *messaging.Status) {
-			return agent.getValue(nsName, version)
+		Get: func(nsName, resource, version string) (Accessor, *messaging.Status) {
+			return agent.getValue(nsName, resource, version)
 		},
-		Add: func(nsName, author string, h Header, content any, version string) *messaging.Status {
-			return agent.addValue(nsName, author, h, content, version)
+		Add: func(nsName, resource, version, author string, access Accessor) *messaging.Status {
+			return agent.addValue(nsName, resource, version, author, access)
 		},
 		/*
 			GetAttributes: func(nsName string) (map[string]string, *messaging.Status) {
@@ -41,33 +47,42 @@ var Resolver = func() *Resolution {
 
 // Resolve - generic typed resolution
 // TODO: support map[string]string??
-func Resolve[T any](nsName, version string, resolver *Resolution) (T, Header, *messaging.Status) {
+func Resolve[T any](nsName, resource, version string, resolver *Resolution) (T, *messaging.Status) {
 	var t T
 
 	if resolver == nil {
-		return t, nil, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", nsName)), NamespaceName)
+		return t, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", nsName)), NamespaceName)
 	}
-	body, h, status := resolver.Get(nsName, version)
+	access, status := resolver.Get(nsName, resource, version)
 	if !status.OK() {
-		return t, nil, status
+		return t, status
 	}
-	if len(body) == 0 {
-		return t, h, messaging.NewStatusWithMessage(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", nsName), NamespaceName)
+	if access.Content == nil {
+		return t, messaging.NewStatusWithMessage(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", nsName), NamespaceName)
 	}
 	switch ptr := any(&t).(type) {
 	case *string:
-		t1, h1, status1 := Resolve[text](nsName, version, resolver)
+		t1, status1 := Resolve[text](nsName, resource, version, resolver)
 		if !status1.OK() {
-			return t, h1, status1
+			return t, status1
 		}
 		*ptr = t1.Value
 	case *[]byte:
-		*ptr = body
+		if body, ok := access.Content.([]byte); ok {
+			*ptr = body
+		}
 	default:
-		err := json.Unmarshal(body, ptr)
-		if err != nil {
-			return t, h, messaging.NewStatusError(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, nsName)), NamespaceName)
+		var (
+			body []byte
+			ok   bool
+		)
+		body, ok = access.Content.([]byte)
+		if ok {
+			err := json.Unmarshal(body, ptr)
+			if err != nil {
+				return t, messaging.NewStatusError(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, nsName)), NamespaceName)
+			}
 		}
 	}
-	return t, h, messaging.StatusOK()
+	return t, messaging.StatusOK()
 }

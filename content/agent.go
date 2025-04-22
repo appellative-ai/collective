@@ -119,28 +119,28 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getValue(name string, version string) (buf []byte, h Header, status *messaging.Status) {
+func (a *agentT) getValue(name, resource, version string) (access Accessor, status *messaging.Status) {
 	if name == "" {
-		return nil, nil, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
+		return Accessor{}, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
 	var err error
-	buf, err = a.cache.get(name, version)
+	access, err = a.cache.get(name, resource, version)
 	if err == nil {
-		return buf, make(Header), messaging.StatusOK()
+		return access, messaging.StatusOK()
 	}
 	// Cache miss
-	buf, status = httpGetContent(name, version)
+	access, status = httpGetContent(name, resource, version)
 	if !status.OK() {
 		status.WithAgent(a.Uri())
 		status.WithMessage(fmt.Sprintf("name %v and version %v", name, version))
-		return nil, nil, status
+		return access, status
 	}
-	a.cache.put(name, buf, version)
-	return buf, make(Header), messaging.StatusOK()
+	a.cache.put(name, resource, version, access)
+	return access, messaging.StatusOK()
 }
 
-func (a *agentT) addValue(name, author string, h Header, content any, version string) *messaging.Status {
-	if name == "" || author == "" || content == nil {
+func (a *agentT) addValue(name, resource, version, author string, access Accessor) *messaging.Status {
+	if name == "" || resource == "" || access.ContentType == "" || access.Content == nil {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
 	/*
@@ -157,7 +157,7 @@ func (a *agentT) addValue(name, author string, h Header, content any, version st
 	var buf []byte
 	var err error
 
-	switch ptr := content.(type) {
+	switch ptr := access.Content.(type) {
 	case string:
 		v := text{ptr}
 		buf, err = json.Marshal(v)
@@ -181,16 +181,17 @@ func (a *agentT) addValue(name, author string, h Header, content any, version st
 		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for nsName : %v", name))
 		return messaging.NewStatusError(http.StatusNoContent, err, a.Uri())
 	}
-	_, status := httpPutContent(name, author, buf, version)
+	_, status := httpPutContent(name, resource, version, author, access)
 	if !status.OK() {
 		status.WithAgent(a.Uri())
 		status.WithMessage(fmt.Sprintf("name %v and version %v", name, version))
 		return status
 	}
-	a.cache.put(name, buf, version)
+	a.cache.put(name, resource, version, access)
 	return status
 }
 
+/*
 func (a *agentT) getAttributes(name string) (map[string]string, *messaging.Status) {
 	if name == "" {
 		return nil, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("map name [%v] is empty", name)), a.Uri())
@@ -200,7 +201,7 @@ func (a *agentT) getAttributes(name string) (map[string]string, *messaging.Statu
 		return m, messaging.StatusOK()
 	}
 	// Cache miss
-	buf, status := httpGetContent(name, "1")
+	buf, status := httpGetContent(name, resource,version)
 	if !status.OK() {
 		status.WithAgent(a.Uri())
 		status.WithMessage(fmt.Sprintf("map name [%v] not found", name))
@@ -223,3 +224,6 @@ func (a *agentT) addAttributes(name, author string, m map[string]string) *messag
 	//buf,status := httpPutContent(name,author,)
 	return messaging.StatusOK() //BadRequest().WithAgent(a.Uri())
 }
+
+
+*/
