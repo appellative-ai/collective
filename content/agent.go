@@ -119,27 +119,27 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getValue(name string, version string) (buf []byte, contentType string, status *messaging.Status) {
+func (a *agentT) getValue(name string, version string) (buf []byte, h Header, status *messaging.Status) {
 	if name == "" {
-		return nil, "", messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
+		return nil, nil, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
 	var err error
 	buf, err = a.cache.get(name, version)
 	if err == nil {
-		return buf, "", messaging.StatusOK()
+		return buf, make(Header), messaging.StatusOK()
 	}
 	// Cache miss
 	buf, status = httpGetContent(name, version)
 	if !status.OK() {
 		status.WithAgent(a.Uri())
 		status.WithMessage(fmt.Sprintf("name %v and version %v", name, version))
-		return nil, "", status
+		return nil, nil, status
 	}
 	a.cache.put(name, buf, version)
-	return buf, "", messaging.StatusOK()
+	return buf, make(Header), messaging.StatusOK()
 }
 
-func (a *agentT) addValue(name, author, contentType string, content any, version string) *messaging.Status {
+func (a *agentT) addValue(name, author string, h Header, content any, version string) *messaging.Status {
 	if name == "" || author == "" || content == nil {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
