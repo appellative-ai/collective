@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// TODO : support HEAD requests so that variants, of different content type, can be supported
 func httpGetContent(nsName, version string) ([]byte, *messaging.Status) {
 	/*
 		req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, module.ContentURL(nsName, version), nil)
