@@ -22,7 +22,7 @@ func ExampleResolveString() {
 	}
 
 	//Output:
-	//test: Resolve[text]() -> [Bad Request [err:error: BadRequest - resolver is nil for : test:thing:text@2] [agent:resiliency:agent/behavioral-ai/collective/content]] [{}]
+	//test: Resolve[text]() -> [Bad Request [err:error: BadRequest - resolver is nil for : test:thing:text@2] [agent:unn:behavioral-ai.github.com:resiliency:agent/collective/content]] [{}]
 
 }
 

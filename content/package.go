@@ -8,18 +8,6 @@ import (
 	"net/http"
 )
 
-// Resolution1 - in the real world
-/*
-type Resolution1 interface {
-	GetValue(nsName string, version int) ([]byte, *messaging.Status)
-	AddValue(nsName, author string, content any, version int) *messaging.Status
-	GetAttributes(nsName string) (map[string]string, *messaging.Status)
-	AddAttributes(nsName, author string, m map[string]string) *messaging.Status
-}
-
-
-*/
-
 type Header map[string]string
 
 // Resolution - in the real world
