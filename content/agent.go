@@ -30,7 +30,6 @@ type agentT struct {
 	running  bool
 	duration time.Duration
 	cache    *contentT
-	mapCache *mapT
 
 	handler  eventing.Agent
 	ticker   *messaging.Ticker
@@ -47,7 +46,6 @@ func newAgent(handler eventing.Agent) *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
 	a.cache = newContentCache()
-	a.mapCache = newMapCache()
 
 	a.handler = handler
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)

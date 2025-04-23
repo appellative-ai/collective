@@ -5,25 +5,25 @@ import (
 )
 
 // emissary attention
-func emissaryAttend(agent *agentT) {
+func emissaryAttend(a *agentT) {
 	var paused = false
 	if paused {
 	}
-	agent.ticker.Start(-1)
+	a.ticker.Start(-1)
 	for {
 		select {
-		case <-agent.ticker.C():
+		case <-a.ticker.C():
 		default:
 		}
 		select {
-		case msg := <-agent.emissary.C:
+		case msg := <-a.emissary.C:
 			switch msg.Event() {
 			case messaging.PauseEvent:
 				paused = true
 			case messaging.ResumeEvent:
 				paused = false
 			case messaging.ShutdownEvent:
-				agent.emissaryFinalize()
+				a.emissaryFinalize()
 				return
 			default:
 			}

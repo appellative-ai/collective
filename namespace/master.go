@@ -5,21 +5,21 @@ import (
 )
 
 // master attention
-func masterAttend(agent *agentT) {
+func masterAttend(a *agentT) {
 	paused := false
 	if paused {
 	}
 
 	for {
 		select {
-		case msg := <-agent.master.C:
+		case msg := <-a.master.C:
 			switch msg.Event() {
 			case messaging.PauseEvent:
 				paused = true
 			case messaging.ResumeEvent:
 				paused = false
 			case messaging.ShutdownEvent:
-				agent.masterFinalize()
+				a.masterFinalize()
 				return
 			default:
 			}
