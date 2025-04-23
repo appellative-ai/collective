@@ -27,7 +27,7 @@ func httpGetContent(nsName, resource, version string) (Accessor, *messaging.Stat
 	return Accessor{}, messaging.StatusNotFound()
 }
 
-func httpPutContent(nsName, resource, version, author string, access Accessor) (*http.Response, *messaging.Status) {
+func httpPutContent(nsName, resource, version, author string, buf []byte) (*http.Response, *messaging.Status) {
 	//req, _ := http.NewRequest(http.MethodPut, "", io.Nnil)
 	//resp,status := http2.Do(req)
 	return nil, messaging.StatusOK()

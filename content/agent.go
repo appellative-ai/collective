@@ -137,8 +137,8 @@ func (a *agentT) getValue(name, resource, version string) (access Accessor, stat
 	return access, messaging.StatusOK()
 }
 
-func (a *agentT) addValue(name, resource, version, author string, access Accessor) *messaging.Status {
-	if name == "" || resource == "" || access.Type == "" || access.Content == nil {
+func (a *agentT) addValue(name, resource, version, author string, content any) *messaging.Status {
+	if name == "" || resource == "" || content == nil {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
 	/*
@@ -155,7 +155,7 @@ func (a *agentT) addValue(name, resource, version, author string, access Accesso
 	var buf []byte
 	var err error
 
-	switch ptr := access.Content.(type) {
+	switch ptr := content.(type) {
 	case string:
 		v := text{ptr}
 		buf, err = json.Marshal(v)
@@ -179,13 +179,13 @@ func (a *agentT) addValue(name, resource, version, author string, access Accesso
 		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for nsName : %v", name))
 		return messaging.NewStatusError(http.StatusNoContent, err, a.Uri())
 	}
-	_, status := httpPutContent(name, resource, version, author, access)
+	_, status := httpPutContent(name, resource, version, author, buf)
 	if !status.OK() {
 		status.WithAgent(a.Uri())
 		status.WithMessage(fmt.Sprintf("name %v and version %v", name, version))
 		return status
 	}
-	a.cache.put(name, resource, version, access)
+	a.cache.put(name, resource, version, Accessor{Version: version, Type: http.DetectContentType(buf), Content: buf})
 	return status
 }
 

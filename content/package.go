@@ -18,7 +18,7 @@ type Accessor struct {
 // Resolution - in the real world
 type Resolution struct {
 	Get       func(nsName, resource, version string) (Accessor, *messaging.Status)
-	Add       func(nsName, resource, version, author string, access Accessor) *messaging.Status
+	Add       func(nsName, resource, version, author string, content any) *messaging.Status
 	Resources func(nsName string) ([]string, *messaging.Status)
 }
 
@@ -28,21 +28,12 @@ var Resolver = func() *Resolution {
 		Get: func(nsName, resource, version string) (Accessor, *messaging.Status) {
 			return agent.getValue(nsName, resource, version)
 		},
-		Add: func(nsName, resource, version, author string, access Accessor) *messaging.Status {
-			return agent.addValue(nsName, resource, version, author, access)
+		Add: func(nsName, resource, version, author string, content any) *messaging.Status {
+			return agent.addValue(nsName, resource, version, author, content)
 		},
 		Resources: func(nsName string) ([]string, *messaging.Status) {
 			return nil, nil
 		},
-		/*
-			GetAttributes: func(nsName string) (map[string]string, *messaging.Status) {
-				return agent.getAttributes(nsName)
-			},
-			AddAttributes: func(nsName, author string, m map[string]string) *messaging.Status {
-				return agent.addAttributes(nsName, author, m)
-			},
-
-		*/
 	}
 }()
 
