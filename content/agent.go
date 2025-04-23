@@ -138,7 +138,7 @@ func (a *agentT) getValue(name, resource, version string) (access Accessor, stat
 }
 
 func (a *agentT) addValue(name, resource, version, author string, access Accessor) *messaging.Status {
-	if name == "" || resource == "" || access.ContentType == "" || access.Content == nil {
+	if name == "" || resource == "" || access.Type == "" || access.Content == nil {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
 	}
 	/*

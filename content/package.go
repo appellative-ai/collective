@@ -8,20 +8,18 @@ import (
 	"net/http"
 )
 
-//Hpe Header map[string]string
-
+// Accessor -
 type Accessor struct {
-	ContentType string
-	Content     any
+	Version string // returned on a Get
+	Type    string // Content-Type
+	Content any
 }
 
 // Resolution - in the real world
 type Resolution struct {
-	Get  func(nsName, resource, version string) (Accessor, *messaging.Status)
-	Head func(nsName string) (Accessor, *messaging.Status)
-	Add  func(nsName, resource, version, author string, access Accessor) *messaging.Status
-	//GetAttributes func(nsName string) (map[string]string, *messaging.Status)
-	//AddAttributes func(nsName, author string, m map[string]string) *messaging.Status
+	Get       func(nsName, resource, version string) (Accessor, *messaging.Status)
+	Add       func(nsName, resource, version, author string, access Accessor) *messaging.Status
+	Resources func(nsName string) ([]string, *messaging.Status)
 }
 
 // Resolver -
@@ -32,6 +30,9 @@ var Resolver = func() *Resolution {
 		},
 		Add: func(nsName, resource, version, author string, access Accessor) *messaging.Status {
 			return agent.addValue(nsName, resource, version, author, access)
+		},
+		Resources: func(nsName string) ([]string, *messaging.Status) {
+			return nil, nil
 		},
 		/*
 			GetAttributes: func(nsName string) (map[string]string, *messaging.Status) {
