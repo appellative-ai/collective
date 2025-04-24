@@ -11,7 +11,7 @@ import (
 // Common resources
 
 const (
-	SelfResource     = "self" // maybe . information about the Unn, such as resource names
+	ListResource     = "ls"   // list for a name, allow arguments for filtering
 	SrcResource      = "src"  // location of source code, optional versioning
 	InstanceResource = "inst" // the state/instance of a type, optional versioning
 	InfoResource     = "info" // information, help
