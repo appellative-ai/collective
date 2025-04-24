@@ -8,6 +8,15 @@ import (
 	"net/http"
 )
 
+// Common resources
+
+const (
+	SelfResource     = "self" // optional versioning
+	InstanceResource = "inst" // optional versioning
+	InfoResource     = "info"
+	InfoResourceAlt  = "?"
+)
+
 // Accessor -
 type Accessor struct {
 	Version string // returned on a Get
