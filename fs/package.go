@@ -1,4 +1,9 @@
-package testrsc
+package fs
+
+import (
+	"embed"
+	"github.com/behavioral-ai/core/iox"
+)
 
 const (
 	BehavioralAIHtmlExample = "file:///f:/files/behavioral-ai/example.html"
@@ -13,3 +18,14 @@ const (
 	ResiliencyThreshold2 = "file:///f:/files/resiliency/threshold-2.json"
 	ResiliencyInterpret2 = "file:///f:/files/resiliency/interpret-2.json"
 )
+
+//go:embed files
+var f embed.FS
+
+func init() {
+	iox.Mount(f)
+}
+
+func ReadFile(name string) ([]byte, error) {
+	return iox.ReadFile(name)
+}

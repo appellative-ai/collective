@@ -2,7 +2,7 @@ package http
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/collective/testrsc"
+	"github.com/behavioral-ai/collective/fs"
 	"github.com/behavioral-ai/core/httpx"
 	"github.com/behavioral-ai/core/iox"
 	"net/http"
@@ -25,12 +25,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.URL.Path {
 	case textResource:
-		file = testrsc.BehavioralAITextExample
-		//file = testrsc.FilesAITextExample
+		file = fs.BehavioralAITextExample
 	case htmlResource:
-		file = testrsc.BehavioralAIHtmlExample
+		file = fs.BehavioralAIHtmlExample
 	case jsonResource:
-		file = testrsc.BehavioralAIJsonExample
+		file = fs.BehavioralAIJsonExample
 	default:
 		w.WriteHeader(http.StatusBadRequest)
 		return
