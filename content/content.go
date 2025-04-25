@@ -8,9 +8,9 @@ import (
 
 // resolutionKey -
 type resolutionKey struct {
-	Name     string `json:"name"`
-	Resource string `json:"resource"`
-	Version  string `json:"version"`
+	Name string `json:"name"`
+	//Resource string `json:"resource"`
+	//Version  string `json:"version"`
 }
 
 type content struct {
@@ -27,11 +27,11 @@ func newContentCache() *contentT {
 	return c
 }
 
-func (c *contentT) get(name, resource, version string) (Accessor, error) {
-	key := resolutionKey{Name: name, Resource: resource, Version: version}
+func (c *contentT) get(name string) (Accessor, error) {
+	key := resolutionKey{Name: name}
 	value, ok := c.m.Load(key)
 	if !ok {
-		return Accessor{}, errors.New(fmt.Sprintf("content [%v] [%v] not found", name, version))
+		return Accessor{}, errors.New(fmt.Sprintf("content [%v] not found", name))
 	}
 	if value1, ok1 := value.(content); ok1 {
 		return value1.body, nil
@@ -39,6 +39,6 @@ func (c *contentT) get(name, resource, version string) (Accessor, error) {
 	return Accessor{}, nil
 }
 
-func (c *contentT) put(name, resource, version string, access Accessor) {
-	c.m.Store(resolutionKey{Name: name, Resource: resource, Version: version}, content{body: access})
+func (c *contentT) put(name string, access Accessor) {
+	c.m.Store(resolutionKey{Name: name}, content{body: access})
 }

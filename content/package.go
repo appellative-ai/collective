@@ -25,46 +25,50 @@ type Accessor struct {
 	Content any
 }
 
+func (a Accessor) String() string {
+	return fmt.Sprintf("vers: %v type: %v", a.Version, a.Type)
+}
+
 // Resolution - in the real world
 type Resolution struct {
-	Get       func(nsName, resource, version string) (Accessor, *messaging.Status)
-	Add       func(nsName, resource, version, author string, content any) *messaging.Status
-	Resources func(nsName string) ([]string, *messaging.Status)
+	Get func(name string) (Accessor, *messaging.Status)
+	Add func(name, author string, content any) *messaging.Status
+	//List func(name string) ([]string, *messaging.Status)
 }
 
 // Resolver -
 var Resolver = func() *Resolution {
 	return &Resolution{
-		Get: func(nsName, resource, version string) (Accessor, *messaging.Status) {
-			return agent.getValue(nsName, resource, version)
+		Get: func(name string) (Accessor, *messaging.Status) {
+			return agent.getValue(name)
 		},
-		Add: func(nsName, resource, version, author string, content any) *messaging.Status {
-			return agent.addValue(nsName, resource, version, author, content)
+		Add: func(name, author string, content any) *messaging.Status {
+			return agent.addValue(name, author, content)
 		},
-		Resources: func(nsName string) ([]string, *messaging.Status) {
-			return nil, nil
-		},
+		//List: func(name string) ([]string, *messaging.Status) {
+		//	return nil, nil
+		//},
 	}
 }()
 
 // Resolve - generic typed resolution
 // TODO: support map[string]string??
-func Resolve[T any](nsName, resource, version string, resolver *Resolution) (T, *messaging.Status) {
+func Resolve[T any](name string, resolver *Resolution) (T, *messaging.Status) {
 	var t T
 
 	if resolver == nil {
-		return t, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", nsName)), NamespaceName)
+		return t, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", name)), NamespaceName)
 	}
-	access, status := resolver.Get(nsName, resource, version)
+	access, status := resolver.Get(name)
 	if !status.OK() {
 		return t, status
 	}
 	if access.Content == nil {
-		return t, messaging.NewStatusWithMessage(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", nsName), NamespaceName)
+		return t, messaging.NewStatusWithMessage(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", name), NamespaceName)
 	}
 	switch ptr := any(&t).(type) {
 	case *string:
-		t1, status1 := Resolve[text](nsName, resource, version, resolver)
+		t1, status1 := Resolve[text](name, resolver)
 		if !status1.OK() {
 			return t, status1
 		}
@@ -82,7 +86,7 @@ func Resolve[T any](nsName, resource, version string, resolver *Resolution) (T, 
 		if ok {
 			err := json.Unmarshal(body, ptr)
 			if err != nil {
-				return t, messaging.NewStatusError(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, nsName)), NamespaceName)
+				return t, messaging.NewStatusError(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, name)), NamespaceName)
 			}
 		}
 	}

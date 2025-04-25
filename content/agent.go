@@ -8,6 +8,7 @@ import (
 	"github.com/behavioral-ai/collective/operations"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
+	"github.com/behavioral-ai/core/uri"
 	"net/http"
 	"net/url"
 	"time"
@@ -117,29 +118,30 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getValue(name, resource, version string) (access Accessor, status *messaging.Status) {
+func (a *agentT) getValue(name string) (access Accessor, status *messaging.Status) {
 	if name == "" {
-		return Accessor{}, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
+		return Accessor{}, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)), a.Uri())
 	}
 	var err error
-	access, err = a.cache.get(name, resource, version)
+	access, err = a.cache.get(name)
 	if err == nil {
 		return access, messaging.StatusOK()
 	}
 	// Cache miss
-	access, status = httpGetContent(name, resource, version)
+	var buf []byte
+	buf, status = httpGetContent(name)
 	if !status.OK() {
 		status.WithAgent(a.Uri())
-		status.WithMessage(fmt.Sprintf("name %v and version %v", name, version))
+		status.WithMessage(fmt.Sprintf("name %v", name))
 		return access, status
 	}
-	a.cache.put(name, resource, version, access)
+	a.cache.put(name, Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return access, messaging.StatusOK()
 }
 
-func (a *agentT) addValue(name, resource, version, author string, content any) *messaging.Status {
-	if name == "" || resource == "" || content == nil {
-		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v version %v", name, version)), a.Uri())
+func (a *agentT) addValue(name, author string, content any) *messaging.Status {
+	if name == "" || author == "" || content == nil {
+		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)), a.Uri())
 	}
 	/*
 		if nsName == "" {
@@ -179,13 +181,13 @@ func (a *agentT) addValue(name, resource, version, author string, content any) *
 		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for nsName : %v", name))
 		return messaging.NewStatusError(http.StatusNoContent, err, a.Uri())
 	}
-	_, status := httpPutContent(name, resource, version, author, buf)
+	_, status := httpPutContent(name, author, buf)
 	if !status.OK() {
 		status.WithAgent(a.Uri())
-		status.WithMessage(fmt.Sprintf("name %v and version %v", name, version))
+		status.WithMessage(fmt.Sprintf("name %v", name))
 		return status
 	}
-	a.cache.put(name, resource, version, Accessor{Version: version, Type: http.DetectContentType(buf), Content: buf})
+	a.cache.put(name, Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return status
 }
 
