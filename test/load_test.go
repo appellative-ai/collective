@@ -6,19 +6,19 @@ import (
 )
 
 func ExampleLoadResolver() {
-	r := content.NewEphemeralResolver()
+	r := content.Resolver
 	status := loadResolver(r)
 	fmt.Printf("test: loadResolver() -> [status:%v]\n", status)
 
-	buf, status1 := r.GetValue(ResiliencyThreshold, 1)
-	fmt.Printf("test: GetValue(\"%v\") -> [status:%v] [buf:%v]\n", ResiliencyThreshold, status1, string(buf))
+	access, status1 := r.Get(ResiliencyThreshold)
+	fmt.Printf("test: Get(\"%v\") -> [status:%v] [%v]\n", ResiliencyThreshold, status1, access)
 
-	buf, status1 = r.GetValue(ResiliencyInterpret, 1)
-	fmt.Printf("test: GetValue(\"%v\") -> [status:%v] [buf:%v]\n", ResiliencyInterpret, status1, string(buf))
+	access, status1 = r.Get(ResiliencyInterpret)
+	fmt.Printf("test: Get(\"%v\") -> [status:%v] %v]\n", ResiliencyInterpret, status1, access)
 
 	//Output:
 	//test: loadResolver() -> [status:OK]
-	//test: GetValue("resiliency:type/operative/agent/threshold") -> [status:OK] [buf:true]
-	//test: GetValue("resiliency:type/operative/agent/interpret") -> [status:OK] [buf:true]
+	//test: Get("behavioral-ai:resiliency:type/operative/threshold") -> [status:OK] [vers:  type: text/plain; charset=utf-8 content: true]
+	//test: Get("behavioral-ai:resiliency:type/operative/interpret") -> [status:OK] vers:  type: text/plain; charset=utf-8 content: true]
 
 }

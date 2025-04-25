@@ -1,11 +1,13 @@
 package testrsc
 
 const (
-	//ResiliencyGradient        = "file:///f:/files/resiliency/lookup-gradient.json"
-	//ResiliencyThreshold       = "file:///f:/files/resiliency/lookup-threshold.json"
+	BehavioralAIHtmlExample = "file:///f:/files/behavioral-ai/example.html"
+	BehavioralAIJsonExample = "file:///f:/files/behavioral-ai/threshold.json"
+	BehavioralAITextExample = "file:///f:/files/behavioral-ai/get-resp.txt"
+
 	ResiliencyTrafficProfile1 = "file:///f:/files/metrics/traffic-profile-1.json"
 
-	ResiliencyThreshold1 = "file:///f:/files/resiliency/collective_namespace_state_1.2.3.json"
+	ResiliencyThreshold1 = "file:///f:/files/resiliency/threshold-1.json"
 	ResiliencyInterpret1 = "file:///f:/files/resiliency/interpret-1.json"
 
 	ResiliencyThreshold2 = "file:///f:/files/resiliency/threshold-2.json"

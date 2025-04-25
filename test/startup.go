@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	ResiliencyThreshold = "resiliency:type/operative/agent/threshold"
-	ResiliencyInterpret = "resiliency:type/operative/agent/interpret"
+	ResiliencyThreshold = "behavioral-ai:resiliency:type/operative/threshold"
+	ResiliencyInterpret = "behavioral-ai:resiliency:type/operative/interpret"
 )
 
 // Testing

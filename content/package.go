@@ -26,7 +26,7 @@ type Accessor struct {
 }
 
 func (a Accessor) String() string {
-	return fmt.Sprintf("vers: %v type: %v", a.Version, a.Type)
+	return fmt.Sprintf("vers: %v type: %v content: %v", a.Version, a.Type, a.Content != nil)
 }
 
 // Resolution - in the real world

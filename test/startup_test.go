@@ -10,20 +10,20 @@ func ExampleStartup() {
 	Startup()
 
 	name := ResiliencyThreshold
-	buf, status1 := r.GetValue(name, 1)
-	fmt.Printf("test: GetContent(\"%v\") -> [status:%v] [buf:%v]\n", name, status1, buf != nil)
+	access, status1 := r.Get(name)
+	fmt.Printf("test: Get(\"%v\") -> [status:%v] [access:%v]\n", name, status1, access)
 
 	name = ResiliencyInterpret
-	buf, status1 = r.GetValue(name, 1)
-	fmt.Printf("test: GetContent(\"%v\") -> [status:%v] [buf:%v]\n", name, status1, buf != nil)
+	access, status1 = r.Get(name)
+	fmt.Printf("test: Get(\"%v\") -> [status:%v] [access:%v]\n", name, status1, access)
 
 	name = ProfileName
-	buf, status1 = r.GetValue(name, 1)
-	fmt.Printf("test: GetContent(\"%v\") -> [status:%v] [buf:%v]\n", name, status1, buf != nil)
+	access, status1 = r.Get(name)
+	fmt.Printf("test: Get(\"%v\") -> [status:%v] [buf:%v]\n", name, status1, access)
 
 	//Output:
-	//test: GetContent("resiliency:type/operative/agent/threshold") -> [status:OK] [buf:true]
-	//test: GetContent("resiliency:type/operative/agent/interpret") -> [status:OK] [buf:true]
-	//test: GetContent("resiliency:type/domain/metrics/profile") -> [status:OK] [buf:true]
+	//test: Get("behavioral-ai:resiliency:type/operative/threshold") -> [status:OK] [access:vers:  type: text/plain; charset=utf-8 content: true]
+	//test: Get("behavioral-ai:resiliency:type/operative/interpret") -> [status:OK] [access:vers:  type: text/plain; charset=utf-8 content: true]
+	//test: Get("behavioral-ai:resiliency:type/domain/metrics/profile") -> [status:OK] [buf:vers:  type: text/plain; charset=utf-8 content: true]
 
 }
