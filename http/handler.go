@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/behavioral-ai/collective/fs"
 	"github.com/behavioral-ai/core/httpx"
-	"github.com/behavioral-ai/core/iox"
 	"net/http"
 	"strings"
 )
@@ -21,20 +20,20 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var file string
+	var name string
 
 	switch r.URL.Path {
 	case textResource:
-		file = fs.BehavioralAITextExample
+		name = fs.BehavioralAITextExample
 	case htmlResource:
-		file = fs.BehavioralAIHtmlExample
+		name = fs.BehavioralAIHtmlExample
 	case jsonResource:
-		file = fs.BehavioralAIJsonExample
+		name = fs.BehavioralAIJsonExample
 	default:
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	buf, err := iox.ReadFile(file)
+	buf, err := fs.ReadFile(name)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
