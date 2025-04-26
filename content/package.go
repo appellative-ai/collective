@@ -32,7 +32,7 @@ func (a Accessor) String() string {
 // Resolution - in the real world
 type Resolution struct {
 	Get func(name string) (Accessor, *messaging.Status)
-	Add func(name, author string, content any) *messaging.Status
+	Add func(name, authority, author string, content any) *messaging.Status
 	//List func(name string) ([]string, *messaging.Status)
 }
 
@@ -42,8 +42,8 @@ var Resolver = func() *Resolution {
 		Get: func(name string) (Accessor, *messaging.Status) {
 			return agent.getValue(name)
 		},
-		Add: func(name, author string, content any) *messaging.Status {
-			return agent.addValue(name, author, content)
+		Add: func(name, authority, author string, content any) *messaging.Status {
+			return agent.addValue(name, authority, author, content)
 		},
 		//List: func(name string) ([]string, *messaging.Status) {
 		//	return nil, nil

@@ -139,7 +139,7 @@ func (a *agentT) getValue(name string) (access Accessor, status *messaging.Statu
 	return access, messaging.StatusOK()
 }
 
-func (a *agentT) addValue(name, author string, content any) *messaging.Status {
+func (a *agentT) addValue(name, authority, author string, content any) *messaging.Status {
 	if name == "" || author == "" || content == nil {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)), a.Uri())
 	}
@@ -181,7 +181,7 @@ func (a *agentT) addValue(name, author string, content any) *messaging.Status {
 		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for nsName : %v", name))
 		return messaging.NewStatusError(http.StatusNoContent, err, a.Uri())
 	}
-	_, status := httpPutContent(name, author, buf)
+	_, status := httpPutContent(name, authority, author, buf)
 	if !status.OK() {
 		status.WithAgent(a.Uri())
 		status.WithMessage(fmt.Sprintf("name %v", name))
