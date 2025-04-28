@@ -31,19 +31,19 @@ func (a Accessor) String() string {
 
 // Resolution - in the real world
 type Resolution struct {
-	Get func(name string) (Accessor, *messaging.Status)
-	Add func(name, authority, author string, content any) *messaging.Status
+	Get func(name, resource string) (Accessor, *messaging.Status)
+	Add func(name, resource, author, authority string, access Accessor) *messaging.Status
 	//List func(name string) ([]string, *messaging.Status)
 }
 
 // Resolver -
 var Resolver = func() *Resolution {
 	return &Resolution{
-		Get: func(name string) (Accessor, *messaging.Status) {
-			return agent.getValue(name)
+		Get: func(name, resource string) (Accessor, *messaging.Status) {
+			return agent.getValue(name, resource)
 		},
-		Add: func(name, authority, author string, content any) *messaging.Status {
-			return agent.addValue(name, authority, author, content)
+		Add: func(name, resource, author, authority string, access Accessor) *messaging.Status {
+			return agent.addValue(name, resource, author, authority, access)
 		},
 		//List: func(name string) ([]string, *messaging.Status) {
 		//	return nil, nil
@@ -53,13 +53,13 @@ var Resolver = func() *Resolution {
 
 // Resolve - generic typed resolution
 // TODO: support map[string]string??
-func Resolve[T any](name string, resolver *Resolution) (T, *messaging.Status) {
+func Resolve[T any](name, resource string, resolver *Resolution) (T, *messaging.Status) {
 	var t T
 
 	if resolver == nil {
 		return t, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", name)), NamespaceName)
 	}
-	access, status := resolver.Get(name)
+	access, status := resolver.Get(name, resource)
 	if !status.OK() {
 		return t, status
 	}
@@ -68,7 +68,7 @@ func Resolve[T any](name string, resolver *Resolution) (T, *messaging.Status) {
 	}
 	switch ptr := any(&t).(type) {
 	case *string:
-		t1, status1 := Resolve[text](name, resolver)
+		t1, status1 := Resolve[text](name, resource, resolver)
 		if !status1.OK() {
 			return t, status1
 		}

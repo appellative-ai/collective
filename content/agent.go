@@ -118,12 +118,12 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getValue(name string) (access Accessor, status *messaging.Status) {
+func (a *agentT) getValue(name, resource string) (access Accessor, status *messaging.Status) {
 	if name == "" {
 		return Accessor{}, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)), a.Uri())
 	}
 	var err error
-	access, err = a.cache.get(name)
+	access, err = a.cache.get(name, resource)
 	if err == nil {
 		return access, messaging.StatusOK()
 	}
@@ -135,12 +135,12 @@ func (a *agentT) getValue(name string) (access Accessor, status *messaging.Statu
 		status.WithMessage(fmt.Sprintf("name %v", name))
 		return access, status
 	}
-	a.cache.put(name, Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
+	a.cache.put(name, resource, Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return access, messaging.StatusOK()
 }
 
-func (a *agentT) addValue(name, authority, author string, content any) *messaging.Status {
-	if name == "" || author == "" || content == nil {
+func (a *agentT) addValue(name, resource, author, authority string, access Accessor) *messaging.Status {
+	if name == "" || author == "" || authority == "" || access.Content == nil {
 		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)), a.Uri())
 	}
 	/*
@@ -157,7 +157,7 @@ func (a *agentT) addValue(name, authority, author string, content any) *messagin
 	var buf []byte
 	var err error
 
-	switch ptr := content.(type) {
+	switch ptr := access.Content.(type) {
 	case string:
 		v := text{ptr}
 		buf, err = json.Marshal(v)
@@ -187,7 +187,7 @@ func (a *agentT) addValue(name, authority, author string, content any) *messagin
 		status.WithMessage(fmt.Sprintf("name %v", name))
 		return status
 	}
-	a.cache.put(name, Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
+	a.cache.put(name, resource, access) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return status
 }
 

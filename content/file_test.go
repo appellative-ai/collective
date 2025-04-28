@@ -99,10 +99,10 @@ func _ExampleFileLoad() {
 	err := loadContent(c, dir)
 	fmt.Printf("test: loadContent() -> [err:%v]\n", err)
 
-	acc, status := c.get(name1)
+	acc, status := c.get(name1, "")
 	fmt.Printf("test: c.get() -> [status:%v] [%v]\n", status, acc.Type)
 
-	acc, status = c.get(name2)
+	acc, status = c.get(name2, "")
 	fmt.Printf("test: c.get() -> [status:%v] [%v]\n", status, acc.Type)
 
 	//Output:

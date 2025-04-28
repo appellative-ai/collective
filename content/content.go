@@ -8,8 +8,8 @@ import (
 
 // resolutionKey -
 type resolutionKey struct {
-	Name string `json:"name"`
-	//Resource string `json:"resource"`
+	Name     string `json:"name"`
+	Resource string `json:"resource"`
 	//Version  string `json:"version"`
 }
 
@@ -27,8 +27,8 @@ func newContentCache() *contentT {
 	return c
 }
 
-func (c *contentT) get(name string) (Accessor, error) {
-	key := resolutionKey{Name: name}
+func (c *contentT) get(name, resource string) (Accessor, error) {
+	key := resolutionKey{Name: name, Resource: resource}
 	value, ok := c.m.Load(key)
 	if !ok {
 		return Accessor{}, errors.New(fmt.Sprintf("content [%v] not found", name))
@@ -39,6 +39,6 @@ func (c *contentT) get(name string) (Accessor, error) {
 	return Accessor{}, nil
 }
 
-func (c *contentT) put(name string, access Accessor) {
-	c.m.Store(resolutionKey{Name: name}, content{body: access})
+func (c *contentT) put(name, resource string, access Accessor) {
+	c.m.Store(resolutionKey{Name: name, Resource: resource}, content{body: access})
 }
