@@ -20,8 +20,9 @@ var (
 )
 
 type agentT struct {
-	running  bool
-	duration time.Duration
+	running   bool
+	duration  time.Duration
+	relations *relationT
 
 	handler  eventing.Agent
 	ticker   *messaging.Ticker
@@ -38,6 +39,7 @@ func newAgent(handler eventing.Agent) *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
 	a.handler = handler
+	a.relations = newRelation()
 
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
@@ -132,5 +134,6 @@ func (a *agentT) addRelation(name, cname, thing1, thing2, authority, author stri
 		status.WithMessage(fmt.Sprintf("name1 %v", name))
 		return status
 	}
+	a.relations.put(name, thing1, thing2)
 	return status
 }
