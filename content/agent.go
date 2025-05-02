@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/collective/eventing"
-	"github.com/behavioral-ai/collective/operations"
+	"github.com/behavioral-ai/core/eventing"
+	"github.com/behavioral-ai/core/host"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/core/uri"
@@ -40,7 +40,7 @@ type agentT struct {
 
 func init() {
 	agent = newAgent(eventing.Handler)
-	operations.Register(agent)
+	host.Register(agent)
 }
 
 func newAgent(handler eventing.Agent) *agentT {

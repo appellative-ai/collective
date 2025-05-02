@@ -17,7 +17,7 @@ func ExampleResolveString() {
 		c.put(name, "", Accessor{Content: buf})
 		//fmt.Printf("test: newContentCache.put(1) -> [status:%v]\n", status)
 
-		v, status1 := Resolve[text](name, "", nil)
+		v, status1 := Resolve[text]("", name, "", nil)
 		fmt.Printf("test: Resolve[text]() -> [%v] [%v]\n", status1, v)
 	}
 
