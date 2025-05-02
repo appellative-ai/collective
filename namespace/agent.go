@@ -3,7 +3,6 @@ package namespace
 import (
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/core/eventing"
 	"github.com/behavioral-ai/core/host"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
@@ -11,7 +10,7 @@ import (
 )
 
 const (
-	AgentNamespaceName = "unn:behavioral-ai.github.com:resiliency:agent/collective/namespace"
+	AgentNamespaceName = "resiliency:agent/collective/namespace"
 	defaultDuration    = time.Second * 10
 )
 
@@ -24,21 +23,21 @@ type agentT struct {
 	duration  time.Duration
 	relations *relationT
 
-	handler  eventing.Agent
+	//handler  eventing.Agent
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 	master   *messaging.Channel
 }
 
 func init() {
-	agent = newAgent(eventing.Handler)
+	agent = newAgent()
 	host.Register(agent)
 }
 
-func newAgent(handler eventing.Agent) *agentT {
+func newAgent() *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
-	a.handler = handler
+	//a.handler = handler
 	a.relations = newRelation()
 
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)

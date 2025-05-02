@@ -34,7 +34,7 @@ func (a Accessor) String() string {
 // How to handle local vs distributed
 type Resolution struct {
 	Get func(collective, name, resource string) (Accessor, *messaging.Status)
-	Add func(name, resource, author string, access Accessor) *messaging.Status
+	Add func(name, resource, author, authority string, access Accessor) *messaging.Status
 	//List func(name string) ([]string, *messaging.Status)
 }
 
@@ -44,8 +44,9 @@ var Resolver = func() *Resolution {
 		Get: func(collective, name, resource string) (Accessor, *messaging.Status) {
 			return agent.getValue(name, resource)
 		},
-		Add: func(name, resource, author string, access Accessor) *messaging.Status {
-			return agent.addValue(name, resource, author, "", access)
+		Add: func(name, resource, author, authority string, access Accessor) *messaging.Status {
+			// TODO: add collective name
+			return agent.addValue(name, resource, author, authority, access)
 		},
 		//List: func(name string) ([]string, *messaging.Status) {
 		//	return nil, nil
