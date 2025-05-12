@@ -33,20 +33,20 @@ func (a Accessor) String() string {
 // Can only add in current collective. An empty collective is assuming the local vs distributed
 // How to handle local vs distributed
 type Resolution struct {
-	Get func(collective, name, resource string) (Accessor, *messaging.Status)
-	Add func(name, resource, author, authority string, access Accessor) *messaging.Status
+	Get func(collective, name, resource string) (Accessor, *Error)
+	Add func(name, resource, author, authority string, access Accessor) *Error
 	//List func(name string) ([]string, *messaging.Status)
 }
 
 // Resolver -
 var Resolver = func() *Resolution {
 	return &Resolution{
-		Get: func(collective, name, resource string) (Accessor, *messaging.Status) {
-			return agent.getValue(name, resource)
+		Get: func(collective, name, resource string) (Accessor, *Error) {
+			return agent.getContent(name, resource)
 		},
-		Add: func(name, resource, author, authority string, access Accessor) *messaging.Status {
+		Add: func(name, resource, author, authority string, access Accessor) *Error {
 			// TODO: add collective name
-			return agent.addValue(name, resource, author, authority, access)
+			return agent.addContent(name, resource, author, authority, access)
 		},
 		//List: func(name string) ([]string, *messaging.Status) {
 		//	return nil, nil

@@ -117,25 +117,22 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getValue(name, resource string) (access Accessor, status *messaging.Status) {
+func (a *agentT) getContent(name, resource string) (Accessor, *Error) {
 	if name == "" {
-		return Accessor{}, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)), a.Uri())
+		return Accessor{}, NewError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)), "")
 	}
-	var err error
-	access, err = a.cache.get(name, resource)
+	access, err := a.cache.get(name, resource)
 	if err == nil {
-		return access, messaging.StatusOK()
+		return access, nil
 	}
 	// Cache miss
-	var buf []byte
-	buf, status = httpGetContent(name)
-	if !status.OK() {
-		status.WithAgent(a.Uri())
-		status.WithMessage(fmt.Sprintf("name %v", name))
-		return access, status
+	buf, err1 := httpGetContent(name)
+	if err1 != nil {
+		return Accessor{}, err1.SetMessage(fmt.Sprintf("name %v", name))
 	}
-	a.cache.put(name, resource, Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
-	return access, messaging.StatusOK()
+	access = Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf}
+	a.cache.put(name, resource, access)
+	return access, nil
 }
 
 func (a *agentT) addValue(name, resource, author, authority string, access Accessor) *messaging.Status {
@@ -189,40 +186,3 @@ func (a *agentT) addValue(name, resource, author, authority string, access Acces
 	a.cache.put(name, resource, access) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return status
 }
-
-/*
-func (a *agentT) getAttributes(name string) (map[string]string, *messaging.Status) {
-	if name == "" {
-		return nil, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("map name [%v] is empty", name)), a.Uri())
-	}
-	m, err := a.mapCache.get(name)
-	if err == nil {
-		return m, messaging.StatusOK()
-	}
-	// Cache miss
-	buf, status := httpGetContent(name, resource,version)
-	if !status.OK() {
-		status.WithAgent(a.Uri())
-		status.WithMessage(fmt.Sprintf("map name [%v] not found", name))
-		return nil, status
-	}
-	// TODO : parse buf into map
-	if len(buf) > 0 {
-	}
-	return nil, messaging.StatusNotFound().WithAgent(a.Uri())
-}
-
-func (a *agentT) addAttributes(name, author string, m map[string]string) *messaging.Status {
-	if name == "" || author == "" || m == nil {
-		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("invalid argument name [%v],author [%v] or map", name, author)), a.Uri())
-	}
-	err := a.mapCache.put(name, m)
-	if err == nil {
-		return messaging.StatusOK()
-	}
-	//buf,status := httpPutContent(name,author,)
-	return messaging.StatusOK() //BadRequest().WithAgent(a.Uri())
-}
-
-
-*/
