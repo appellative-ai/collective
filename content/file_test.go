@@ -95,7 +95,7 @@ func _ExampleFileLoad() {
 	name1 := "resiliency:thing/operative/agent/gradient"
 	name2 := "resiliency:thing/operative/agent/threshold"
 
-	c := newContentCache()
+	c := newCache()
 	err := loadContent(c, dir)
 	fmt.Printf("test: loadContent() -> [err:%v]\n", err)
 

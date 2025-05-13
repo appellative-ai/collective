@@ -64,7 +64,7 @@ func parseResolutionKey(s string) (ResolutionKey, error) {
 	return k, nil
 }
 
-func loadContent(cache *contentT, dir string) error {
+func loadContent(cache *cacheT, dir string) error {
 	fileSystem := iox.DirFS(dir)
 	return fs.WalkDir(fileSystem, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {

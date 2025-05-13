@@ -17,17 +17,17 @@ type content struct {
 	body Accessor
 }
 
-type contentT struct {
+type cacheT struct {
 	m *sync.Map
 }
 
-func newContentCache() *contentT {
-	c := new(contentT)
+func newCache() *cacheT {
+	c := new(cacheT)
 	c.m = new(sync.Map)
 	return c
 }
 
-func (c *contentT) get(name, resource string) (Accessor, error) {
+func (c *cacheT) get(name, resource string) (Accessor, error) {
 	key := resolutionKey{Name: name, Resource: resource}
 	value, ok := c.m.Load(key)
 	if !ok {
@@ -39,6 +39,6 @@ func (c *contentT) get(name, resource string) (Accessor, error) {
 	return Accessor{}, nil
 }
 
-func (c *contentT) put(name, resource string, access Accessor) {
+func (c *cacheT) put(name, resource string, access Accessor) {
 	c.m.Store(resolutionKey{Name: name, Resource: resource}, content{body: access})
 }

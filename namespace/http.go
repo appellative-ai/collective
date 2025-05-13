@@ -1,18 +1,17 @@
 package namespace
 
 import (
-	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 )
 
-func httpPutThing(name, cname, authority, author string) (*http.Response, *messaging.Status) {
+func httpPutThing(name, cname, authority, author string) (*http.Response, *Status) {
 	//req, _ := http.NewRequest(http.MethodPut, "", io.Nnil)
 	//resp,status := http2.Do(req)
-	return nil, messaging.StatusOK()
+	return nil, StatusOK()
 }
 
-func httpPutRelation(name, cname, thing1, thing2, authority, author string) (*http.Response, *messaging.Status) {
+func httpPutRelation(name, cname, thing1, thing2, authority, author string) (*http.Response, *Status) {
 	//req, _ := http.NewRequest(http.MethodPut, "", io.Nnil)
 	//resp,status := http2.Do(req)
-	return nil, messaging.StatusOK()
+	return nil, StatusOK()
 }

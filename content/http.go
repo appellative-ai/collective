@@ -5,7 +5,7 @@ import (
 )
 
 // TODO : support HEAD requests so that variants, of different content type, can be supported
-func httpGetContent(name string) ([]byte, *Error) {
+func httpGetContent(name string) ([]byte, *Status) {
 	/*
 		req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, module.ContentURL(nsName, version), nil)
 		if err != nil {
@@ -26,7 +26,7 @@ func httpGetContent(name string) ([]byte, *Error) {
 	return nil, NotFound
 }
 
-func httpPutContent(name, authority, author string, buf []byte) (*http.Response, *Error) {
+func httpPutContent(name, authority, author string, buf []byte) (*http.Response, *Status) {
 	//req, _ := http.NewRequest(http.MethodPut, "", io.Nnil)
 	//resp,status := http2.Do(req)
 	return nil, NotFound

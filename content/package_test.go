@@ -8,7 +8,7 @@ import (
 func ExampleResolveString() {
 	name := "test:thing:text@2"
 
-	c := newContentCache()
+	c := newCache()
 	buf, err := json.Marshal(text{Value: "Generic typed get"})
 	if err != nil {
 		fmt.Printf("test: json.Marshall() -> [err:%v]\n", err)

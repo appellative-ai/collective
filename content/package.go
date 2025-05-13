@@ -33,18 +33,18 @@ func (a Accessor) String() string {
 // Can only add in current collective. An empty collective is assuming the local vs distributed
 // How to handle local vs distributed
 type Resolution struct {
-	Get func(collective, name, resource string) (Accessor, *Error)
-	Add func(name, resource, author, authority string, access Accessor) *Error
+	Get func(collective, name, resource string) (Accessor, *Status)
+	Add func(name, resource, author, authority string, access Accessor) *Status
 	//List func(name string) ([]string, *messaging.Status)
 }
 
 // Resolver -
 var Resolver = func() *Resolution {
 	return &Resolution{
-		Get: func(collective, name, resource string) (Accessor, *Error) {
+		Get: func(collective, name, resource string) (Accessor, *Status) {
 			return agent.getContent(name, resource)
 		},
-		Add: func(name, resource, author, authority string, access Accessor) *Error {
+		Add: func(name, resource, author, authority string, access Accessor) *Status {
 			// TODO: add collective name
 			return agent.addContent(name, resource, author, authority, access)
 		},
@@ -56,18 +56,18 @@ var Resolver = func() *Resolution {
 
 // Resolve - generic typed resolution
 // TODO: support map[string]string??
-func Resolve[T any](collective, name, resource string, resolver *Resolution) (T, *messaging.Status) {
+func Resolve[T any](collective, name, resource string, resolver *Resolution) (T, *Status) {
 	var t T
 
 	if resolver == nil {
-		return t, messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", name)), NamespaceName)
+		return t, NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", name)))
 	}
 	access, status := resolver.Get(collective, name, resource)
 	if !status.OK() {
 		return t, status
 	}
 	if access.Content == nil {
-		return t, messaging.NewStatusWithMessage(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", name), NamespaceName)
+		return t, NewStatus(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", name))
 	}
 	switch ptr := any(&t).(type) {
 	case *string:
@@ -89,9 +89,9 @@ func Resolve[T any](collective, name, resource string, resolver *Resolution) (T,
 		if ok {
 			err := json.Unmarshal(body, ptr)
 			if err != nil {
-				return t, messaging.NewStatusError(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, name)), NamespaceName)
+				return t, NewStatus(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, name)))
 			}
 		}
 	}
-	return t, messaging.StatusOK()
+	return t, StatusOK()
 }

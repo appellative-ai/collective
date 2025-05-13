@@ -29,7 +29,7 @@ type text struct {
 type agentT struct {
 	running  bool
 	duration time.Duration
-	cache    *contentT
+	cache    *cacheT
 
 	//handler  eventing.Agent
 	ticker   *messaging.Ticker
@@ -45,7 +45,7 @@ func init() {
 func newAgent() *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
-	a.cache = newContentCache()
+	a.cache = newCache()
 
 	//a.handler = handler
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
@@ -117,9 +117,9 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getContent(name, resource string) (Accessor, *Error) {
+func (a *agentT) getContent(name, resource string) (Accessor, *Status) {
 	if name == "" {
-		return Accessor{}, NewError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)), "")
+		return Accessor{}, NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	access, err := a.cache.get(name, resource)
 	if err == nil {
@@ -135,9 +135,9 @@ func (a *agentT) getContent(name, resource string) (Accessor, *Error) {
 	return access, nil
 }
 
-func (a *agentT) addValue(name, resource, author, authority string, access Accessor) *messaging.Status {
+func (a *agentT) addContent(name, resource, author, authority string, access Accessor) *Status {
 	if name == "" || author == "" || authority == "" || access.Content == nil {
-		return messaging.NewStatusError(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)), a.Uri())
+		return NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	/*
 		if nsName == "" {
@@ -158,30 +158,28 @@ func (a *agentT) addValue(name, resource, author, authority string, access Acces
 		v := text{ptr}
 		buf, err = json.Marshal(v)
 		if err != nil {
-			return messaging.NewStatusError(messaging.StatusJsonEncodeError, err, a.Uri())
+			return NewStatus(messaging.StatusJsonEncodeError, err)
 		}
 	case []byte:
 		buf = ptr
 	case *url.URL:
 		buf, err = iox.ReadFile(ptr)
 		if err != nil {
-			return messaging.NewStatusError(messaging.StatusIOError, err, a.Uri())
+			return NewStatus(messaging.StatusIOError, err)
 		}
 	default:
 		buf, err = json.Marshal(ptr)
 		if err != nil {
-			return messaging.NewStatusError(messaging.StatusJsonEncodeError, err, a.Uri())
+			return NewStatus(messaging.StatusJsonEncodeError, err)
 		}
 	}
 	if len(buf) == 0 {
 		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for nsName : %v", name))
-		return messaging.NewStatusError(http.StatusNoContent, err, a.Uri())
+		return NewStatus(http.StatusNoContent, err)
 	}
 	_, status := httpPutContent(name, authority, author, buf)
 	if !status.OK() {
-		status.WithAgent(a.Uri())
-		status.WithMessage(fmt.Sprintf("name %v", name))
-		return status
+		return status.SetMessage(fmt.Sprintf("name %v", name))
 	}
 	a.cache.put(name, resource, access) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return status

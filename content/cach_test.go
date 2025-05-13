@@ -6,10 +6,10 @@ import (
 	"net/http"
 )
 
-func ExampleNewContentCache() {
+func ExampleNewCache() {
 	name := "test:thing:text"
 
-	c := newContentCache()
+	c := newCache()
 	buf, err := json.Marshal(text{Value: "Hello World!"})
 	if err != nil {
 		fmt.Printf("test: json.Marshall() -> [err:%v]\n", err)
