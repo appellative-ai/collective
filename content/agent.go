@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/core/host"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/core/uri"
@@ -14,7 +13,7 @@ import (
 )
 
 const (
-	NamespaceName   = "resiliency:agent/collective/content"
+	namespaceName   = "collective:agent/content"
 	defaultDuration = time.Second * 10
 )
 
@@ -37,9 +36,9 @@ type agentT struct {
 	master   *messaging.Channel
 }
 
-func init() {
+func NewAgent() messaging.Agent {
 	agent = newAgent()
-	host.Register(agent)
+	return agent //host.Register(agent)
 }
 
 func newAgent() *agentT {
@@ -58,7 +57,7 @@ func newAgent() *agentT {
 func (a *agentT) String() string { return a.Uri() }
 
 // Uri - agent identifier
-func (a *agentT) Uri() string { return NamespaceName }
+func (a *agentT) Uri() string { return namespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
@@ -117,9 +116,9 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getContent(name, resource string) (Accessor, *Status) {
+func (a *agentT) getContent(name, resource string) (Accessor, *messaging.Status) {
 	if name == "" {
-		return Accessor{}, NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
+		return Accessor{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	access, err := a.cache.get(name, resource)
 	if err == nil {
@@ -128,16 +127,16 @@ func (a *agentT) getContent(name, resource string) (Accessor, *Status) {
 	// Cache miss
 	buf, err1 := httpGetContent(name)
 	if err1 != nil {
-		return Accessor{}, err1.SetMessage(fmt.Sprintf("name %v", name))
+		return Accessor{}, err1.WithMessage(fmt.Sprintf("name %v", name))
 	}
 	access = Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf}
 	a.cache.put(name, resource, access)
 	return access, nil
 }
 
-func (a *agentT) addContent(name, resource, author, authority string, access Accessor) *Status {
+func (a *agentT) addContent(name, resource, author, authority string, access Accessor) *messaging.Status {
 	if name == "" || author == "" || authority == "" || access.Content == nil {
-		return NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
+		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	/*
 		if nsName == "" {
@@ -158,28 +157,28 @@ func (a *agentT) addContent(name, resource, author, authority string, access Acc
 		v := text{ptr}
 		buf, err = json.Marshal(v)
 		if err != nil {
-			return NewStatus(messaging.StatusJsonEncodeError, err)
+			return messaging.NewStatus(messaging.StatusJsonEncodeError, err)
 		}
 	case []byte:
 		buf = ptr
 	case *url.URL:
 		buf, err = iox.ReadFile(ptr)
 		if err != nil {
-			return NewStatus(messaging.StatusIOError, err)
+			return messaging.NewStatus(messaging.StatusIOError, err)
 		}
 	default:
 		buf, err = json.Marshal(ptr)
 		if err != nil {
-			return NewStatus(messaging.StatusJsonEncodeError, err)
+			return messaging.NewStatus(messaging.StatusJsonEncodeError, err)
 		}
 	}
 	if len(buf) == 0 {
 		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for nsName : %v", name))
-		return NewStatus(http.StatusNoContent, err)
+		return messaging.NewStatus(http.StatusNoContent, err)
 	}
 	_, status := httpPutContent(name, authority, author, buf)
 	if !status.OK() {
-		return status.SetMessage(fmt.Sprintf("name %v", name))
+		return status.WithMessage(fmt.Sprintf("name %v", name))
 	}
 	a.cache.put(name, resource, access) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return status

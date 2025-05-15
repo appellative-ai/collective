@@ -3,15 +3,15 @@ package namespace
 import (
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/core/host"
+	"github.com/behavioral-ai/collective/config"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"time"
 )
 
 const (
-	AgentNamespaceName = "resiliency:agent/collective/namespace"
-	defaultDuration    = time.Second * 10
+	namespaceName   = "collective:agent/namespace"
+	defaultDuration = time.Second * 10
 )
 
 var (
@@ -22,6 +22,7 @@ type agentT struct {
 	running   bool
 	duration  time.Duration
 	relations *relationT
+	using     map[string]config.UsingRecord
 
 	//handler  eventing.Agent
 	ticker   *messaging.Ticker
@@ -29,15 +30,15 @@ type agentT struct {
 	master   *messaging.Channel
 }
 
-func init() {
+func NewAgent() messaging.Agent {
 	agent = newAgent()
-	host.Register(agent)
+	return agent
 }
 
 func newAgent() *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
-	//a.handler = handler
+	a.using = make(map[string]config.UsingRecord)
 	a.relations = newRelation()
 
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
@@ -50,7 +51,7 @@ func newAgent() *agentT {
 func (a *agentT) String() string { return a.Uri() }
 
 // Uri - agent identifier
-func (a *agentT) Uri() string { return AgentNamespaceName }
+func (a *agentT) Uri() string { return namespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
@@ -86,12 +87,10 @@ func (a *agentT) Message(m *messaging.Message) {
 }
 
 func (a *agentT) configure(m *messaging.Message) {
-	cfg := messaging.ConfigMapContent(m)
-	if cfg == nil {
-		messaging.Reply(m, messaging.ConfigEmptyStatusError(a), a.Uri())
+	if use, ok := config.UsingContent(m); ok {
+		a.using[use.Collective] = use
 	}
-	// configure
-	messaging.Reply(m, messaging.StatusOK(), a.Uri())
+	//messaging.Reply(m, messaging.StatusOK(), a.Uri())
 }
 
 // Run - run the agent
@@ -110,24 +109,24 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) addThing(name, cname, authority, author string) *Status {
+func (a *agentT) addThing(name, cname, authority, author string) *messaging.Status {
 	if name == "" || authority == "" {
-		return NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v or authority %v", name, authority)))
+		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v or authority %v", name, authority)))
 	}
 	_, status := httpPutThing(name, cname, authority, author)
 	if !status.OK() {
-		return status.SetMessage(fmt.Sprintf("name %v", name))
+		return status.WithMessage(fmt.Sprintf("name %v", name))
 	}
 	return status
 }
 
-func (a *agentT) addRelation(name, cname, thing1, thing2, authority, author string) *Status {
+func (a *agentT) addRelation(name, cname, thing1, thing2, authority, author string) *messaging.Status {
 	if name == "" || thing1 == "" || thing2 == "" {
-		return NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name1 %v or name2 %v or author %v", thing1, thing2, author)))
+		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name1 %v or name2 %v or author %v", thing1, thing2, author)))
 	}
 	_, status := httpPutRelation(name, cname, thing1, thing2, authority, author)
 	if !status.OK() {
-		return status.SetMessage(fmt.Sprintf("name1 %v", name))
+		return status.WithMessage(fmt.Sprintf("name1 %v", name))
 	}
 	a.relations.put(name, thing1, thing2)
 	return status

@@ -1,11 +1,12 @@
 package content
 
 import (
+	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 )
 
 // TODO : support HEAD requests so that variants, of different content type, can be supported
-func httpGetContent(name string) ([]byte, *Status) {
+func httpGetContent(name string) ([]byte, *messaging.Status) {
 	/*
 		req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, module.ContentURL(nsName, version), nil)
 		if err != nil {
@@ -23,11 +24,11 @@ func httpGetContent(name string) ([]byte, *Status) {
 			return nil, messaging.NewStatusError(resp.StatusCode, err2, AgentNamespaceName)
 		}
 	*/
-	return nil, NotFound
+	return nil, messaging.StatusNotFound()
 }
 
-func httpPutContent(name, authority, author string, buf []byte) (*http.Response, *Status) {
+func httpPutContent(name, authority, author string, buf []byte) (*http.Response, *messaging.Status) {
 	//req, _ := http.NewRequest(http.MethodPut, "", io.Nnil)
 	//resp,status := http2.Do(req)
-	return nil, NotFound
+	return nil, messaging.StatusNotFound()
 }

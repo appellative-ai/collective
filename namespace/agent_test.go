@@ -8,6 +8,6 @@ func ExampleNewAgent() {
 	fmt.Printf("test: newAgent() -> [%v]\n", a)
 
 	//Output:
-	//test: newAgent() -> [resiliency:agent/collective/namespace]
+	//test: newAgent() -> [collective:agent/namespace]
 
 }

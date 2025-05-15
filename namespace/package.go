@@ -1,5 +1,7 @@
 package namespace
 
+import "github.com/behavioral-ai/core/messaging"
+
 // TODO : add activity
 //        Can we add frame content version to activity?
 //        Need author, frame, things, Accessor
@@ -14,22 +16,22 @@ type Accessor struct {
 
 // Adder - add
 type Adder struct {
-	Thing    func(name, cname, author string) *Status
-	Relation func(name, cname, thing1, thing2, author, authority string) *Status
+	Thing    func(name, cname, author string) *messaging.Status
+	Relation func(name, cname, thing1, thing2, author, authority string) *messaging.Status
 	// What exactly are the results?
 	// How to query+select/return generational information
 	// Content can be captured if provided.
-	ConnectThing  func(name, frame, author string, access Accessor) (results string, status *Status)
-	ConnectAspect func(name []string, frame, author string, access Accessor) (results string, status *Status)
+	ConnectThing  func(name, frame, author string, access Accessor) (results string, status *messaging.Status)
+	ConnectAspect func(name []string, frame, author string, access Accessor) (results string, status *messaging.Status)
 }
 
 // Add -
 var Add = func() *Adder {
 	return &Adder{
-		Thing: func(name, cname, author string) *Status {
+		Thing: func(name, cname, author string) *messaging.Status {
 			return agent.addThing(name, cname, "", author)
 		},
-		Relation: func(name, cname, thing1, thing2, author, authority string) *Status {
+		Relation: func(name, cname, thing1, thing2, author, authority string) *messaging.Status {
 			return agent.addRelation(name, cname, thing1, thing2, authority, author)
 		},
 	}
