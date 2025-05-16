@@ -2,11 +2,10 @@ package test
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/collective/content"
 )
 
 func ExampleLoadResolver() {
-	r := content.Resolver
+	r := resource.Resolver
 	status := loadResolver(r)
 	fmt.Printf("test: loadResolver() -> [status:%v]\n", status)
 
@@ -18,7 +17,7 @@ func ExampleLoadResolver() {
 
 	//Output:
 	//test: loadResolver() -> [status:OK]
-	//test: Get("behavioral-ai:resiliency:type/operative/threshold") -> [status:OK] [vers:  type: text/plain; charset=utf-8 content: true]
-	//test: Get("behavioral-ai:resiliency:type/operative/interpret") -> [status:OK] vers:  type: text/plain; charset=utf-8 content: true]
+	//test: Get("behavioral-ai:resiliency:type/operative/threshold") -> [status:OK] [vers:  type: text/plain; charset=utf-8 resource: true]
+	//test: Get("behavioral-ai:resiliency:type/operative/interpret") -> [status:OK] vers:  type: text/plain; charset=utf-8 resource: true]
 
 }

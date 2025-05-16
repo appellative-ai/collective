@@ -2,11 +2,10 @@ package test
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/collective/content"
 )
 
 func ExampleStartup() {
-	r := content.Resolver
+	r := resource.Resolver
 	Startup()
 
 	name := ResiliencyThreshold
@@ -22,8 +21,8 @@ func ExampleStartup() {
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [buf:%v]\n", name, status1, access)
 
 	//Output:
-	//test: Get("behavioral-ai:resiliency:type/operative/threshold") -> [status:OK] [access:vers:  type: text/plain; charset=utf-8 content: true]
-	//test: Get("behavioral-ai:resiliency:type/operative/interpret") -> [status:OK] [access:vers:  type: text/plain; charset=utf-8 content: true]
-	//test: Get("behavioral-ai:resiliency:type/domain/metrics/profile") -> [status:OK] [buf:vers:  type: text/plain; charset=utf-8 content: true]
+	//test: Get("behavioral-ai:resiliency:type/operative/threshold") -> [status:OK] [access:vers:  type: text/plain; charset=utf-8 resource: true]
+	//test: Get("behavioral-ai:resiliency:type/operative/interpret") -> [status:OK] [access:vers:  type: text/plain; charset=utf-8 resource: true]
+	//test: Get("behavioral-ai:resiliency:type/domain/metrics/profile") -> [status:OK] [buf:vers:  type: text/plain; charset=utf-8 resource: true]
 
 }

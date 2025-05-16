@@ -1,4 +1,4 @@
-package content
+package resource
 
 import (
 	"errors"
@@ -30,7 +30,7 @@ func (c *cacheT) get(name, fragment string) (Content, error) {
 	key := resolutionKey{Name: name, Fragment: fragment}
 	value, ok := c.m.Load(key)
 	if !ok {
-		return Content{}, errors.New(fmt.Sprintf("content [%v] not found", name))
+		return Content{}, errors.New(fmt.Sprintf("resource [%v] not found", name))
 	}
 	if value1, ok1 := value.(content); ok1 {
 		return value1.body, nil

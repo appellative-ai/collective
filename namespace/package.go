@@ -3,7 +3,7 @@ package namespace
 import "github.com/behavioral-ai/core/messaging"
 
 // TODO : add activity
-//        Can we add frame content version to activity?
+//        Can we add frame resource version to activity?
 //        Need author, frame, things, Accessor
 //        Need counts, lists of aspects
 

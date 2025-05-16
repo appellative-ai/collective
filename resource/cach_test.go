@@ -1,4 +1,4 @@
-package content
+package resource
 
 import (
 	"encoding/json"
@@ -33,7 +33,7 @@ func ExampleNewCache() {
 
 	//Output:
 	//test: newCache.get("test:thing:text") -> [fragment:  type: text/plain; charset=utf-8 value: true] [status:<nil>]
-	//test: newCache.get("test:thing:text") -> [fragment:  type: text/plain; charset=utf-8 value: true] [status:content [test:thing:text] not found]
+	//test: newCache.get("test:thing:text") -> [fragment:  type: text/plain; charset=utf-8 value: true] [status:resource [test:thing:text] not found]
 	//test: json.Unmarshal() -> [err:<nil>] [{Hello World!}]
 
 }

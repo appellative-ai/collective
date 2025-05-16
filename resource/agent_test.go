@@ -1,4 +1,4 @@
-package content
+package resource
 
 import "fmt"
 
@@ -8,6 +8,6 @@ func ExampleNewAgent() {
 	fmt.Printf("test: newHttpAgent() -> [%v]\n", a)
 
 	//Output:
-	//test: newHttpAgent() -> [collective:agent/content]
+	//test: newHttpAgent() -> [collective:agent/resource]
 
 }

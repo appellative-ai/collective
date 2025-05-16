@@ -1,4 +1,4 @@
-package content
+package resource
 
 import (
 	"github.com/behavioral-ai/core/messaging"

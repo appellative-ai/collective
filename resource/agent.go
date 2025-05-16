@@ -1,4 +1,4 @@
-package content
+package resource
 
 import (
 	"encoding/json"
@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	namespaceName   = "collective:agent/content"
+	namespaceName   = "collective:agent/resource"
 	defaultDuration = time.Second * 10
 )
 
@@ -142,8 +142,8 @@ func (a *agentT) addContent(name, fragment, author string, ct Content) *messagin
 			err = errors.New(fmt.Sprintf("nsName is empty on call to PutValue()"))
 			return messaging.NewStatusError(http.StatusBadRequest, err, r.agent.Uri())
 		}
-		if content == nil {
-			err = errors.New(fmt.Sprintf("content is nil on call to PutValue() for nsName : %v", nsName))
+		if resource == nil {
+			err = errors.New(fmt.Sprintf("resource is nil on call to PutValue() for nsName : %v", nsName))
 			return messaging.NewStatusError(http.StatusNoContent, err, r.agent.Uri())
 		}
 
@@ -172,7 +172,7 @@ func (a *agentT) addContent(name, fragment, author string, ct Content) *messagin
 		}
 	}
 	if len(buf) == 0 {
-		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for nsName : %v", name))
+		err = errors.New(fmt.Sprintf("resource is empty on call to PutValue() for nsName : %v", name))
 		return messaging.NewStatus(http.StatusNoContent, err)
 	}
 	_, status := httpPutContent(name, fragment, author, buf)

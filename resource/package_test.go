@@ -1,4 +1,4 @@
-package content
+package resource
 
 import (
 	"encoding/json"
@@ -46,7 +46,7 @@ func ExampleEphemeralResolver() {
 	//Output:
 	//test: Resolver.Put() -> [status:OK]
 	//test: Resolve[string] -> [status:OK] [test Ephemeral resolver]
-	//test: Resolve[string] -> [status:Not Found [msg:name test:thing/string and version 2] [agent:resiliency:agent/behavioral-ai/collective/content]] []
+	//test: Resolve[string] -> [status:Not Found [msg:name test:thing/string and version 2] [agent:resiliency:agent/behavioral-ai/collective/resource]] []
 
 }
 

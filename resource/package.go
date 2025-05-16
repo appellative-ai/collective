@@ -1,4 +1,4 @@
-package content
+package resource
 
 import (
 	"encoding/json"
@@ -64,7 +64,7 @@ func Resolve[T any](collective, name, fragment string, resolver *Resolution) (T,
 		return t, status
 	}
 	if ct.Value == nil {
-		return t, messaging.NewStatus(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", name))
+		return t, messaging.NewStatus(http.StatusNoContent, fmt.Sprintf("resource not found for name: %v", name))
 	}
 	switch ptr := any(&t).(type) {
 	case *string:

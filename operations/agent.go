@@ -2,9 +2,9 @@ package operations
 
 import (
 	"errors"
-	"github.com/behavioral-ai/collective/content"
 	m2 "github.com/behavioral-ai/collective/messaging"
 	"github.com/behavioral-ai/collective/namespace"
+	"github.com/behavioral-ai/collective/resource"
 	"github.com/behavioral-ai/core/host"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
@@ -23,7 +23,7 @@ type agentT struct{}
 
 func init() {
 	host.Register(newAgent())
-	agents.Register(content.NewAgent())
+	agents.Register(resource.NewAgent())
 	agents.Register(namespace.NewAgent())
 }
 
@@ -48,7 +48,7 @@ func (a *agentT) Message(m *messaging.Message) {
 			agents.Broadcast(m)
 			messaging.Reply(m, messaging.StatusOK(), a.Uri())
 		} else {
-			messaging.Reply(m, messaging.NewStatus(http.StatusBadRequest, errors.New("invalid Using content")), a.Uri())
+			messaging.Reply(m, messaging.NewStatus(http.StatusBadRequest, errors.New("invalid Using resource")), a.Uri())
 		}
 	}
 	if m.Event() == messaging.ShutdownEvent {

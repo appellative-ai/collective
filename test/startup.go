@@ -2,7 +2,6 @@ package test
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/collective/content"
 )
 
 const (
@@ -11,16 +10,16 @@ const (
 )
 
 // Testing
-//r.activity = func(hostName string, agent messaging.Agent, eventing, source string, content any) {
-//	fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), eventing, source, content)
+//r.activity = func(hostName string, agent messaging.Agent, eventing, source string, resource any) {
+//	fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), eventing, source, resource)
 //}
 
 func Startup() {
-	status := loadResolver(content.Resolver)
+	status := loadResolver(resource.Resolver)
 	if !status.OK() {
 		fmt.Printf("error on loading Resolver: %v\n", status)
 	}
-	status = LoadProfile(content.Resolver)
+	status = LoadProfile(resource.Resolver)
 	if !status.OK() {
 		fmt.Printf("error on loading Resolver: %v\n", status)
 	}

@@ -1,4 +1,4 @@
-package content
+package resource
 
 func _Example_Get() {
 
