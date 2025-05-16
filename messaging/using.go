@@ -1,4 +1,4 @@
-package config
+package messaging
 
 import "github.com/behavioral-ai/core/messaging"
 
@@ -29,11 +29,11 @@ func UsingContent(m *messaging.Message) (UsingRecord, bool) {
 
 // Using - configure collectives in use
 /*
-func Using(ur config.UsingRecord) {
+func Using(ur messaging.UsingRecord) {
 	if ur.Collective == "" || len(ur.Hosts) == 0 {
 		return
 	}
-	agent.Message(config.NewUsingMessage(ur))
+	agent.Message(messaging.NewUsingMessage(ur))
 }
 
 

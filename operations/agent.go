@@ -2,8 +2,8 @@ package operations
 
 import (
 	"errors"
-	"github.com/behavioral-ai/collective/config"
 	"github.com/behavioral-ai/collective/content"
+	m2 "github.com/behavioral-ai/collective/messaging"
 	"github.com/behavioral-ai/collective/namespace"
 	"github.com/behavioral-ai/core/host"
 	"github.com/behavioral-ai/core/messaging"
@@ -44,7 +44,7 @@ func (a *agentT) Message(m *messaging.Message) {
 		return
 	}
 	if m.Event() == messaging.ConfigEvent {
-		if _, ok := config.UsingContent(m); ok {
+		if _, ok := m2.UsingContent(m); ok {
 			agents.Broadcast(m)
 			messaging.Reply(m, messaging.StatusOK(), a.Uri())
 		} else {
@@ -58,7 +58,7 @@ func (a *agentT) Message(m *messaging.Message) {
 
 /*
 func (a *agentT) configure(m *messaging.Message) {
-	//ur := config.messaging.ConfigMapContent(m)
+	//ur := messaging.messaging.ConfigMapContent(m)
 	//if cfg == nil {
 	//	messaging.Reply(m, messaging.ConfigEmptyStatusError(a), a.Uri())
 	//}
