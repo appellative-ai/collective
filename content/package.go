@@ -62,7 +62,7 @@ var Resolver = func() *Resolution {
 			return agent.addContent(name, resource, author, authority, access)
 		},
 
-		Representation: func(collective, name, resource string) (Representation, *messaging.Status) {
+		Representation: func(collective, name, fragment string) (Representation, *messaging.Status) {
 			return Representation{}, messaging.StatusOK()
 		},
 		AddRepresentation: func(name, fragment, author string, rep Representation) *messaging.Status {
@@ -70,9 +70,13 @@ var Resolver = func() *Resolution {
 			return messaging.StatusOK()
 		},
 
-		//List: func(name string) ([]string, *messaging.Status) {
-		//	return nil, nil
-		//},
+		Context: func(collective, name, fragment string) (Representation, *messaging.Status) {
+			return Representation{}, messaging.StatusOK()
+		},
+		AddContext: func(name, fragment, author string, rep Representation) *messaging.Status {
+			// TODO: add collective name
+			return messaging.StatusOK()
+		},
 	}
 }()
 
