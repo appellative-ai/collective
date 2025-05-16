@@ -18,6 +18,13 @@ const (
 	InfoResourceAlt  = "?"
 )
 
+// Representation -
+type Representation struct {
+	Version string // returned on a Get
+	Type    string // Content-Type
+	Content any
+}
+
 // Accessor -
 type Accessor struct {
 	Version string // returned on a Get
@@ -36,6 +43,12 @@ type Resolution struct {
 	Get func(collective, name, resource string) (Accessor, *messaging.Status)
 	Add func(name, resource, author, authority string, access Accessor) *messaging.Status
 	//List func(name string) ([]string, *messaging.Status)
+
+	Representation    func(collective, name, fragment string) (Representation, *messaging.Status)
+	AddRepresentation func(name, fragment, author string, rep Representation) *messaging.Status
+
+	Context    func(collective, name, fragment string) (Representation, *messaging.Status)
+	AddContext func(name, fragment, author string, rep Representation) *messaging.Status
 }
 
 // Resolver -
@@ -48,6 +61,15 @@ var Resolver = func() *Resolution {
 			// TODO: add collective name
 			return agent.addContent(name, resource, author, authority, access)
 		},
+
+		Representation: func(collective, name, resource string) (Representation, *messaging.Status) {
+			return Representation{}, messaging.StatusOK()
+		},
+		AddRepresentation: func(name, fragment, author string, rep Representation) *messaging.Status {
+			// TODO: add collective name
+			return messaging.StatusOK()
+		},
+
 		//List: func(name string) ([]string, *messaging.Status) {
 		//	return nil, nil
 		//},
