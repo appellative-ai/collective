@@ -14,7 +14,7 @@ func ExampleResolveString() {
 		fmt.Printf("test: json.Marshall() -> [err:%v]\n", err)
 	} else {
 		//status :=
-		c.put(name, "", Accessor{Content: buf})
+		c.put(name, "", Content{Value: buf})
 		//fmt.Printf("test: newContentCache.put(1) -> [status:%v]\n", status)
 
 		v, status1 := Resolve[text]("", name, "", nil)
@@ -22,7 +22,7 @@ func ExampleResolveString() {
 	}
 
 	//Output:
-	//test: Resolve[text]() -> [Bad Request [err:error: BadRequest - resolver is nil for : test:thing:text@2] [agent:unn:behavioral-ai.github.com:resiliency:agent/collective/content]] [{}]
+	//test: Resolve[text]() -> [Bad Request [err:error: BadRequest - resolver is nil for : test:thing:text@2]] [{}]
 
 }
 

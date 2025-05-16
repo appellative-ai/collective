@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/core/uri"
 	"net/http"
 	"net/url"
 	"time"
@@ -116,26 +115,26 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getContent(name, resource string) (Accessor, *messaging.Status) {
+func (a *agentT) getContent(name, fragment string) (Content, *messaging.Status) {
 	if name == "" {
-		return Accessor{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
+		return Content{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
-	access, err := a.cache.get(name, resource)
+	ct, err := a.cache.get(name, fragment)
 	if err == nil {
-		return access, nil
+		return ct, messaging.StatusOK()
 	}
 	// Cache miss
 	buf, err1 := httpGetContent(name)
 	if err1 != nil {
-		return Accessor{}, err1.WithMessage(fmt.Sprintf("name %v", name))
+		return Content{}, err1.WithMessage(fmt.Sprintf("name %v", name))
 	}
-	access = Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf}
-	a.cache.put(name, resource, access)
-	return access, nil
+	ct = Content{Fragment: fragment, Type: http.DetectContentType(buf), Value: buf}
+	a.cache.put(name, fragment, ct)
+	return ct, messaging.StatusOK()
 }
 
-func (a *agentT) addContent(name, resource, author, authority string, access Accessor) *messaging.Status {
-	if name == "" || author == "" || authority == "" || access.Content == nil {
+func (a *agentT) addContent(name, fragment, author string, ct Content) *messaging.Status {
+	if name == "" || author == "" || ct.Value == nil {
 		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	/*
@@ -152,7 +151,7 @@ func (a *agentT) addContent(name, resource, author, authority string, access Acc
 	var buf []byte
 	var err error
 
-	switch ptr := access.Content.(type) {
+	switch ptr := ct.Value.(type) {
 	case string:
 		v := text{ptr}
 		buf, err = json.Marshal(v)
@@ -176,10 +175,10 @@ func (a *agentT) addContent(name, resource, author, authority string, access Acc
 		err = errors.New(fmt.Sprintf("content is empty on call to PutValue() for nsName : %v", name))
 		return messaging.NewStatus(http.StatusNoContent, err)
 	}
-	_, status := httpPutContent(name, authority, author, buf)
+	_, status := httpPutContent(name, fragment, author, buf)
 	if !status.OK() {
 		return status.WithMessage(fmt.Sprintf("name %v", name))
 	}
-	a.cache.put(name, resource, access) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
+	a.cache.put(name, fragment, ct) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return status
 }

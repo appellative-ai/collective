@@ -27,7 +27,7 @@ func httpGetContent(name string) ([]byte, *messaging.Status) {
 	return nil, messaging.StatusNotFound()
 }
 
-func httpPutContent(name, authority, author string, buf []byte) (*http.Response, *messaging.Status) {
+func httpPutContent(name, fragment, author string, buf []byte) (*http.Response, *messaging.Status) {
 	//req, _ := http.NewRequest(http.MethodPut, "", io.Nnil)
 	//resp,status := http2.Do(req)
 	return nil, messaging.StatusNotFound()

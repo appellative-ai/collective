@@ -9,12 +9,11 @@ import (
 // resolutionKey -
 type resolutionKey struct {
 	Name     string `json:"name"`
-	Resource string `json:"resource"`
-	//Version  string `json:"version"`
+	Fragment string `json:"fragment"`
 }
 
 type content struct {
-	body Accessor
+	body Content
 }
 
 type cacheT struct {
@@ -27,18 +26,18 @@ func newCache() *cacheT {
 	return c
 }
 
-func (c *cacheT) get(name, resource string) (Accessor, error) {
-	key := resolutionKey{Name: name, Resource: resource}
+func (c *cacheT) get(name, fragment string) (Content, error) {
+	key := resolutionKey{Name: name, Fragment: fragment}
 	value, ok := c.m.Load(key)
 	if !ok {
-		return Accessor{}, errors.New(fmt.Sprintf("content [%v] not found", name))
+		return Content{}, errors.New(fmt.Sprintf("content [%v] not found", name))
 	}
 	if value1, ok1 := value.(content); ok1 {
 		return value1.body, nil
 	}
-	return Accessor{}, nil
+	return Content{}, nil
 }
 
-func (c *cacheT) put(name, resource string, access Accessor) {
-	c.m.Store(resolutionKey{Name: name, Resource: resource}, content{body: access})
+func (c *cacheT) put(name, fragment string, ct Content) {
+	c.m.Store(resolutionKey{Name: name, Fragment: fragment}, content{body: ct})
 }

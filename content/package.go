@@ -8,72 +8,43 @@ import (
 	"net/http"
 )
 
-// Common resources
-
-const (
-	ListResource     = "ls"   // list for a name, allow arguments for filtering
-	SrcResource      = "src"  // location of source code, optional versioning
-	InstanceResource = "inst" // the state/instance of a type, optional versioning
-	InfoResource     = "info" // information, help
-	InfoResourceAlt  = "?"
-)
-
-// Representation -
-type Representation struct {
-	Version string // returned on a Get
-	Type    string // Content-Type
-	Content any
+// Content -
+type Content struct {
+	Fragment string // returned on a Get
+	Type     string // Content-Type
+	Value    any
 }
 
-// Accessor -
-type Accessor struct {
-	Version string // returned on a Get
-	Type    string // Content-Type
-	Content any
-}
-
-func (a Accessor) String() string {
-	return fmt.Sprintf("vers: %v type: %v content: %v", a.Version, a.Type, a.Content != nil)
+func (c Content) String() string {
+	return fmt.Sprintf("fragment: %v type: %v value: %v", c.Fragment, c.Type, c.Value != nil)
 }
 
 // Resolution - in the real world
 // Can only add in current collective. An empty collective is assuming the local vs distributed
 // How to handle local vs distributed
 type Resolution struct {
-	Get func(collective, name, resource string) (Accessor, *messaging.Status)
-	Add func(name, resource, author, authority string, access Accessor) *messaging.Status
-	//List func(name string) ([]string, *messaging.Status)
+	Representation    func(collective, name, fragment string) (Content, *messaging.Status)
+	AddRepresentation func(name, fragment, author string, ct Content) *messaging.Status
 
-	Representation    func(collective, name, fragment string) (Representation, *messaging.Status)
-	AddRepresentation func(name, fragment, author string, rep Representation) *messaging.Status
-
-	Context    func(collective, name, fragment string) (Representation, *messaging.Status)
-	AddContext func(name, fragment, author string, rep Representation) *messaging.Status
+	Context    func(collective, name string) (Content, *messaging.Status)
+	AddContext func(name, author string, ct Content) *messaging.Status
 }
 
 // Resolver -
 var Resolver = func() *Resolution {
 	return &Resolution{
-		Get: func(collective, name, resource string) (Accessor, *messaging.Status) {
-			return agent.getContent(name, resource)
+		Representation: func(collective, name, fragment string) (Content, *messaging.Status) {
+			return Content{}, messaging.StatusOK()
 		},
-		Add: func(name, resource, author, authority string, access Accessor) *messaging.Status {
-			// TODO: add collective name
-			return agent.addContent(name, resource, author, authority, access)
-		},
-
-		Representation: func(collective, name, fragment string) (Representation, *messaging.Status) {
-			return Representation{}, messaging.StatusOK()
-		},
-		AddRepresentation: func(name, fragment, author string, rep Representation) *messaging.Status {
+		AddRepresentation: func(name, fragment, author string, ct Content) *messaging.Status {
 			// TODO: add collective name
 			return messaging.StatusOK()
 		},
 
-		Context: func(collective, name, fragment string) (Representation, *messaging.Status) {
-			return Representation{}, messaging.StatusOK()
+		Context: func(collective, name string) (Content, *messaging.Status) {
+			return Content{}, messaging.StatusOK()
 		},
-		AddContext: func(name, fragment, author string, rep Representation) *messaging.Status {
+		AddContext: func(name, author string, ct Content) *messaging.Status {
 			// TODO: add collective name
 			return messaging.StatusOK()
 		},
@@ -88,11 +59,11 @@ func Resolve[T any](collective, name, fragment string, resolver *Resolution) (T,
 	if resolver == nil {
 		return t, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", name)))
 	}
-	access, status := resolver.Get(collective, name, fragment)
+	ct, status := resolver.Representation(collective, name, fragment)
 	if !status.OK() {
 		return t, status
 	}
-	if access.Content == nil {
+	if ct.Value == nil {
 		return t, messaging.NewStatus(http.StatusNoContent, fmt.Sprintf("content not found for name: %v", name))
 	}
 	switch ptr := any(&t).(type) {
@@ -103,7 +74,7 @@ func Resolve[T any](collective, name, fragment string, resolver *Resolution) (T,
 		}
 		*ptr = t1.Value
 	case *[]byte:
-		if body, ok := access.Content.([]byte); ok {
+		if body, ok := ct.Value.([]byte); ok {
 			*ptr = body
 		}
 	default:
@@ -111,7 +82,7 @@ func Resolve[T any](collective, name, fragment string, resolver *Resolution) (T,
 			body []byte
 			ok   bool
 		)
-		body, ok = access.Content.([]byte)
+		body, ok = ct.Value.([]byte)
 		if ok {
 			err := json.Unmarshal(body, ptr)
 			if err != nil {

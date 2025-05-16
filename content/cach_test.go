@@ -16,15 +16,15 @@ func ExampleNewCache() {
 	} else {
 		//var status error //status *messaging.Status
 		//	var access Accessor{}
-		c.put(name, "", Accessor{Version: "", Type: http.DetectContentType(buf), Content: buf})
-		//fmt.Printf("test: newContentCache.put(1) -> [status:%v]\n", status)
+		c.put(name, "", Content{Fragment: "", Type: http.DetectContentType(buf), Value: buf})
+		//fmt.Printf("test: newCache.put(1) -> [status:%v]\n", status)
 
 		access, status := c.get(name, "")
-		fmt.Printf("test: newContentCache.get(\"%v\") -> [%v] [status:%v]\n", name, access, status)
+		fmt.Printf("test: newCache.get(\"%v\") -> [%v] [status:%v]\n", name, access, status)
 
 		//name = name + "#1.2.4"
 		_, status = c.get(name, "#1.2.4")
-		fmt.Printf("test: newContentCache.get(\"%v\") -> [%v] [status:%v]\n", name, access, status)
+		fmt.Printf("test: newCache.get(\"%v\") -> [%v] [status:%v]\n", name, access, status)
 
 		var v text
 		err = json.Unmarshal(buf, &v)
@@ -32,8 +32,8 @@ func ExampleNewCache() {
 	}
 
 	//Output:
-	//test: newContentCache.get("test:thing:text") -> [vers:  type: text/plain; charset=utf-8 content: true] [status:<nil>]
-	//test: newContentCache.get("test:thing:text") -> [vers:  type: text/plain; charset=utf-8 content: true] [status:content [test:thing:text] not found]
+	//test: newCache.get("test:thing:text") -> [fragment:  type: text/plain; charset=utf-8 value: true] [status:<nil>]
+	//test: newCache.get("test:thing:text") -> [fragment:  type: text/plain; charset=utf-8 value: true] [status:content [test:thing:text] not found]
 	//test: json.Unmarshal() -> [err:<nil>] [{Hello World!}]
 
 }
