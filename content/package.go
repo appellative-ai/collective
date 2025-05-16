@@ -82,13 +82,13 @@ var Resolver = func() *Resolution {
 
 // Resolve - generic typed resolution
 // TODO: support map[string]string??
-func Resolve[T any](collective, name, resource string, resolver *Resolution) (T, *messaging.Status) {
+func Resolve[T any](collective, name, fragment string, resolver *Resolution) (T, *messaging.Status) {
 	var t T
 
 	if resolver == nil {
 		return t, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", name)))
 	}
-	access, status := resolver.Get(collective, name, resource)
+	access, status := resolver.Get(collective, name, fragment)
 	if !status.OK() {
 		return t, status
 	}
@@ -97,7 +97,7 @@ func Resolve[T any](collective, name, resource string, resolver *Resolution) (T,
 	}
 	switch ptr := any(&t).(type) {
 	case *string:
-		t1, status1 := Resolve[text](collective, name, resource, resolver)
+		t1, status1 := Resolve[text](collective, name, fragment, resolver)
 		if !status1.OK() {
 			return t, status1
 		}
