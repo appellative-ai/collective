@@ -28,7 +28,14 @@ func Agent(name string) messaging.Agent {
 
 // Message - message an agent, using the message To as the agent name
 func Message(m *messaging.Message) {
-	exchange.Message(m)
+	if m == nil {
+		return
+	}
+	agent := Agent(m.To())
+	if agent != nil {
+		agent.Message(m)
+	}
+	//exchange.Message(m)
 }
 
 // Broadcast - broadcast a message to all registered agents
