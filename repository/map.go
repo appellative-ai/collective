@@ -17,12 +17,12 @@ func newMap() *mapT {
 	return c
 }
 
-func (c *mapT) get(name string) func() messaging.NewAgent {
+func (c *mapT) get(name string) messaging.NewAgent {
 	v, ok := c.m.Load(name)
 	if !ok {
 		return nil
 	}
-	if v1, ok1 := v.(func() messaging.NewAgent); ok1 {
+	if v1, ok1 := v.(messaging.NewAgent); ok1 {
 		return v1
 	}
 	return nil
