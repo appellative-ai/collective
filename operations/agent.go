@@ -4,8 +4,8 @@ import (
 	"errors"
 	m2 "github.com/behavioral-ai/collective/messaging"
 	"github.com/behavioral-ai/collective/namespace"
+	"github.com/behavioral-ai/collective/repository"
 	"github.com/behavioral-ai/collective/resource"
-	"github.com/behavioral-ai/core/host"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 )
@@ -22,7 +22,9 @@ var (
 type agentT struct{}
 
 func init() {
-	host.Register(newAgent())
+	repository.RegisterConstructor(NamespaceName, func() messaging.Agent {
+		return newAgent()
+	})
 	agents.Register(resource.NewAgent())
 	agents.Register(namespace.NewAgent())
 }

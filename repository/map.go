@@ -17,7 +17,7 @@ func newMap() *mapT {
 	return c
 }
 
-func (c *mapT) get(name string) NewAgent {
+func (c *mapT) get(name string) messaging.NewAgent {
 	v, ok := c.m.Load(name)
 	if !ok {
 		return nil
@@ -28,7 +28,7 @@ func (c *mapT) get(name string) NewAgent {
 	return nil
 }
 
-func (c *mapT) put(name string, fn NewAgent) {
+func (c *mapT) put(name string, fn messaging.NewAgent) {
 	if name == "" || fn == nil {
 		return
 	}
