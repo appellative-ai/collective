@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	NamespaceName = "collective:agent/operations"
+	NamespaceName = "collective:agent/operations/collective"
 )
 
 var (
