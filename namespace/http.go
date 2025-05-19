@@ -11,7 +11,7 @@ func httpPutThing(name, cname, authority, author string) (*http.Response, *messa
 	return nil, messaging.StatusOK()
 }
 
-func httpPutRelation(name, cname, thing1, thing2, authority, author string) (*http.Response, *messaging.Status) {
+func httpPutRelation(name, cname, thing1, thing2, author string) (*http.Response, *messaging.Status) {
 	//req, _ := http.NewRequest(http.MethodPut, "", io.Nnil)
 	//resp,status := http2.Do(req)
 	return nil, messaging.StatusOK()

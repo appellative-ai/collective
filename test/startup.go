@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/collective/resource"
 )
 
 const (

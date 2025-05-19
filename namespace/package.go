@@ -17,7 +17,7 @@ type Accessor struct {
 // Adder - add
 type Adder struct {
 	Thing    func(name, cname, author string) *messaging.Status
-	Relation func(name, cname, thing1, thing2, author, authority string) *messaging.Status
+	Relation func(name, cname, thing1, thing2, author string) *messaging.Status
 	// What exactly are the results?
 	// How to query+select/return generational information
 	// Content can be captured if provided.
@@ -31,8 +31,8 @@ var Add = func() *Adder {
 		Thing: func(name, cname, author string) *messaging.Status {
 			return agent.addThing(name, cname, "", author)
 		},
-		Relation: func(name, cname, thing1, thing2, author, authority string) *messaging.Status {
-			return agent.addRelation(name, cname, thing1, thing2, authority, author)
+		Relation: func(name, cname, thing1, thing2, author string) *messaging.Status {
+			return agent.addRelation(name, cname, thing1, thing2, author)
 		},
 	}
 }()

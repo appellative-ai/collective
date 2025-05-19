@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/collective/resource"
 )
 
 func ExampleStartup() {
@@ -9,15 +10,15 @@ func ExampleStartup() {
 	Startup()
 
 	name := ResiliencyThreshold
-	access, status1 := r.Get(name)
+	access, status1 := r.Representation("", name, "")
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [access:%v]\n", name, status1, access)
 
 	name = ResiliencyInterpret
-	access, status1 = r.Get(name)
+	access, status1 = r.Representation("", name, "")
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [access:%v]\n", name, status1, access)
 
 	name = ProfileName
-	access, status1 = r.Get(name)
+	access, status1 = r.Representation("", name, "")
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [buf:%v]\n", name, status1, access)
 
 	//Output:

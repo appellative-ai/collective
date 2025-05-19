@@ -120,11 +120,11 @@ func (a *agentT) addThing(name, cname, authority, author string) *messaging.Stat
 	return status
 }
 
-func (a *agentT) addRelation(name, cname, thing1, thing2, authority, author string) *messaging.Status {
+func (a *agentT) addRelation(name, cname, thing1, thing2, author string) *messaging.Status {
 	if name == "" || thing1 == "" || thing2 == "" {
 		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name1 %v or name2 %v or author %v", thing1, thing2, author)))
 	}
-	_, status := httpPutRelation(name, cname, thing1, thing2, authority, author)
+	_, status := httpPutRelation(name, cname, thing1, thing2, author)
 	if !status.OK() {
 		return status.WithMessage(fmt.Sprintf("name1 %v", name))
 	}
