@@ -10,6 +10,6 @@ const (
 )
 
 func LoadProfile(r *resource.Resolution) *messaging.Status {
-	//url, _ := url.Parse(fs.ResiliencyTrafficProfile1)
+	//url, _ := url.Parse(testfs.ResiliencyTrafficProfile1)
 	return r.AddRepresentation(ProfileName, "", "author", resource.Content{})
 }

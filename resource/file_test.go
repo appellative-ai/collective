@@ -2,7 +2,7 @@ package resource
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/collective/fs"
+	"github.com/behavioral-ai/collective/testfs"
 	"github.com/behavioral-ai/core/iox"
 )
 
@@ -32,13 +32,13 @@ type lookupKey struct {
 func ExampleLookup() {
 	var l []lookup
 
-	buf, err := iox.ReadFile(fs.ResiliencyGradient)
+	buf, err := iox.ReadFile(testfs.ResiliencyGradient)
 	fmt.Printf("test: iox.ReadFile() -> [err:%v]\n", err)
 
 	err = json.Unmarshal(buf, &l)
 	fmt.Printf("test: json.Unmarshal() -> [err:%v] [%v]\n", err, l)
 
-	buf, err = iox.ReadFile(fs.ResiliencyGradientKey)
+	buf, err = iox.ReadFile(testfs.ResiliencyGradientKey)
 	fmt.Printf("test: iox.ReadFile() -> [err:%v]\n", err)
 
 	err = json.Unmarshal(buf, &l)
@@ -55,13 +55,13 @@ func ExampleLookup() {
 func ExampleLookupKey() {
 	var l []lookupKey
 
-	buf, err := iox.ReadFile(fs.ResiliencyGradient)
+	buf, err := iox.ReadFile(testfs.ResiliencyGradient)
 	fmt.Printf("test: iox.ReadFile() -> [err:%v]\n", err)
 
 	err = json.Unmarshal(buf, &l)
 	fmt.Printf("test: json.Unmarshal() -> [err:%v] [%v]\n", err, l)
 
-	buf, err = iox.ReadFile(fs.ResiliencyGradientKey)
+	buf, err = iox.ReadFile(testfs.ResiliencyGradientKey)
 	fmt.Printf("test: iox.ReadFile() -> [err:%v]\n", err)
 
 	err = json.Unmarshal(buf, &l)
@@ -79,7 +79,7 @@ func ExampleLookupKey() {
 */
 
 func ExampleParseResolutionKey() {
-	buf, _ := iox.ReadFile(fs.ResiliencyTrafficProfile1)
+	buf, _ := iox.ReadFile(testfs.ResiliencyTrafficProfile1)
 	s := string(buf)
 
 	k, err := parseResolutionKey(s)
@@ -91,7 +91,7 @@ func ExampleParseResolutionKey() {
 }
 
 func _ExampleFileLoad() {
-	dir := "file:///c:/Users/markb/GitHub/domain/fs/files/resiliency"
+	dir := "file:///c:/Users/markb/GitHub/domain/testfs/files/resiliency"
 	name1 := "resiliency:thing/operative/agent/gradient"
 	name2 := "resiliency:thing/operative/agent/threshold"
 
@@ -114,7 +114,7 @@ func _ExampleFileLoad() {
 func ExampleEphemeralLoad() {
 	name1 := "resiliency:thing/operative/agent/gradient"
 	name2 := "resiliency:thing/operative/agent/threshold"
-	dir := "file:///c:/Users/markb/GitHub/collective/fs/files/resiliency"
+	dir := "file:///c:/Users/markb/GitHub/collective/testfs/files/resiliency"
 
 	r := initializedEphemeralResolver(dir, true, true)
 	//fmt.Printf("test: NewEphemeralResolver() -> [status:%v]\n", status)
