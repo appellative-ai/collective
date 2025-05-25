@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	NamespaceName = "collective:agent/operations/collective"
+	NamespaceName = "core:agent/collective/operations"
 )
 
 var (
@@ -35,25 +35,25 @@ func newAgent() *agentT {
 }
 
 // String - identity
-func (a *agentT) String() string { return a.Uri() }
+func (a *agentT) String() string { return a.Name() }
 
-// Uri - agent identifier
-func (a *agentT) Uri() string { return NamespaceName }
+// Name - agent identifier
+func (a *agentT) Name() string { return NamespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
 	if m == nil {
 		return
 	}
-	if m.Event() == messaging.ConfigEvent {
+	if m.Name() == messaging.ConfigEvent {
 		if _, ok := m2.UsingContent(m); ok {
 			agents.Broadcast(m)
-			messaging.Reply(m, messaging.StatusOK(), a.Uri())
+			messaging.Reply(m, messaging.StatusOK(), a.Name())
 		} else {
-			messaging.Reply(m, messaging.NewStatus(http.StatusBadRequest, errors.New("invalid Using resource")), a.Uri())
+			messaging.Reply(m, messaging.NewStatus(http.StatusBadRequest, errors.New("invalid Using resource")), a.Name())
 		}
 	}
-	if m.Event() == messaging.ShutdownEvent {
+	if m.Name() == messaging.ShutdownEvent {
 		agents.Broadcast(m)
 	}
 }

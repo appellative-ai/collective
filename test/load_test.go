@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/collective/resource"
 )
 
 func ExampleLoadResolver() {
@@ -9,10 +10,10 @@ func ExampleLoadResolver() {
 	status := loadResolver(r)
 	fmt.Printf("test: loadResolver() -> [status:%v]\n", status)
 
-	access, status1 := r.Get(ResiliencyThreshold)
+	access, status1 := r.Representation("", ResiliencyThreshold, "")
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [%v]\n", ResiliencyThreshold, status1, access)
 
-	access, status1 = r.Get(ResiliencyInterpret)
+	access, status1 = r.Representation("", ResiliencyInterpret, "")
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] %v]\n", ResiliencyInterpret, status1, access)
 
 	//Output:

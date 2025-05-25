@@ -8,6 +8,6 @@ func ExampleNewAgent() {
 	fmt.Printf("test: newAgent() -> [%v]\n", a)
 
 	//Output:
-	//test: newAgent() -> [collective:agent/operations]
+	//test: newAgent() -> [core:agent/collective/operations]
 
 }

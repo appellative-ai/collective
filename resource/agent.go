@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	namespaceName   = "collective:agent/resource"
+	namespaceName   = "core:agent/collective/resource"
 	defaultDuration = time.Second * 10
 )
 
@@ -53,10 +53,10 @@ func newAgent() *agentT {
 }
 
 // String - identity
-func (a *agentT) String() string { return a.Uri() }
+func (a *agentT) String() string { return a.Name() }
 
-// Uri - agent identifier
-func (a *agentT) Uri() string { return namespaceName }
+// Name - agent identifier
+func (a *agentT) Name() string { return namespaceName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
@@ -64,18 +64,18 @@ func (a *agentT) Message(m *messaging.Message) {
 		return
 	}
 	if !a.running {
-		if m.Event() == messaging.ConfigEvent {
+		if m.Name() == messaging.ConfigEvent {
 			a.configure(m)
 			return
 		}
-		if m.Event() == messaging.StartupEvent {
+		if m.Name() == messaging.StartupEvent {
 			a.run()
 			a.running = true
 			return
 		}
 		return
 	}
-	if m.Event() == messaging.ShutdownEvent {
+	if m.Name() == messaging.ShutdownEvent {
 		a.running = false
 	}
 	switch m.Channel() {
@@ -94,10 +94,10 @@ func (a *agentT) Message(m *messaging.Message) {
 func (a *agentT) configure(m *messaging.Message) {
 	cfg := messaging.ConfigMapContent(m)
 	if cfg == nil {
-		messaging.Reply(m, messaging.ConfigEmptyStatusError(a), a.Uri())
+		messaging.Reply(m, messaging.ConfigEmptyStatusError(a), a.Name())
 	}
 	// configure
-	messaging.Reply(m, messaging.StatusOK(), a.Uri())
+	messaging.Reply(m, messaging.StatusOK(), a.Name())
 }
 
 // Run - run the agent

@@ -18,7 +18,7 @@ func NewUsingMessage(ur UsingRecord) *messaging.Message {
 }
 
 func UsingContent(m *messaging.Message) (UsingRecord, bool) {
-	if m.Event() != messaging.ConfigEvent || m.ContentType() != ContentTypeUsing {
+	if m.Name() != messaging.ConfigEvent || m.ContentType() != ContentTypeUsing {
 		return UsingRecord{}, false
 	}
 	if v, ok := m.Body.(UsingRecord); ok {
