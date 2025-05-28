@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 )
@@ -34,13 +35,11 @@ type Resolution struct {
 var Resolver = func() *Resolution {
 	return &Resolution{
 		Representation: func(name, fragment string) (Content, *messaging.Status) {
-			return Content{}, messaging.StatusOK()
+			return agent.getRepresentation(name, fragment)
 		},
 		AddRepresentation: func(name, fragment, author string, ct Content) *messaging.Status {
-			// TODO: add collective name
-			return messaging.StatusOK()
+			return agent.putRepresentation(name, fragment, author, ct)
 		},
-
 		Context: func(name string) (Content, *messaging.Status) {
 			return Content{}, messaging.StatusOK()
 		},
@@ -68,14 +67,25 @@ func Resolve[T any](name, fragment string, resolver *Resolution) (T, *messaging.
 	}
 	switch ptr := any(&t).(type) {
 	case *string:
-		t1, status1 := Resolve[text](name, fragment, resolver)
-		if !status1.OK() {
-			return t, status1
+		//t1, status1 := Resolve[text](name, fragment, resolver)
+		//if !status1.OK() {
+		//	return t, status1
+		//}
+		if body, ok := ct.Value.(string); ok {
+			*ptr = body
 		}
-		*ptr = t1.Value
+		//*ptr = t1.Value
 	case *[]byte:
 		if body, ok := ct.Value.([]byte); ok {
 			*ptr = body
+		}
+	case *map[string]string:
+		if s, ok := ct.Value.(string); ok {
+			m, err := iox.ParseMap([]byte(s))
+			if err != nil {
+				return t, messaging.NewStatus(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, name)))
+			}
+			*ptr = m
 		}
 	default:
 		var (

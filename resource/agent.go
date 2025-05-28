@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/behavioral-ai/core/httpx"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
@@ -12,8 +13,9 @@ import (
 )
 
 const (
-	namespaceName   = "core:agent/collective/resource"
-	defaultDuration = time.Second * 10
+	namespaceName     = "core:agent/collective/resource"
+	defaultDuration   = time.Second * 10
+	contentTypeBinary = "application/octet-stream"
 )
 
 var (
@@ -115,7 +117,7 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getContent(name, fragment string) (Content, *messaging.Status) {
+func (a *agentT) getRepresentation(name, fragment string) (Content, *messaging.Status) {
 	if name == "" {
 		return Content{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
@@ -133,7 +135,7 @@ func (a *agentT) getContent(name, fragment string) (Content, *messaging.Status) 
 	return ct, messaging.StatusOK()
 }
 
-func (a *agentT) addContent(name, fragment, author string, ct Content) *messaging.Status {
+func (a *agentT) putRepresentation(name, fragment, author string, ct Content) *messaging.Status {
 	if name == "" || author == "" || ct.Value == nil {
 		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
@@ -153,13 +155,23 @@ func (a *agentT) addContent(name, fragment, author string, ct Content) *messagin
 
 	switch ptr := ct.Value.(type) {
 	case string:
-		v := text{ptr}
-		buf, err = json.Marshal(v)
-		if err != nil {
-			return messaging.NewStatus(messaging.StatusJsonEncodeError, err)
-		}
+		buf = []byte(ptr)
+		//v := text{ptr}
+		//buf, err = json.Marshal(v)
+		//if err != nil {
+		//	return messaging.NewStatus(messaging.StatusJsonEncodeError, err)
+		//}
+		//ct.Type = httpx.ContentTypeText
+		//ct.Value = buf
 	case []byte:
 		buf = ptr
+		//ct.Type = contentTypeBinary
+		//ct.Value = buf
+	case map[string]string:
+		s := iox.WriteMap(ptr)
+		buf = []byte(s)
+		ct.Type = httpx.ContentTypeText
+		ct.Value = s
 	case *url.URL:
 		buf, err = iox.ReadFile(ptr)
 		if err != nil {
@@ -170,12 +182,14 @@ func (a *agentT) addContent(name, fragment, author string, ct Content) *messagin
 		if err != nil {
 			return messaging.NewStatus(messaging.StatusJsonEncodeError, err)
 		}
+		ct.Type = httpx.ContentTypeJson
+		ct.Value = string(buf)
 	}
 	if len(buf) == 0 {
 		err = errors.New(fmt.Sprintf("resource is empty on call to PutValue() for nsName : %v", name))
 		return messaging.NewStatus(http.StatusNoContent, err)
 	}
-	_, status := httpPutContent(name, fragment, author, buf)
+	_, status := httpPutContent(name, fragment, author, ct.Type, buf)
 	if !status.OK() {
 		return status.WithMessage(fmt.Sprintf("name %v", name))
 	}
