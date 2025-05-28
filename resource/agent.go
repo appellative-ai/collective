@@ -135,8 +135,8 @@ func (a *agentT) getRepresentation(name, fragment string) (Content, *messaging.S
 	return ct, messaging.StatusOK()
 }
 
-func (a *agentT) putRepresentation(name, fragment, author string, ct Content) *messaging.Status {
-	if name == "" || author == "" || ct.Value == nil {
+func (a *agentT) putRepresentation(name, fragment, author string, value any) *messaging.Status {
+	if name == "" || author == "" || value == nil {
 		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	/*
@@ -152,26 +152,20 @@ func (a *agentT) putRepresentation(name, fragment, author string, ct Content) *m
 	*/
 	var buf []byte
 	var err error
+	var ct string
 
-	switch ptr := ct.Value.(type) {
+	switch ptr := value.(type) {
 	case string:
+		ct = httpx.ContentTypeText
 		buf = []byte(ptr)
 		//v := text{ptr}
 		//buf, err = json.Marshal(v)
 		//if err != nil {
 		//	return messaging.NewStatus(messaging.StatusJsonEncodeError, err)
 		//}
-		//ct.Type = httpx.ContentTypeText
-		//ct.Value = buf
 	case []byte:
+		ct = httpx.ContentTypeBinary
 		buf = ptr
-		//ct.Type = contentTypeBinary
-		//ct.Value = buf
-	case map[string]string:
-		s := iox.WriteMap(ptr)
-		buf = []byte(s)
-		ct.Type = httpx.ContentTypeText
-		ct.Value = s
 	case *url.URL:
 		buf, err = iox.ReadFile(ptr)
 		if err != nil {
@@ -182,17 +176,17 @@ func (a *agentT) putRepresentation(name, fragment, author string, ct Content) *m
 		if err != nil {
 			return messaging.NewStatus(messaging.StatusJsonEncodeError, err)
 		}
-		ct.Type = httpx.ContentTypeJson
-		ct.Value = string(buf)
+		ct = httpx.ContentTypeJson
 	}
 	if len(buf) == 0 {
 		err = errors.New(fmt.Sprintf("resource is empty on call to PutValue() for nsName : %v", name))
 		return messaging.NewStatus(http.StatusNoContent, err)
 	}
-	_, status := httpPutContent(name, fragment, author, ct.Type, buf)
+	_, status := httpPutContent(name, fragment, author, ct, buf)
 	if !status.OK() {
 		return status.WithMessage(fmt.Sprintf("name %v", name))
 	}
-	a.cache.put(name, fragment, ct) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
+	// TODO: remove http is supported
+	a.cache.put(name, fragment, Content{Type: ct, Value: buf}) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return status
 }

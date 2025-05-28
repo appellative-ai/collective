@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/core/iox"
+	"github.com/behavioral-ai/core/httpx"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
+	"reflect"
 )
 
 // Content -
@@ -25,7 +26,7 @@ func (c Content) String() string {
 // How to handle local vs distributed
 type Resolution struct {
 	Representation    func(name, fragment string) (Content, *messaging.Status)
-	AddRepresentation func(name, fragment, author string, ct Content) *messaging.Status
+	AddRepresentation func(name, fragment, author string, value any) *messaging.Status
 
 	Context    func(name string) (Content, *messaging.Status)
 	AddContext func(name, author string, ct Content) *messaging.Status
@@ -37,8 +38,8 @@ var Resolver = func() *Resolution {
 		Representation: func(name, fragment string) (Content, *messaging.Status) {
 			return agent.getRepresentation(name, fragment)
 		},
-		AddRepresentation: func(name, fragment, author string, ct Content) *messaging.Status {
-			return agent.putRepresentation(name, fragment, author, ct)
+		AddRepresentation: func(name, fragment, author string, value any) *messaging.Status {
+			return agent.putRepresentation(name, fragment, author, value)
 		},
 		Context: func(name string) (Content, *messaging.Status) {
 			return Content{}, messaging.StatusOK()
@@ -54,6 +55,8 @@ var Resolver = func() *Resolution {
 // TODO: support map[string]string??
 func Resolve[T any](name, fragment string, resolver *Resolution) (T, *messaging.Status) {
 	var t T
+	var body []byte
+	var ok bool
 
 	if resolver == nil {
 		return t, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", name)))
@@ -63,41 +66,29 @@ func Resolve[T any](name, fragment string, resolver *Resolution) (T, *messaging.
 		return t, status
 	}
 	if ct.Value == nil {
-		return t, messaging.NewStatus(http.StatusNoContent, fmt.Sprintf("resource not found for name: %v", name))
+		return t, messaging.NewStatus(http.StatusNoContent, fmt.Sprintf("representation not found for name: %v", name))
+	}
+	if body, ok = ct.Value.([]byte); !ok {
+		return t, messaging.NewStatus(messaging.StatusInvalidContent, fmt.Sprintf("representation content type is not []byte for name: %v", name))
 	}
 	switch ptr := any(&t).(type) {
 	case *string:
-		//t1, status1 := Resolve[text](name, fragment, resolver)
-		//if !status1.OK() {
-		//	return t, status1
-		//}
-		if body, ok := ct.Value.(string); ok {
-			*ptr = body
+		if ct.Type != httpx.ContentTypeText {
+			return t, messaging.NewStatus(messaging.StatusInvalidContent, fmt.Sprintf("representation content type %v invalid for string: %v", ct.Type, name))
 		}
-		//*ptr = t1.Value
+		*ptr = string(body)
 	case *[]byte:
-		if body, ok := ct.Value.([]byte); ok {
-			*ptr = body
+		if ct.Type != httpx.ContentTypeBinary {
+			return t, messaging.NewStatus(messaging.StatusInvalidContent, fmt.Sprintf("representation content type %v invalid for []byte: %v", ct.Type, name))
 		}
-	case *map[string]string:
-		if s, ok := ct.Value.(string); ok {
-			m, err := iox.ParseMap([]byte(s))
-			if err != nil {
-				return t, messaging.NewStatus(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, name)))
-			}
-			*ptr = m
-		}
+		*ptr = body
 	default:
-		var (
-			body []byte
-			ok   bool
-		)
-		body, ok = ct.Value.([]byte)
-		if ok {
-			err := json.Unmarshal(body, ptr)
-			if err != nil {
-				return t, messaging.NewStatus(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, name)))
-			}
+		if ct.Type != httpx.ContentTypeJson {
+			return t, messaging.NewStatus(messaging.StatusInvalidContent, fmt.Sprintf("representation content type %v invalid for %v: %v", ct.Type, reflect.TypeOf(t), name))
+		}
+		err := json.Unmarshal(body, ptr)
+		if err != nil {
+			return t, messaging.NewStatus(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, name)))
 		}
 	}
 	return t, messaging.StatusOK()
