@@ -23,17 +23,17 @@ func (c Content) String() string {
 // Can only add in current collective. An empty collective is assuming the local vs distributed
 // How to handle local vs distributed
 type Resolution struct {
-	Representation    func(collective, name, fragment string) (Content, *messaging.Status)
+	Representation    func(name, fragment string) (Content, *messaging.Status)
 	AddRepresentation func(name, fragment, author string, ct Content) *messaging.Status
 
-	Context    func(collective, name string) (Content, *messaging.Status)
+	Context    func(name string) (Content, *messaging.Status)
 	AddContext func(name, author string, ct Content) *messaging.Status
 }
 
 // Resolver -
 var Resolver = func() *Resolution {
 	return &Resolution{
-		Representation: func(collective, name, fragment string) (Content, *messaging.Status) {
+		Representation: func(name, fragment string) (Content, *messaging.Status) {
 			return Content{}, messaging.StatusOK()
 		},
 		AddRepresentation: func(name, fragment, author string, ct Content) *messaging.Status {
@@ -41,7 +41,7 @@ var Resolver = func() *Resolution {
 			return messaging.StatusOK()
 		},
 
-		Context: func(collective, name string) (Content, *messaging.Status) {
+		Context: func(name string) (Content, *messaging.Status) {
 			return Content{}, messaging.StatusOK()
 		},
 		AddContext: func(name, author string, ct Content) *messaging.Status {
@@ -53,13 +53,13 @@ var Resolver = func() *Resolution {
 
 // Resolve - generic typed resolution
 // TODO: support map[string]string??
-func Resolve[T any](collective, name, fragment string, resolver *Resolution) (T, *messaging.Status) {
+func Resolve[T any](name, fragment string, resolver *Resolution) (T, *messaging.Status) {
 	var t T
 
 	if resolver == nil {
 		return t, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", name)))
 	}
-	ct, status := resolver.Representation(collective, name, fragment)
+	ct, status := resolver.Representation(name, fragment)
 	if !status.OK() {
 		return t, status
 	}
@@ -68,7 +68,7 @@ func Resolve[T any](collective, name, fragment string, resolver *Resolution) (T,
 	}
 	switch ptr := any(&t).(type) {
 	case *string:
-		t1, status1 := Resolve[text](collective, name, fragment, resolver)
+		t1, status1 := Resolve[text](name, fragment, resolver)
 		if !status1.OK() {
 			return t, status1
 		}
