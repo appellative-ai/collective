@@ -30,6 +30,10 @@ type Resolution struct {
 
 	Context    func(name string) (Content, *messaging.Status)
 	AddContext func(name, author string, ct Content) *messaging.Status
+
+	// TODO: Need some sort of context and then the result, what was the member working on, and what was the
+	// result of that work, with pertinent details. Do not need location
+	AddTrace func(name string) *messaging.Status
 }
 
 // Resolver -
@@ -45,7 +49,9 @@ var Resolver = func() *Resolution {
 			return Content{}, messaging.StatusOK()
 		},
 		AddContext: func(name, author string, ct Content) *messaging.Status {
-			// TODO: add collective name
+			return messaging.StatusOK()
+		},
+		AddTrace: func(name string) *messaging.Status {
 			return messaging.StatusOK()
 		},
 	}
