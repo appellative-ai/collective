@@ -1,54 +1,133 @@
 package resource
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
-func ExampleResolveString() {
-	name := "test:thing:text@2"
+type Address struct {
+	Line1 string
+	Line2 string
+	City  string
+	State string
+	Zip   string
+}
 
-	c := newCache()
-	buf, err := json.Marshal(text{Value: "Generic typed get"})
-	if err != nil {
-		fmt.Printf("test: json.Marshall() -> [err:%v]\n", err)
-	} else {
-		//status :=
-		c.put(name, "", Content{Value: buf})
-		//fmt.Printf("test: newContentCache.put(1) -> [status:%v]\n", status)
+func ExampleResolveBinary() {
+	NewAgent()
+	name := "core:type/binary"
+	bytes := []byte("this is a test buffer")
+	fragment := "v1"
 
-		v, status1 := Resolve[text](name, "", nil)
-		fmt.Printf("test: Resolve[text]() -> [%v] [%v]\n", status1, v)
+	status := Resolver.AddRepresentation(name, fragment, "author", bytes)
+	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
+
+	ct, status2 := Resolver.Representation(name, fragment)
+	fmt.Printf("test: Representation() -> [ct:%v] [status:%v]\n", ct, status2)
+
+	if buf, ok := ct.Value.([]byte); ok {
+		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", string(buf), status2)
 	}
 
+	s3, status3 := Resolve[[]byte](name, fragment, Resolver)
+	fmt.Printf("test: Resolve() -> [value:%v] [status:%v]\n", string(s3), status3)
+
 	//Output:
-	//test: Resolve[text]() -> [Bad Request [err:error: BadRequest - resolver is nil for : test:thing:text@2]] [{}]
+	//test: AddRepresentation() -> [status:OK]
+	//test: Representation() -> [ct:fragment: v1 type: application/octet-stream value: true] [status:OK]
+	//test: Representation() -> [value:this is a test buffer] [status:OK]
+	//test: Resolve() -> [value:this is a test buffer] [status:OK]
 
 }
 
-/*
-func ExampleEphemeralResolver() {
-	name := "test:thing/string"
-	s := "test Ephemeral resolver"
+func ExampleResolveString() {
+	NewAgent()
+	name := "core:type/binary"
+	s := "this is a test string"
+	fragment := "v1"
 
-	r := NewEphemeralResolver()
-	//fmt.Printf("test: NewEphemeralResolver() -> [status:%v]\n", status)
+	status := Resolver.AddRepresentation(name, fragment, "author", s)
+	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
-	status := r.AddValue(name, "author", s, 1)
-	fmt.Printf("test: Resolver.Put() -> [status:%v]\n", status)
+	ct, status2 := Resolver.Representation(name, fragment)
+	fmt.Printf("test: Representation() -> [ct:%v] [status:%v]\n", ct, status2)
 
-	v, status1 := Resolve[string](name, 1, r)
-	fmt.Printf("test: Resolve[string] -> [status:%v] [%v]\n", status1, v)
+	if buf, ok := ct.Value.([]byte); ok {
+		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", string(buf), status2)
+	}
 
-	v, status1 = Resolve[string](name, 2, r)
-	fmt.Printf("test: Resolve[string] -> [status:%v] [%v]\n", status1, v)
+	s3, status3 := Resolve[string](name, fragment, Resolver)
+	fmt.Printf("test: Resolve() -> [value:%v] [status:%v]\n", string(s3), status3)
 
 	//Output:
-	//test: Resolver.Put() -> [status:OK]
-	//test: Resolve[string] -> [status:OK] [test Ephemeral resolver]
-	//test: Resolve[string] -> [status:Not Found [msg:name test:thing/string and version 2] [agent:resiliency:agent/behavioral-ai/collective/resource]] []
+	//test: AddRepresentation() -> [status:OK]
+	//test: Representation() -> [ct:fragment: v1 type: text/plain charset=utf-8 value: true] [status:OK]
+	//test: Representation() -> [value:this is a test string] [status:OK]
+	//test: Resolve() -> [value:this is a test string] [status:OK]
 
 }
 
+func ExampleResolveType() {
+	NewAgent()
+	addr := Address{
+		Line1: "123 Main",
+		Line2: "",
+		City:  "Anytown",
+		State: "Ohio",
+		Zip:   "54321",
+	}
+	name := "core:type/address"
+	fragment := "v2"
 
-*/
+	status := Resolver.AddRepresentation(name, fragment, "author", addr)
+	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
+
+	ct, status2 := Resolver.Representation(name, fragment)
+	fmt.Printf("test: Representation() -> [ct:%v] [status:%v]\n", ct, status2)
+
+	if buf, ok := ct.Value.([]byte); ok {
+		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", len(buf), status2)
+	}
+
+	s3, status3 := Resolve[Address](name, fragment, Resolver)
+	fmt.Printf("test: Resolve() -> [value:%v] [status:%v]\n", s3, status3)
+
+	//Output:
+	//test: AddRepresentation() -> [status:OK]
+	//test: Representation() -> [ct:fragment: v2 type: application/json value: true] [status:OK]
+	//test: Representation() -> [value:77] [status:OK]
+	//test: Resolve() -> [value:{123 Main  Anytown Ohio 54321}] [status:OK]
+
+}
+
+func ExampleResolveMap() {
+	NewAgent()
+	m := map[string]string{
+		"Line1": "123 Main",
+		"Line2": "",
+		"City":  "Anytown",
+		"State": "Ohio",
+		"Zip":   "54321",
+	}
+	name := "core:type/map"
+	fragment := "v2"
+
+	status := Resolver.AddRepresentation(name, fragment, "author", m)
+	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
+
+	ct, status2 := Resolver.Representation(name, fragment)
+	fmt.Printf("test: Representation() -> [ct:%v] [status:%v]\n", ct, status2)
+
+	if buf, ok := ct.Value.([]byte); ok {
+		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", len(buf), status2)
+	}
+
+	s3, status3 := Resolve[map[string]string](name, fragment, Resolver)
+	fmt.Printf("test: Resolve() -> [value:%v] [status:%v]\n", s3, status3)
+
+	//Output:
+	//test: AddRepresentation() -> [status:OK]
+	//test: Representation() -> [ct:fragment: v2 type: application/json value: true] [status:OK]
+	//test: Representation() -> [value:77] [status:OK]
+	//test: Resolve() -> [value:map[City:Anytown Line1:123 Main Line2: State:Ohio Zip:54321]] [status:OK]
+
+}

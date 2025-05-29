@@ -30,5 +30,5 @@ func httpGetContent(name string) ([]byte, *messaging.Status) {
 func httpPutContent(name, fragment, author string, ct string, buf []byte) (*http.Response, *messaging.Status) {
 	//req, _ := http.NewRequest(http.MethodPut, "", io.Nnil)
 	//resp,status := http2.Do(req)
-	return nil, messaging.StatusNotFound()
+	return nil, messaging.StatusOK()
 }

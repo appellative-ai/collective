@@ -13,9 +13,8 @@ import (
 )
 
 const (
-	namespaceName     = "core:agent/collective/resource"
-	defaultDuration   = time.Second * 10
-	contentTypeBinary = "application/octet-stream"
+	namespaceName   = "core:agent/collective/resource"
+	defaultDuration = time.Second * 10
 )
 
 var (
@@ -38,8 +37,10 @@ type agentT struct {
 }
 
 func NewAgent() messaging.Agent {
-	agent = newAgent()
-	return agent //host.Register(agent)
+	if agent == nil {
+		agent = newAgent()
+	}
+	return agent
 }
 
 func newAgent() *agentT {
@@ -187,6 +188,6 @@ func (a *agentT) putRepresentation(name, fragment, author string, value any) *me
 		return status.WithMessage(fmt.Sprintf("name %v", name))
 	}
 	// TODO: remove http is supported
-	a.cache.put(name, fragment, Content{Type: ct, Value: buf}) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
+	a.cache.put(name, fragment, Content{Fragment: fragment, Type: ct, Value: buf}) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return status
 }
