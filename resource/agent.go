@@ -95,12 +95,7 @@ func (a *agentT) Message(m *messaging.Message) {
 }
 
 func (a *agentT) configure(m *messaging.Message) {
-	cfg := messaging.ConfigMapContent(m)
-	if cfg == nil {
-		messaging.Reply(m, messaging.ConfigEmptyStatusError(a), a.Name())
-	}
-	// configure
-	messaging.Reply(m, messaging.StatusOK(), a.Name())
+
 }
 
 // Run - run the agent
