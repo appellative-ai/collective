@@ -34,7 +34,7 @@ type Resolution struct {
 	// TODO: Need some sort of context and then the result, what was the member working on, and what was the
 	// result of that work, with pertinent details. Do not need location
 	// Should be able to monitor cause and effect
-	AddTrace func(name string) *messaging.Status
+	AddTrace func(name, task, observation, action string) *messaging.Status
 }
 
 // Resolver -
@@ -52,7 +52,7 @@ var Resolver = func() *Resolution {
 		AddContext: func(name, author string, ct Content) *messaging.Status {
 			return messaging.StatusOK()
 		},
-		AddTrace: func(name string) *messaging.Status {
+		AddTrace: func(name, task, observation, action string) *messaging.Status {
 			return messaging.StatusOK()
 		},
 	}
