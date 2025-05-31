@@ -5,19 +5,19 @@ import (
 	"sync"
 )
 
-// mapT - constructor map
-type mapT struct {
+// ctorM - constructor map
+type ctorM struct {
 	m *sync.Map
 }
 
-// newMap - create a new map
-func newMap() *mapT {
-	c := new(mapT)
+// newCtorMap - create a new agent map
+func newCtorMap() *ctorM {
+	c := new(ctorM)
 	c.m = new(sync.Map)
 	return c
 }
 
-func (c *mapT) get(name string) messaging.NewAgent {
+func (c *ctorM) get(name string) messaging.NewAgent {
 	v, ok := c.m.Load(name)
 	if !ok {
 		return nil
@@ -28,7 +28,7 @@ func (c *mapT) get(name string) messaging.NewAgent {
 	return nil
 }
 
-func (c *mapT) put(name string, fn messaging.NewAgent) {
+func (c *ctorM) store(name string, fn messaging.NewAgent) {
 	if name == "" || fn == nil {
 		return
 	}

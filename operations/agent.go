@@ -45,7 +45,7 @@ func (a *agentT) Message(m *messaging.Message) {
 	if m == nil {
 		return
 	}
-	if m.Name() == messaging.ConfigEvent {
+	if m.Name == messaging.ConfigEvent {
 		if _, ok := m2.UsingContent(m); ok {
 			agents.Broadcast(m)
 			messaging.Reply(m, messaging.StatusOK(), a.Name())
@@ -53,7 +53,7 @@ func (a *agentT) Message(m *messaging.Message) {
 			messaging.Reply(m, messaging.NewStatus(http.StatusBadRequest, errors.New("invalid Using resource")), a.Name())
 		}
 	}
-	if m.Name() == messaging.ShutdownEvent {
+	if m.Name == messaging.ShutdownEvent {
 		agents.Broadcast(m)
 	}
 }

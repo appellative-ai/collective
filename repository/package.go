@@ -4,7 +4,9 @@ import "github.com/behavioral-ai/core/messaging"
 
 var (
 	exchange = messaging.NewExchange()
-	ctorMap  = newMap()
+	ctor     = newCtorMap()
+	msg      = newMessageMap()
+	origin   Origin
 )
 
 // Register - register an agent
@@ -48,14 +50,38 @@ func RegisterConstructor(name string, fn messaging.NewAgent) {
 	if name == "" || fn == nil {
 		return
 	}
-	ctorMap.put(name, fn)
+	ctor.store(name, fn)
 }
 
 // Constructor - construct a new agent
 func Constructor(name string) messaging.Agent {
-	fn := ctorMap.get(name)
+	fn := ctor.get(name)
 	if fn != nil {
 		return fn()
 	}
 	return nil
+}
+
+// GetMessage - get a message
+func GetMessage(name string) *messaging.Message {
+	return msg.get(name)
+}
+
+// StoreMessage - store a message
+func StoreMessage(m *messaging.Message) {
+	msg.store(m)
+}
+
+// ModifyMessage - modify a message
+func ModifyMessage(m *messaging.Message) {
+	msg.modify(m)
+}
+
+// DeleteMessage - delete a message
+func DeleteMessage(name string) {
+	msg.delete(name)
+}
+
+func GetOrigin() Origin {
+	return origin
 }
