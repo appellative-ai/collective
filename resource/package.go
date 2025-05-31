@@ -60,7 +60,6 @@ var Resolver = func() *Resolution {
 }()
 
 // Resolve - generic typed resolution
-// TODO: support map[string]string??
 func Resolve[T any](name, fragment string, resolver *Resolution) (T, *messaging.Status) {
 	var t T
 	var body []byte
