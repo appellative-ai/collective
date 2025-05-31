@@ -85,3 +85,8 @@ func DeleteMessage(name string) {
 func GetOrigin() Origin {
 	return origin
 }
+
+func GetType[T any](name string) (t T) {
+
+	return
+}
