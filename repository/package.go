@@ -86,7 +86,7 @@ func GetOrigin() Origin {
 	return origin
 }
 
-func GetType[T any](name string) (t T) {
+func GetWithType[T any](name string) (t T) {
 
 	return
 }
