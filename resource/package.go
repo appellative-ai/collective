@@ -31,6 +31,8 @@ type Resolution struct {
 
 	Context    func(name string) (Content, *messaging.Status)
 	AddContext func(name, author string, ct Content) *messaging.Status
+
+	AddTrace func(name, task, observation, action string) *messaging.Status
 }
 
 // Resolver -
@@ -46,6 +48,12 @@ var Resolver = func() *Resolution {
 			return Content{}, messaging.StatusOK()
 		},
 		AddContext: func(name, author string, ct Content) *messaging.Status {
+			return messaging.StatusOK()
+		},
+		AddTrace: func(name, task, observation, action string) *messaging.Status {
+			o := repository.GetOrigin()
+			if o.Host == "" {
+			}
 			return messaging.StatusOK()
 		},
 	}
@@ -91,14 +99,4 @@ func Resolve[T any](name, fragment string, resolver *Resolution) (T, *messaging.
 		}
 	}
 	return t, messaging.StatusOK()
-}
-
-// TraceFunc -
-type TraceFunc func(name, task, observation, action string) *messaging.Status
-
-func AddTrace(name, task, observation, action string) *messaging.Status {
-	o := repository.GetOrigin()
-	if o.Host == "" {
-	}
-	return messaging.StatusOK()
 }
