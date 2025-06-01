@@ -1,13 +1,10 @@
 package operations
 
 import (
-	"errors"
-	m2 "github.com/behavioral-ai/collective/messaging"
 	"github.com/behavioral-ai/collective/namespace"
 	"github.com/behavioral-ai/collective/repository"
 	"github.com/behavioral-ai/collective/resource"
 	"github.com/behavioral-ai/core/messaging"
-	"net/http"
 )
 
 const (
@@ -15,23 +12,27 @@ const (
 )
 
 var (
-	agents = messaging.NewExchange()
-	agent  *agentT
+	agent *agentT
 )
 
-type agentT struct{}
+type agentT struct {
+	agents *messaging.Exchange
+}
 
 func init() {
 	repository.RegisterConstructor(NamespaceName, func() messaging.Agent {
 		return newAgent()
 	})
-	agents.Register(resource.NewAgent())
-	agents.Register(namespace.NewAgent())
+
 }
 
 func newAgent() *agentT {
-	agent = new(agentT)
-	return agent
+	a := new(agentT)
+	a.agents = messaging.NewExchange()
+	a.agents.Register(resource.NewAgent())
+	a.agents.Register(namespace.NewAgent())
+	agent = a
+	return a
 }
 
 // String - identity
@@ -46,15 +47,16 @@ func (a *agentT) Message(m *messaging.Message) {
 		return
 	}
 	if m.Name == messaging.ConfigEvent {
-		if _, ok := m2.UsingContent(m); ok {
-			agents.Broadcast(m)
-			messaging.Reply(m, messaging.StatusOK(), a.Name())
-		} else {
-			messaging.Reply(m, messaging.NewStatus(http.StatusBadRequest, errors.New("invalid Using resource")), a.Name())
-		}
+		//if _, ok := m2.UsingContent(m); ok {
+		//	agents.Broadcast(m)
+		//	messaging.Reply(m, messaging.StatusOK(), a.Name())
+		//} else {
+		//	messaging.Reply(m, messaging.NewStatus(http.StatusBadRequest, errors.New("invalid Using resource")), a.Name())
+		//}
+		return
 	}
-	if m.Name == messaging.ShutdownEvent {
-		agents.Broadcast(m)
+	if m.Name != messaging.ConfigEvent {
+		a.agents.Broadcast(m)
 	}
 }
 
