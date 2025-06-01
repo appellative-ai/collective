@@ -14,7 +14,7 @@ func Register(a messaging.Agent) error {
 	return exchange.Register(a)
 }
 
-// Agent - get an agent from the exchange, constructing the agent if necessary
+// Agent - get an agent from the exchange
 func Agent(name string) messaging.Agent {
 	agent := exchange.Get(name)
 	if agent != nil {
@@ -28,7 +28,7 @@ func Agent(name string) messaging.Agent {
 	return agent
 }
 
-// Message - message an agent, using the message To as the agent name
+// Message - message an agent
 func Message(m *messaging.Message) {
 	if m == nil {
 		return
@@ -40,7 +40,7 @@ func Message(m *messaging.Message) {
 	//exchange.Message(m)
 }
 
-// Broadcast - broadcast a message to all registered agents
+// Broadcast - broadcast a message
 func Broadcast(m *messaging.Message) {
 	exchange.Broadcast(m)
 }
@@ -82,11 +82,12 @@ func DeleteMessage(name string) {
 	msg.delete(name)
 }
 
-func GetOrigin() Origin {
-	return origin
+// GetMessageBody -
+func GetMessageBody[T any](name string) (t T, ok bool) {
+	return
 }
 
-func GetMessageBody[T any](name string) (t T, ok bool) {
-
-	return
+// GetOrigin -
+func GetOrigin() Origin {
+	return origin
 }

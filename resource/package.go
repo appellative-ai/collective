@@ -11,6 +11,9 @@ import (
 	"reflect"
 )
 
+// TraceFunc -
+type TraceFunc func(name, task, observation, action string) *messaging.Status
+
 // Content -
 type Content struct {
 	Fragment string // returned on a Get
