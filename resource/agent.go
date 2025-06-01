@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	namespaceName   = "core:agent/collective/resource"
+	namespaceName   = "core:agent/resource/collective"
 	defaultDuration = time.Second * 10
 )
 
