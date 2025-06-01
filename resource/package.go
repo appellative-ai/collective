@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/collective/repository"
 	"github.com/behavioral-ai/core/httpx"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
@@ -31,8 +30,6 @@ type Resolution struct {
 
 	Context    func(name string) (Content, *messaging.Status)
 	AddContext func(name, author string, ct Content) *messaging.Status
-
-	AddTrace func(name, task, observation, action string) *messaging.Status
 }
 
 // Resolver -
@@ -48,12 +45,6 @@ var Resolver = func() *Resolution {
 			return Content{}, messaging.StatusOK()
 		},
 		AddContext: func(name, author string, ct Content) *messaging.Status {
-			return messaging.StatusOK()
-		},
-		AddTrace: func(name, task, observation, action string) *messaging.Status {
-			o := repository.GetOrigin()
-			if o.Host == "" {
-			}
 			return messaging.StatusOK()
 		},
 	}

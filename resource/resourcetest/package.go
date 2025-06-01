@@ -1,7 +1,6 @@
 package resourcetest
 
 import (
-	"github.com/behavioral-ai/collective/repository"
 	"github.com/behavioral-ai/collective/resource"
 	"github.com/behavioral-ai/core/messaging"
 )
@@ -18,12 +17,6 @@ var Resolver = func() *resource.Resolution {
 			return resource.Content{}, messaging.StatusOK()
 		},
 		AddContext: func(name, author string, ct resource.Content) *messaging.Status {
-			return messaging.StatusOK()
-		},
-		AddTrace: func(name, task, observation, action string) *messaging.Status {
-			o := repository.GetOrigin()
-			if o.Host == "" {
-			}
 			return messaging.StatusOK()
 		},
 	}

@@ -6,7 +6,6 @@ var (
 	exchange = messaging.NewExchange()
 	ctor     = newCtorMap()
 	msg      = newMessageMap()
-	origin   Origin
 )
 
 // Register - register an agent
@@ -85,9 +84,4 @@ func DeleteMessage(name string) {
 // GetMessageBody -
 func GetMessageBody[T any](name string) (t T, ok bool) {
 	return
-}
-
-// GetOrigin -
-func GetOrigin() Origin {
-	return origin
 }
