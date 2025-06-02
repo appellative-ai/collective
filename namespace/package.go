@@ -2,10 +2,57 @@ package namespace
 
 import "github.com/behavioral-ai/core/messaging"
 
+// Namespace names format:
+//  collective = domain.sub-domain
+//  application = domain.sub-domain
+//
+//  {collective}:{domain}:{type}/{path}#{fragment}
+//
+//  Example:  wikipedia.eng:resiliency.traffic:agent/rate-limiting/request/http#v1.2.3
+//
 // TODO : add activity
 //        Can we add frame resource version to activity?
 //        Need author, frame, things, Accessor
 //        Need counts, lists of aspects
+
+const (
+	Fragment = "#"
+	Colon    = ":"
+	Slash    = "/"
+)
+
+// Kinds
+
+const (
+	ThingKind = "thing" // Generic kind
+
+	AgentKind  = "agent"  // Used to define a thing that is empowered, agents are members of the collective, not just things.
+	AspectKind = "aspect" // Used for making connections resources: self, info
+	EventKind  = "event"  // Messaging events
+	PersonKind = "person" // Used for authorization and ownership resources: self, info, instance
+	TaskKind   = "task"   // Used for tracing agent activity. What is the agent tasked with
+	TypeKind   = "type"   // Programming language types
+
+	RelationKind = "relation" // Used for relating 2 resources
+	FrameKind    = "frame"    // Used as a container for names, similar to a dir entry on a file system
+)
+
+// Name -
+type Name struct {
+	Collective string `json:"collective"`
+	Domain     string `json:"domain"`
+	Kind       string `json:"kind"`
+	Path       string `json:"path"`
+	Fragment   string `json:"fragment"`
+}
+
+func ParseName(name string) Name {
+	return parse(name)
+}
+
+func Versioned(name, version string) string {
+	return addVersion(name, version)
+}
 
 // Accessor -
 type Accessor struct {
