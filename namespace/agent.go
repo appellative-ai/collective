@@ -3,7 +3,7 @@ package namespace
 import (
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/collective/exchange"
+	"github.com/behavioral-ai/collective/private"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"time"
@@ -22,7 +22,7 @@ type agentT struct {
 	running   bool
 	duration  time.Duration
 	relations *relationT
-	intf      exchange.Interface
+	intf      private.Interface
 
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel

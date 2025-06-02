@@ -2,6 +2,7 @@ package operations
 
 import (
 	"github.com/behavioral-ai/collective/namespace"
+	"github.com/behavioral-ai/collective/private"
 	"github.com/behavioral-ai/collective/repository"
 	"github.com/behavioral-ai/collective/resource"
 	"github.com/behavioral-ai/core/messaging"
@@ -16,9 +17,9 @@ var (
 )
 
 type agentT struct {
-	service string
-	origin  Origin
-	agents  *messaging.Exchange
+	intf   private.Interface
+	origin Origin
+	agents *messaging.Exchange
 }
 
 func init() {

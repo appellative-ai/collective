@@ -3,7 +3,7 @@ package resource
 import (
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/collective/exchange"
+	"github.com/behavioral-ai/collective/private"
 	"sync"
 )
 
@@ -14,7 +14,7 @@ type resolutionKey struct {
 }
 
 type content struct {
-	body exchange.Content
+	body private.Content
 }
 
 type cacheT struct {
@@ -27,18 +27,18 @@ func newCache() *cacheT {
 	return c
 }
 
-func (c *cacheT) get(name, fragment string) (exchange.Content, error) {
+func (c *cacheT) get(name, fragment string) (private.Content, error) {
 	key := resolutionKey{Name: name, Fragment: fragment}
 	value, ok := c.m.Load(key)
 	if !ok {
-		return exchange.Content{}, errors.New(fmt.Sprintf("resource [%v] not found", name))
+		return private.Content{}, errors.New(fmt.Sprintf("resource [%v] not found", name))
 	}
 	if value1, ok1 := value.(content); ok1 {
 		return value1.body, nil
 	}
-	return exchange.Content{}, nil
+	return private.Content{}, nil
 }
 
-func (c *cacheT) put(name, fragment string, ct exchange.Content) {
+func (c *cacheT) put(name, fragment string, ct private.Content) {
 	c.m.Store(resolutionKey{Name: name, Fragment: fragment}, content{body: ct})
 }

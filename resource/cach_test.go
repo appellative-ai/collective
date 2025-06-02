@@ -3,7 +3,7 @@ package resource
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/behavioral-ai/collective/exchange"
+	"github.com/behavioral-ai/collective/private"
 	"net/http"
 )
 
@@ -17,7 +17,7 @@ func ExampleNewCache() {
 	} else {
 		//var status error //status *messaging.Status
 		//	var access Accessor{}
-		c.put(name, "", exchange.Content{Fragment: "", Type: http.DetectContentType(buf), Value: buf})
+		c.put(name, "", private.Content{Fragment: "", Type: http.DetectContentType(buf), Value: buf})
 		//fmt.Printf("test: newCache.put(1) -> [status:%v]\n", status)
 
 		access, status := c.get(name, "")

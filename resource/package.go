@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/collective/exchange"
+	"github.com/behavioral-ai/collective/private"
 	"github.com/behavioral-ai/core/httpx"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
@@ -15,26 +15,26 @@ import (
 // Can only add in current collective. An empty collective is assuming the local vs distributed
 // How to handle local vs distributed
 type Resolution struct {
-	Representation    func(name, fragment string) (exchange.Content, *messaging.Status)
+	Representation    func(name, fragment string) (private.Content, *messaging.Status)
 	AddRepresentation func(name, fragment, author string, value any) *messaging.Status
 
-	Context    func(name string) (exchange.Content, *messaging.Status)
-	AddContext func(name, author string, ct exchange.Content) *messaging.Status
+	Context    func(name string) (private.Content, *messaging.Status)
+	AddContext func(name, author string, ct private.Content) *messaging.Status
 }
 
 // Resolver -
 var Resolver = func() *Resolution {
 	return &Resolution{
-		Representation: func(name, fragment string) (exchange.Content, *messaging.Status) {
+		Representation: func(name, fragment string) (private.Content, *messaging.Status) {
 			return agent.getRepresentation(name, fragment)
 		},
 		AddRepresentation: func(name, fragment, author string, value any) *messaging.Status {
 			return agent.putRepresentation(name, fragment, author, value)
 		},
-		Context: func(name string) (exchange.Content, *messaging.Status) {
-			return exchange.Content{}, messaging.StatusOK()
+		Context: func(name string) (private.Content, *messaging.Status) {
+			return private.Content{}, messaging.StatusOK()
 		},
-		AddContext: func(name, author string, ct exchange.Content) *messaging.Status {
+		AddContext: func(name, author string, ct private.Content) *messaging.Status {
 			return messaging.StatusOK()
 		},
 	}

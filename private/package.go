@@ -1,4 +1,4 @@
-package exchange
+package private
 
 import (
 	"fmt"
@@ -17,12 +17,12 @@ type Relation func(method, name, cname, thing1, thing2, author string) *messagin
 
 // Interface -
 type Interface struct {
-	CurrentCollective string
-	LinkedCollectives []string
-	Rep               Representation
-	Ctx               Context
-	Th                Thing
-	Rel               Relation
+	//CurrentCollective string
+	//LinkedCollectives []string
+	Rep Representation
+	Ctx Context
+	Th  Thing
+	Rel Relation
 }
 
 // Content -

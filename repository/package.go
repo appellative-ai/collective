@@ -13,7 +13,7 @@ func Register(a messaging.Agent) error {
 	return exchange.Register(a)
 }
 
-// Agent - get an agent from the exchange
+// Agent - get an agent from the private
 func Agent(name string) messaging.Agent {
 	agent := exchange.Get(name)
 	if agent != nil {
@@ -36,7 +36,7 @@ func Message(m *messaging.Message) {
 	if agent != nil {
 		agent.Message(m)
 	}
-	//exchange.Message(m)
+	//private.Message(m)
 }
 
 // Broadcast - broadcast a message
