@@ -3,7 +3,7 @@ package namespace
 import (
 	"errors"
 	"fmt"
-	m2 "github.com/behavioral-ai/collective/messaging"
+	"github.com/behavioral-ai/collective/exchange"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"time"
@@ -22,9 +22,8 @@ type agentT struct {
 	running   bool
 	duration  time.Duration
 	relations *relationT
-	using     map[string]m2.UsingRecord
+	intf      exchange.Interface
 
-	//handler  eventing.Agent
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 	master   *messaging.Channel
@@ -38,7 +37,6 @@ func NewAgent() messaging.Agent {
 func newAgent() *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
-	a.using = make(map[string]m2.UsingRecord)
 	a.relations = newRelation()
 
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
@@ -87,10 +85,7 @@ func (a *agentT) Message(m *messaging.Message) {
 }
 
 func (a *agentT) configure(m *messaging.Message) {
-	if use, ok := m2.UsingContent(m); ok {
-		a.using[use.Collective] = use
-	}
-	//messaging.Reply(m, messaging.StatusOK(), a.Uri())
+
 }
 
 // Run - run the agent

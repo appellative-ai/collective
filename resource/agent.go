@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/behavioral-ai/collective/exchange"
 	"github.com/behavioral-ai/core/httpx"
 	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
@@ -29,8 +30,8 @@ type agentT struct {
 	running  bool
 	duration time.Duration
 	cache    *cacheT
+	intf     exchange.Interface
 
-	//handler  eventing.Agent
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 	master   *messaging.Channel
@@ -95,7 +96,15 @@ func (a *agentT) Message(m *messaging.Message) {
 }
 
 func (a *agentT) configure(m *messaging.Message) {
-
+	switch m.ContentType() {
+	case exchange.ContentTypeInterface:
+		a.intf = exchange.InterfaceContent(m)
+		if a.intf.CurrentCollective == "" {
+			messaging.Reply(m, messaging.ConfigEmptyMapError(a.Name()), a.Name())
+			return
+		}
+	}
+	messaging.Reply(m, messaging.StatusOK(), a.Name())
 }
 
 // Run - run the agent
@@ -113,9 +122,9 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getRepresentation(name, fragment string) (Content, *messaging.Status) {
+func (a *agentT) getRepresentation(name, fragment string) (exchange.Content, *messaging.Status) {
 	if name == "" {
-		return Content{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
+		return exchange.Content{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	ct, err := a.cache.get(name, fragment)
 	if err == nil {
@@ -124,9 +133,9 @@ func (a *agentT) getRepresentation(name, fragment string) (Content, *messaging.S
 	// Cache miss
 	buf, err1 := httpGetContent(name)
 	if err1 != nil {
-		return Content{}, err1.WithMessage(fmt.Sprintf("name %v", name))
+		return exchange.Content{}, err1.WithMessage(fmt.Sprintf("name %v", name))
 	}
-	ct = Content{Fragment: fragment, Type: http.DetectContentType(buf), Value: buf}
+	ct = exchange.Content{Fragment: fragment, Type: http.DetectContentType(buf), Value: buf}
 	a.cache.put(name, fragment, ct)
 	return ct, messaging.StatusOK()
 }
@@ -183,6 +192,6 @@ func (a *agentT) putRepresentation(name, fragment, author string, value any) *me
 		return status.WithMessage(fmt.Sprintf("name %v", name))
 	}
 	// TODO: remove http is supported
-	a.cache.put(name, fragment, Content{Fragment: fragment, Type: ct, Value: buf}) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
+	a.cache.put(name, fragment, exchange.Content{Fragment: fragment, Type: ct, Value: buf}) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return status
 }

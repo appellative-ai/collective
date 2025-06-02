@@ -4,47 +4,37 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/behavioral-ai/collective/exchange"
 	"github.com/behavioral-ai/core/httpx"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
 	"reflect"
 )
 
-// Content -
-type Content struct {
-	Fragment string // returned on a Get
-	Type     string // Content-Type
-	Value    any
-}
-
-func (c Content) String() string {
-	return fmt.Sprintf("fragment: %v type: %v value: %v", c.Fragment, c.Type, c.Value != nil)
-}
-
 // Resolution - in the real world
 // Can only add in current collective. An empty collective is assuming the local vs distributed
 // How to handle local vs distributed
 type Resolution struct {
-	Representation    func(name, fragment string) (Content, *messaging.Status)
+	Representation    func(name, fragment string) (exchange.Content, *messaging.Status)
 	AddRepresentation func(name, fragment, author string, value any) *messaging.Status
 
-	Context    func(name string) (Content, *messaging.Status)
-	AddContext func(name, author string, ct Content) *messaging.Status
+	Context    func(name string) (exchange.Content, *messaging.Status)
+	AddContext func(name, author string, ct exchange.Content) *messaging.Status
 }
 
 // Resolver -
 var Resolver = func() *Resolution {
 	return &Resolution{
-		Representation: func(name, fragment string) (Content, *messaging.Status) {
+		Representation: func(name, fragment string) (exchange.Content, *messaging.Status) {
 			return agent.getRepresentation(name, fragment)
 		},
 		AddRepresentation: func(name, fragment, author string, value any) *messaging.Status {
 			return agent.putRepresentation(name, fragment, author, value)
 		},
-		Context: func(name string) (Content, *messaging.Status) {
-			return Content{}, messaging.StatusOK()
+		Context: func(name string) (exchange.Content, *messaging.Status) {
+			return exchange.Content{}, messaging.StatusOK()
 		},
-		AddContext: func(name, author string, ct Content) *messaging.Status {
+		AddContext: func(name, author string, ct exchange.Content) *messaging.Status {
 			return messaging.StatusOK()
 		},
 	}

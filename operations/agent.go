@@ -16,7 +16,9 @@ var (
 )
 
 type agentT struct {
-	agents *messaging.Exchange
+	service string
+	origin  Origin
+	agents  *messaging.Exchange
 }
 
 func init() {
@@ -47,12 +49,7 @@ func (a *agentT) Message(m *messaging.Message) {
 		return
 	}
 	if m.Name == messaging.ConfigEvent {
-		//if _, ok := m2.UsingContent(m); ok {
-		//	agents.Broadcast(m)
-		//	messaging.Reply(m, messaging.StatusOK(), a.Name())
-		//} else {
-		//	messaging.Reply(m, messaging.NewStatus(http.StatusBadRequest, errors.New("invalid Using resource")), a.Name())
-		//}
+
 		return
 	}
 	if m.Name != messaging.ConfigEvent {
@@ -60,16 +57,31 @@ func (a *agentT) Message(m *messaging.Message) {
 	}
 }
 
-/*
-func (a *agentT) configure(m *messaging.Message) {
-	//ur := messaging.messaging.ConfigMapContent(m)
-	//if cfg == nil {
-	//	messaging.Reply(m, messaging.ConfigEmptyStatusError(a), a.Uri())
-	//}
-	// configure
-	//messaging.Reply(m, messaging.StatusOK(), a.Uri())
-	agents.Broadcast(m)
+func (a *agentT) message(m *messaging.Message) {
 }
 
+func (a *agentT) advise(m *messaging.Message) {
+}
 
-*/
+func (a *agentT) subscribe(m *messaging.Message) {
+}
+
+func (a *agentT) cancel(m *messaging.Message) {
+}
+
+func (a *agentT) trace(name, task, observation, action string) {
+}
+
+func (a *agentT) configure(m *messaging.Message) {
+	switch m.ContentType() {
+	case messaging.ContentTypeMap:
+		cfg := messaging.ConfigMapContent(m)
+		if cfg == nil {
+			messaging.Reply(m, messaging.ConfigEmptyMapError(a.Name()), a.Name())
+			return
+		}
+		//a.state.Update(cfg)
+
+	}
+	messaging.Reply(m, messaging.StatusOK(), a.Name())
+}
