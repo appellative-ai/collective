@@ -98,11 +98,7 @@ func (a *agentT) Message(m *messaging.Message) {
 func (a *agentT) configure(m *messaging.Message) {
 	switch m.ContentType() {
 	case private.ContentTypeInterface:
-		//	a.intf = private.InterfaceContent(m)
-		//if a.intf.CurrentCollective == "" {
-		//	messaging.Reply(m, messaging.ConfigEmptyMapError(a.Name()), a.Name())
-		//	return
-		//	}
+		a.intf = private.InterfaceContent(m)
 	}
 	messaging.Reply(m, messaging.StatusOK(), a.Name())
 }

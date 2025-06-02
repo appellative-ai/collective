@@ -6,6 +6,18 @@ const (
 	ServiceKind = "service"
 )
 
+// Origin map and host keys
+const (
+	PrimaryHost   = "primary-host"
+	SecondaryHost = "secondary-host"
+	AppIdKey      = "app-id"
+	RegionKey     = "region"
+	ZoneKey       = "zone"
+	SubZoneKey    = "sub-zone"
+	HostKey       = "host"
+	InstanceIdKey = "instance-id"
+)
+
 // Service - in the real world
 type Service struct {
 	Message            func(msg *messaging.Message)

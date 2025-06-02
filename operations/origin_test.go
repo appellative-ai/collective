@@ -3,8 +3,8 @@ package operations
 import "fmt"
 
 func ExampleNewOrigin() {
-	o := Origin{
-		NID:     "resiliency",
+	o := originT{
+		AppId:   "resiliency",
 		Region:  "region",
 		Zone:    "zone",
 		SubZone: "sub-zone",
@@ -41,7 +41,7 @@ func ExampleNewOrigin() {
 }
 
 func _ExampleOrigin_Uri() {
-	target := Origin{
+	target := originT{
 		Region:     "region",
 		Zone:       "zone",
 		SubZone:    "sub-zone",
@@ -61,7 +61,7 @@ func _ExampleOrigin_Uri() {
 }
 
 func _ExampleOrigin_String() {
-	target := Origin{
+	target := originT{
 		Region:     "region",
 		Zone:       "zone",
 		SubZone:    "sub-zone",
