@@ -3,19 +3,20 @@ package operations
 import "github.com/behavioral-ai/core/messaging"
 
 const (
-	ServiceKind = "service"
+// ServiceKind = "service"
 )
 
 // Origin map and host keys
 const (
-	PrimaryHost   = "primary-host"
-	SecondaryHost = "secondary-host"
-	AppIdKey      = "app-id"
-	RegionKey     = "region"
-	ZoneKey       = "zone"
-	SubZoneKey    = "sub-zone"
-	HostKey       = "host"
-	InstanceIdKey = "instance-id"
+	RegistryHost1Key = "registry-host1"
+	RegistryHost2Key = "registry-host2"
+	CollectiveKey    = "collective"
+	DomainKey        = "domain"
+	RegionKey        = "region"
+	ZoneKey          = "zone"
+	SubZoneKey       = "sub-zone"
+	HostKey          = "host"
+	InstanceIdKey    = "instance-id"
 )
 
 // Service - in the real world

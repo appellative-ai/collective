@@ -2,6 +2,7 @@ package operations
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/collective/namespace"
 	"github.com/behavioral-ai/core/messaging"
 )
 
@@ -11,7 +12,7 @@ const (
 
 // origin - location
 type originT struct {
-	AppId      string `json:"app-id"`
+	//AppId      string `json:"app-id"`
 	Region     string `json:"region"`
 	Zone       string `json:"zone"`
 	SubZone    string `json:"sub-zone"`
@@ -42,7 +43,7 @@ func (o originT) String() string { return o.Name() }
 */
 
 func (o originT) Name() string {
-	var name = o.AppId + ":" + ServiceKind
+	var name = "core" + ":" + namespace.ServiceKind
 
 	if o.Region != "" {
 		name += "/" + o.Region
@@ -68,11 +69,11 @@ func newOriginFromMessage(m *messaging.Message) (o originT, ok bool) {
 		messaging.Reply(m, messaging.ConfigEmptyMapError(NamespaceName), NamespaceName)
 		return
 	}
-	o.AppId = cfg[AppIdKey]
-	if o.AppId == "" {
-		messaging.Reply(m, messaging.ConfigMapContentError(NamespaceName, AppIdKey), NamespaceName)
-		return
-	}
+	//o.AppId = cfg[AppIdKey]
+	//if o.AppId == "" {
+	//	messaging.Reply(m, messaging.ConfigMapContentError(NamespaceName, AppIdKey), NamespaceName)
+	//	return
+	//}
 	o.Region = cfg[RegionKey]
 	if o.Region == "" {
 		messaging.Reply(m, messaging.ConfigMapContentError(NamespaceName, RegionKey), NamespaceName)

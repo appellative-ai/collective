@@ -4,7 +4,7 @@ import "fmt"
 
 func ExampleNewOrigin() {
 	o := originT{
-		AppId:   "resiliency",
+		//AppId:   "resiliency",
 		Region:  "region",
 		Zone:    "zone",
 		SubZone: "sub-zone",
@@ -32,11 +32,11 @@ func ExampleNewOrigin() {
 	fmt.Printf("test: NewOrigin() -> [%v]\n", o)
 
 	//Output:
-	//test: NewOrigin() -> [resiliency:service/region/zone/sub-zone/host]
-	//test: NewOrigin() -> [resiliency:service/region/sub-zone/host]
-	//test: NewOrigin() -> [resiliency:service/region/zone/host]
-	//test: NewOrigin() -> [resiliency:service/region/zone/sub-zone]
-	//test: NewOrigin() -> [resiliency:service/region/zone/sub-zone/host#instance-id]
+	//test: NewOrigin() -> [core:service/region/zone/sub-zone/host]
+	//test: NewOrigin() -> [core:service/region/sub-zone/host]
+	//test: NewOrigin() -> [core:service/region/zone/host]
+	//test: NewOrigin() -> [core:service/region/zone/sub-zone]
+	//test: NewOrigin() -> [core:service/region/zone/sub-zone/host#instance-id]
 
 }
 

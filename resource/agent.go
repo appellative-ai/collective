@@ -118,9 +118,9 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getRepresentation(name, fragment string) (private.Content, *messaging.Status) {
+func (a *agentT) getRepresentation(name, fragment string) (Content, *messaging.Status) {
 	if name == "" {
-		return private.Content{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
+		return Content{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	ct, err := a.cache.get(name, fragment)
 	if err == nil {
@@ -129,9 +129,9 @@ func (a *agentT) getRepresentation(name, fragment string) (private.Content, *mes
 	// Cache miss
 	buf, err1 := httpGetContent(name)
 	if err1 != nil {
-		return private.Content{}, err1.WithMessage(fmt.Sprintf("name %v", name))
+		return Content{}, err1.WithMessage(fmt.Sprintf("name %v", name))
 	}
-	ct = private.Content{Fragment: fragment, Type: http.DetectContentType(buf), Value: buf}
+	ct = Content{Fragment: fragment, Type: http.DetectContentType(buf), Value: buf}
 	a.cache.put(name, fragment, ct)
 	return ct, messaging.StatusOK()
 }
@@ -188,6 +188,6 @@ func (a *agentT) putRepresentation(name, fragment, author string, value any) *me
 		return status.WithMessage(fmt.Sprintf("name %v", name))
 	}
 	// TODO: remove http is supported
-	a.cache.put(name, fragment, private.Content{Fragment: fragment, Type: ct, Value: buf}) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
+	a.cache.put(name, fragment, Content{Fragment: fragment, Type: ct, Value: buf}) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
 	return status
 }

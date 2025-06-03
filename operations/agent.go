@@ -117,7 +117,9 @@ func (a *agentT) configure(m *messaging.Message) {
 		if a.state, ok = initialize(m); !ok {
 			return
 		}
-		// TODO: Need to set linked collective attributes
+		// TODO: Using the collective name, read the link collectives and query the collective registry
+		//  to retrieve the primary and secondary host names for each collective
+		//
 	}
 	messaging.Reply(m, messaging.StatusOK(), a.Name())
 }

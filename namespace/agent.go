@@ -108,6 +108,10 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
+func (a *agentT) collective() string {
+	return a.intf.Collective
+}
+
 func (a *agentT) addThing(name, cname, authority, author string) *messaging.Status {
 	if name == "" || authority == "" {
 		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v or authority %v", name, authority)))
