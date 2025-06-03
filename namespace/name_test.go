@@ -38,3 +38,13 @@ func ExampleAddVersion() {
 	//test: addVersion("wikipedia-eng:resiliency-traffic:agent/rate-limiting/request/http") -> wikipedia-eng:resiliency-traffic:agent/rate-limiting/request/http#v9.8.7
 
 }
+
+func ExampleVersioned() {
+	s := "wikipedia-eng:resiliency-traffic:agent/rate-limiting/request/http"
+	name := Versioned(s)
+	fmt.Printf("test: Versioned(\"%v\") -> %v\n", s, name)
+
+	//Output:
+	//test: Versioned("wikipedia-eng:resiliency-traffic:agent/rate-limiting/request/http") -> wikipedia-eng:resiliency-traffic:agent/rate-limiting/request/http#1
+
+}

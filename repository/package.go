@@ -13,7 +13,7 @@ func Register(a messaging.Agent) error {
 	return exchange.Register(a)
 }
 
-// Agent - get an agent from the private
+// Agent - get an agent
 func Agent(name string) messaging.Agent {
 	agent := exchange.Get(name)
 	if agent != nil {

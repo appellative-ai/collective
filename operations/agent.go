@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	NamespaceName = "core:agent/operations/collective"
+	NamespaceName = "common:core:agent/operations/collective"
 	duration      = time.Second * 30
 )
 

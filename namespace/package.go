@@ -1,6 +1,10 @@
 package namespace
 
-import "github.com/behavioral-ai/core/messaging"
+import (
+	"fmt"
+	"github.com/behavioral-ai/core/messaging"
+	"sync/atomic"
+)
 
 // Namespace names format:
 //  collective = domain-sub-domain
@@ -44,6 +48,10 @@ const (
 	FrameKind    = "frame"    // Used as a container for names, similar to a dir entry on a file system
 )
 
+var (
+	counter = new(atomic.Int64)
+)
+
 func Collective() string {
 	return agent.collective()
 }
@@ -61,8 +69,12 @@ func ParseName(name string) Name {
 	return parse(name)
 }
 
-func Versioned(name, version string) string {
+func AddVersion(name, version string) string {
 	return addVersion(name, version)
+}
+
+func Versioned(name string) string {
+	return AddVersion(name, fmt.Sprintf("%v", counter.Add(1)))
 }
 
 // Accessor -
