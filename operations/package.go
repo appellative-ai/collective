@@ -21,11 +21,12 @@ const (
 
 // Service - in the real world
 type Service struct {
-	Message            func(msg *messaging.Message)
-	Advise             func(msg *messaging.Message)
-	Subscribe          func(msg *messaging.Message)
-	CancelSubscription func(msg *messaging.Message)
-	Trace              func(name, task, observation, action string)
+	Message func(msg *messaging.Message)
+	Advise  func(msg *messaging.Message)
+	Trace   func(name, task, observation, action string)
+
+	SubscribeCreate    func(msg *messaging.Message)
+	SubscriptionCancel func(msg *messaging.Message)
 }
 
 // Serve -
@@ -37,10 +38,10 @@ var Serve = func() *Service {
 		Advise: func(msg *messaging.Message) {
 			agent.advise(msg)
 		},
-		Subscribe: func(msg *messaging.Message) {
+		SubscribeCreate: func(msg *messaging.Message) {
 			agent.subscribe(msg)
 		},
-		CancelSubscription: func(msg *messaging.Message) {
+		SubscriptionCancel: func(msg *messaging.Message) {
 			agent.cancel(msg)
 		},
 		Trace: func(name, task, observation, action string) {
