@@ -1,15 +1,11 @@
 package resource
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/behavioral-ai/collective/private"
-	"github.com/behavioral-ai/core/httpx"
-	"github.com/behavioral-ai/core/iox"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -118,39 +114,49 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getRepresentation(name, fragment string) (Content, *messaging.Status) {
+func (a *agentT) getRepresentation(name, fragment string) (messaging.Content, *messaging.Status) {
 	if name == "" {
-		return Content{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
+		return messaging.Content{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	ct, err := a.cache.get(name, fragment)
 	if err == nil {
 		return ct, messaging.StatusOK()
 	}
 	// Cache miss
-	buf, err1 := httpGetContent(name)
-	if err1 != nil {
-		return Content{}, err1.WithMessage(fmt.Sprintf("name %v", name))
-	}
-	ct = Content{Fragment: fragment, Type: http.DetectContentType(buf), Value: buf}
-	a.cache.put(name, fragment, ct)
-	return ct, messaging.StatusOK()
+	//ct,status := a.intf.Rep(http.MethodGet,name,fragment,"",nil)
+	//ct1 := messaging.Content{Fragment: fragment, Type: ct.Type, Value: nil}
+	//a.cache.put(name, fragment, ct1)
+	return messaging.Content{}, messaging.StatusNotFound()
 }
 
-func (a *agentT) putRepresentation(name, fragment, author string, value any) *messaging.Status {
-	if name == "" || author == "" || value == nil {
+func (a *agentT) putRepresentation(name, author string, ct messaging.Content) *messaging.Status {
+	if name == "" || author == "" || ct.Type == "" || ct.Value == nil {
 		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
-	/*
-		if nsName == "" {
-			err = errors.New(fmt.Sprintf("nsName is empty on call to PutValue()"))
-			return messaging.NewStatusError(http.StatusBadRequest, err, r.agent.Uri())
-		}
-		if resource == nil {
-			err = errors.New(fmt.Sprintf("resource is nil on call to PutValue() for nsName : %v", nsName))
-			return messaging.NewStatusError(http.StatusNoContent, err, r.agent.Uri())
-		}
+	buf, status := messaging.Marshal[[]byte](&ct)
+	if !status.OK() {
+		return status.WithLocation(name)
+	}
+	//_, status = a.intf.Rep(http.MethodPut, name, ct.Fragment, author, buf)
+	if !status.OK() {
+		return status.WithLocation(name)
+	}
+	a.cache.put(name, ct.Fragment, messaging.Content{Fragment: ct.Fragment, Type: ct.Type, Value: buf})
+	return status
+}
 
-	*/
+/*
+	if nsName == "" {
+		err = errors.New(fmt.Sprintf("nsName is empty on call to PutValue()"))
+		return messaging.NewStatusError(http.StatusBadRequest, err, r.agent.Uri())
+	}
+	if resource == nil {
+		err = errors.New(fmt.Sprintf("resource is nil on call to PutValue() for nsName : %v", nsName))
+		return messaging.NewStatusError(http.StatusNoContent, err, r.agent.Uri())
+	}
+
+*/
+/*
 	var buf []byte
 	var err error
 	var ct string
@@ -183,11 +189,9 @@ func (a *agentT) putRepresentation(name, fragment, author string, value any) *me
 		err = errors.New(fmt.Sprintf("resource is empty on call to PutValue() for nsName : %v", name))
 		return messaging.NewStatus(http.StatusNoContent, err)
 	}
-	_, status := httpPutContent(name, fragment, author, ct, buf)
-	if !status.OK() {
-		return status.WithMessage(fmt.Sprintf("name %v", name))
-	}
-	// TODO: remove http is supported
-	a.cache.put(name, fragment, Content{Fragment: fragment, Type: ct, Value: buf}) //Accessor{Version: uri.UnnVersion(name), Type: http.DetectContentType(buf), Content: buf})
-	return status
-}
+
+*/
+//_, status := httpPutContent(name, fragment, author, ct, buf)
+//if !status.OK() {
+//	return status.WithMessage(fmt.Sprintf("name %v", name))
+//}

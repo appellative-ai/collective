@@ -8,8 +8,8 @@ const (
 	ContentTypeInterface = "application/x-interface"
 )
 
-type Representation func(method, name, fragment, author string, value any) (string, string, any, *messaging.Status)
-type Context func(method, name, author, ct string, value any) (string, string, any, *messaging.Status)
+type Representation func(method, name, fragment, author string, value any) (messaging.Content, *messaging.Status)
+type Context func(method, name, author, ct string, value any) (messaging.Content, *messaging.Status)
 
 type Thing func(method, name, cname, author string) *messaging.Status
 type Relation func(method, name, cname, thing1, thing2, author string) *messaging.Status
@@ -25,15 +25,15 @@ type Interface struct {
 
 func NewInterfaceMessage(i Interface) *messaging.Message {
 	m := messaging.NewMessage(messaging.ChannelControl, messaging.ConfigEvent)
-	m.SetContent(ContentTypeInterface, i)
+	m.SetContent(ContentTypeInterface, "", i)
 	return m
 }
 
 func InterfaceContent(m *messaging.Message) Interface {
-	if m.Name != messaging.ConfigEvent || m.ContentType() != ContentTypeInterface {
+	if !messaging.ValidContent(m, messaging.ConfigEvent, ContentTypeInterface) {
 		return Interface{}
 	}
-	if cfg, ok := m.Body.(Interface); ok {
+	if cfg, ok := m.Content.Value.(Interface); ok {
 		return cfg
 	}
 	return Interface{}

@@ -2,6 +2,7 @@ package resource
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/core/messaging"
 )
 
 type Address struct {
@@ -18,7 +19,7 @@ func ExampleResolveBinary() {
 	bytes := []byte("this is a test buffer")
 	fragment := "v1"
 
-	status := Resolver.AddRepresentation(name, fragment, "author", bytes)
+	status := Resolver.AddRepresentation(name, "author", messaging.Content{Fragment: fragment, Type: messaging.ContentTypeBinary, Value: bytes})
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
 	ct, status2 := Resolver.Representation(name, fragment)
@@ -45,7 +46,7 @@ func ExampleResolveString() {
 	s := "this is a test string"
 	fragment := "v1"
 
-	status := Resolver.AddRepresentation(name, fragment, "author", s)
+	status := Resolver.AddRepresentation(name, "author", messaging.Content{Fragment: fragment, Type: messaging.ContentTypeText, Value: s})
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
 	ct, status2 := Resolver.Representation(name, fragment)
@@ -78,7 +79,7 @@ func ExampleResolveType() {
 	name := "core:type/address"
 	fragment := "v2"
 
-	status := Resolver.AddRepresentation(name, fragment, "author", addr)
+	status := Resolver.AddRepresentation(name, "author", messaging.Content{Fragment: fragment, Type: messaging.ContentTypeJson, Value: addr})
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
 	ct, status2 := Resolver.Representation(name, fragment)
@@ -111,7 +112,7 @@ func ExampleResolveMap() {
 	name := "core:type/map"
 	fragment := "v2"
 
-	status := Resolver.AddRepresentation(name, fragment, "author", m)
+	status := Resolver.AddRepresentation(name, "author", messaging.Content{Fragment: fragment, Type: messaging.ContentTypeJson, Value: m})
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
 	ct, status2 := Resolver.Representation(name, fragment)

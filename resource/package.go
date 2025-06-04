@@ -1,93 +1,54 @@
 package resource
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/core/httpx"
 	"github.com/behavioral-ai/core/messaging"
 	"net/http"
-	"reflect"
 )
-
-// Content -
-type Content struct {
-	Fragment string // returned on a Get
-	Type     string // Content-Type
-	Value    any
-}
-
-func (c Content) String() string {
-	return fmt.Sprintf("fragment: %v type: %v value: %v", c.Fragment, c.Type, c.Value != nil)
-}
 
 // Resolution - in the real world
 // Can only add in current collective. An empty collective is assuming the local vs distributed
 // How to handle local vs distributed
 type Resolution struct {
-	Representation    func(name, fragment string) (Content, *messaging.Status)
-	AddRepresentation func(name, fragment, author string, value any) *messaging.Status
+	Representation    func(name, fragment string) (messaging.Content, *messaging.Status)
+	AddRepresentation func(name, author string, ct messaging.Content) *messaging.Status
 
-	Context    func(name string) (Content, *messaging.Status)
-	AddContext func(name, author string, ct Content) *messaging.Status
+	Context    func(name string) (messaging.Content, *messaging.Status)
+	AddContext func(name, author string, ct messaging.Content) *messaging.Status
 }
 
 // Resolver -
 var Resolver = func() *Resolution {
 	return &Resolution{
-		Representation: func(name, fragment string) (Content, *messaging.Status) {
+		Representation: func(name, fragment string) (messaging.Content, *messaging.Status) {
 			return agent.getRepresentation(name, fragment)
 		},
-		AddRepresentation: func(name, fragment, author string, value any) *messaging.Status {
-			return agent.putRepresentation(name, fragment, author, value)
+		AddRepresentation: func(name, author string, ct messaging.Content) *messaging.Status {
+			return agent.putRepresentation(name, author, ct)
 		},
-		Context: func(name string) (Content, *messaging.Status) {
-			return Content{}, messaging.StatusOK()
+		Context: func(name string) (messaging.Content, *messaging.Status) {
+			return messaging.Content{}, messaging.StatusOK()
 		},
-		AddContext: func(name, author string, ct Content) *messaging.Status {
+		AddContext: func(name, author string, ct messaging.Content) *messaging.Status {
 			return messaging.StatusOK()
 		},
 	}
 }()
 
 // Resolve - generic typed resolution
-func Resolve[T any](name, fragment string, resolver *Resolution) (T, *messaging.Status) {
-	var t T
-	var body []byte
-	var ok bool
-
+// TODO: test augment result from unmarshall with name
+func Resolve[T any](name, fragment string, resolver *Resolution) (t T, status *messaging.Status) {
 	if resolver == nil {
-		return t, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: BadRequest - resolver is nil for : %v", name)))
+		return t, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: resolver is nil for : %v", name)))
 	}
-	ct, status := resolver.Representation(name, fragment)
+	ct, status1 := resolver.Representation(name, fragment)
+	if !status1.OK() {
+		return t, status1
+	}
+	t, status = messaging.Unmarshal[T](&ct)
 	if !status.OK() {
-		return t, status
+		status.WithLocation(name)
 	}
-	if ct.Value == nil {
-		return t, messaging.NewStatus(http.StatusNoContent, fmt.Sprintf("representation not found for name: %v", name))
-	}
-	if body, ok = ct.Value.([]byte); !ok {
-		return t, messaging.NewStatus(messaging.StatusInvalidContent, fmt.Sprintf("representation content type is not []byte for name: %v", name))
-	}
-	switch ptr := any(&t).(type) {
-	case *string:
-		if ct.Type != httpx.ContentTypeText {
-			return t, messaging.NewStatus(messaging.StatusInvalidContent, fmt.Sprintf("representation content type %v invalid for string: %v", ct.Type, name))
-		}
-		*ptr = string(body)
-	case *[]byte:
-		if ct.Type != httpx.ContentTypeBinary {
-			return t, messaging.NewStatus(messaging.StatusInvalidContent, fmt.Sprintf("representation content type %v invalid for []byte: %v", ct.Type, name))
-		}
-		*ptr = body
-	default:
-		if ct.Type != httpx.ContentTypeJson {
-			return t, messaging.NewStatus(messaging.StatusInvalidContent, fmt.Sprintf("representation content type %v invalid for %v: %v", ct.Type, reflect.TypeOf(t), name))
-		}
-		err := json.Unmarshal(body, ptr)
-		if err != nil {
-			return t, messaging.NewStatus(messaging.StatusJsonDecodeError, errors.New(fmt.Sprintf("JsonDecode - %v for : %v", err, name)))
-		}
-	}
-	return t, messaging.StatusOK()
+	return
 }

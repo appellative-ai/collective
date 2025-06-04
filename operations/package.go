@@ -12,11 +12,6 @@ const (
 	RegistryHost2Key = "registry-host2"
 	CollectiveKey    = "collective"
 	DomainKey        = "domain"
-	RegionKey        = "region"
-	ZoneKey          = "zone"
-	SubZoneKey       = "sub-zone"
-	HostKey          = "host"
-	InstanceIdKey    = "instance-id"
 )
 
 // Service - in the real world
