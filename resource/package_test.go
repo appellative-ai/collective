@@ -1,10 +1,6 @@
 package resource
 
-import (
-	"fmt"
-	"github.com/behavioral-ai/core/messaging"
-)
-
+/*
 type Address struct {
 	Line1 string
 	Line2 string
@@ -132,3 +128,6 @@ func ExampleResolveMap() {
 	//test: Resolve() -> [value:map[City:Anytown Line1:123 Main Line2: State:Ohio Zip:54321]] [status:OK]
 
 }
+
+
+*/

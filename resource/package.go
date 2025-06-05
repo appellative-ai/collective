@@ -1,10 +1,7 @@
 package resource
 
 import (
-	"errors"
-	"fmt"
 	"github.com/behavioral-ai/core/messaging"
-	"net/http"
 )
 
 // Resolution - in the real world
@@ -36,6 +33,7 @@ var Resolver = func() *Resolution {
 	}
 }()
 
+/*
 // Resolve - generic typed resolution
 // TODO: test augment result from unmarshall with name
 func Resolve[T any](name, fragment string, resolver *Resolution) (t T, status *messaging.Status) {
@@ -52,3 +50,6 @@ func Resolve[T any](name, fragment string, resolver *Resolution) (t T, status *m
 	}
 	return
 }
+
+
+*/
