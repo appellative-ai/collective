@@ -13,14 +13,6 @@ type resolutionKey struct {
 	Fragment string `json:"fragment"`
 }
 
-/*
-type content struct {
-	body messaging.Content
-}
-
-
-*/
-
 type cacheT struct {
 	m *sync.Map
 }
