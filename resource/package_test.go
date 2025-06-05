@@ -1,6 +1,10 @@
 package resource
 
-/*
+import (
+	"fmt"
+	"github.com/behavioral-ai/core/messaging"
+)
+
 type Address struct {
 	Line1 string
 	Line2 string
@@ -25,14 +29,14 @@ func ExampleResolveBinary() {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", string(buf), status2)
 	}
 
-	s3, status3 := Resolve[[]byte](name, fragment, Resolver)
-	fmt.Printf("test: Resolve() -> [value:%v] [status:%v]\n", string(s3), status3)
+	s3, status3 := messaging.NewT[[]byte](&ct)
+	fmt.Printf("test: NewT[[]byte]() -> [value:%v] [status:%v]\n", string(s3), status3)
 
 	//Output:
 	//test: AddRepresentation() -> [status:OK]
 	//test: Representation() -> [ct:fragment: v1 type: application/octet-stream value: true] [status:OK]
 	//test: Representation() -> [value:this is a test buffer] [status:OK]
-	//test: Resolve() -> [value:this is a test buffer] [status:OK]
+	//test: NewT[[]byte]() -> [value:this is a test buffer] [status:OK]
 
 }
 
@@ -52,14 +56,14 @@ func ExampleResolveString() {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", string(buf), status2)
 	}
 
-	s3, status3 := Resolve[string](name, fragment, Resolver)
-	fmt.Printf("test: Resolve() -> [value:%v] [status:%v]\n", string(s3), status3)
+	s3, status3 := messaging.NewT[string](&ct)
+	fmt.Printf("test: NewT[string]() -> [value:%v] [status:%v]\n", string(s3), status3)
 
 	//Output:
 	//test: AddRepresentation() -> [status:OK]
 	//test: Representation() -> [ct:fragment: v1 type: text/plain charset=utf-8 value: true] [status:OK]
 	//test: Representation() -> [value:this is a test string] [status:OK]
-	//test: Resolve() -> [value:this is a test string] [status:OK]
+	//test: NewT[string]() -> [value:this is a test string] [status:OK]
 
 }
 
@@ -85,14 +89,14 @@ func ExampleResolveType() {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", len(buf), status2)
 	}
 
-	s3, status3 := Resolve[Address](name, fragment, Resolver)
-	fmt.Printf("test: Resolve() -> [value:%v] [status:%v]\n", s3, status3)
+	s3, status3 := messaging.NewT[Address](&ct)
+	fmt.Printf("test: NewT[Address]() -> [value:%v] [status:%v]\n", s3, status3)
 
 	//Output:
 	//test: AddRepresentation() -> [status:OK]
 	//test: Representation() -> [ct:fragment: v2 type: application/json value: true] [status:OK]
 	//test: Representation() -> [value:77] [status:OK]
-	//test: Resolve() -> [value:{123 Main  Anytown Ohio 54321}] [status:OK]
+	//test: NewT[Address]() -> [value:{123 Main  Anytown Ohio 54321}] [status:OK]
 
 }
 
@@ -118,16 +122,13 @@ func ExampleResolveMap() {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", len(buf), status2)
 	}
 
-	s3, status3 := Resolve[map[string]string](name, fragment, Resolver)
-	fmt.Printf("test: Resolve() -> [value:%v] [status:%v]\n", s3, status3)
+	s3, status3 := messaging.NewT[map[string]string](&ct)
+	fmt.Printf("test: NewT[map[string]string]() -> [value:%v] [status:%v]\n", s3, status3)
 
 	//Output:
 	//test: AddRepresentation() -> [status:OK]
 	//test: Representation() -> [ct:fragment: v2 type: application/json value: true] [status:OK]
 	//test: Representation() -> [value:77] [status:OK]
-	//test: Resolve() -> [value:map[City:Anytown Line1:123 Main Line2: State:Ohio Zip:54321]] [status:OK]
+	//test: NewT[map[string]string]() -> [value:map[City:Anytown Line1:123 Main Line2: State:Ohio Zip:54321]] [status:OK]
 
 }
-
-
-*/
