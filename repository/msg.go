@@ -1,22 +1,16 @@
 package repository
 
-import (
-	"github.com/behavioral-ai/core/messaging"
-	"sync"
-)
-
 // messageM - messaging map
-type messageM struct {
-	m *sync.Map
-}
+//type messageM struct {
+//	m *sync.Map
+//}
 
 // newMessageMap - create a new agent map
-func newMessageMap() *messageM {
-	m := new(messageM)
-	m.m = new(sync.Map)
-	return m
+func newMessageMap[T, U any]() *mapT[T, U] {
+	return newMap[T, U]()
 }
 
+/*
 func (m *messageM) get(name string) *messaging.Message {
 	if name == "" {
 		return nil
@@ -57,3 +51,6 @@ func (m *messageM) delete(name string) {
 	}
 	m.m.Delete(name)
 }
+
+
+*/

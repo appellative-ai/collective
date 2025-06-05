@@ -108,18 +108,18 @@ func (a *agentT) trace(name, task, observation, action string) {
 func (a *agentT) configure(m *messaging.Message) {
 	switch m.ContentType() {
 	case messaging.ContentTypeMap:
-		cfg := messaging.ConfigMapContent(m)
-		if cfg == nil {
-			messaging.Reply(m, messaging.ConfigEmptyMapError(a.Name()), a.Name())
+		cfg, status := messaging.MapContent(m)
+		if !status.OK() {
+			messaging.Reply(m, messaging.EmptyMapError(a.Name()), a.Name())
 			return
 		}
-		var ok bool
-		if a.state, ok = initialize(m); !ok {
-			return
+		a.state = initialize(cfg)
+		// Initialize linked collectives
+		if messaging.Origin.Collective != "" {
+			// TODO: Initialize linked collectives by reading the configured collective links and then reference the
+			//       registry for collective host names
 		}
-		// TODO: Using the collective name, read the link collectives and query the collective registry
-		//  to retrieve the primary and secondary host names for each collective
-		//
+
 	}
 	messaging.Reply(m, messaging.StatusOK(), a.Name())
 }

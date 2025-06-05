@@ -5,8 +5,8 @@ import (
 	"github.com/behavioral-ai/core/messaging"
 )
 
-func ExampleNewCtorMap() {
-	m := newCtorMap[string, messaging.NewAgent]()
+func ExampleNewMap() {
+	m := newMap[string, messaging.NewAgent]()
 	name := ""
 	t := m.get("")
 	fmt.Printf("test:  get(\"%v\") -> %v\n", name, t)

@@ -4,8 +4,8 @@ import "github.com/behavioral-ai/core/messaging"
 
 var (
 	exchange = messaging.NewExchange()
-	ctor     = newCtorMap()
-	msg      = newMessageMap()
+	ctor     = newCtorMap[string, messaging.NewAgent]()
+	msg      = newMessageMap[string, *messaging.Message]()
 )
 
 // Register - register an agent
@@ -28,15 +28,8 @@ func Agent(name string) messaging.Agent {
 }
 
 // Message - message an agent
-func Message(m *messaging.Message) {
-	if m == nil {
-		return
-	}
-	agent := Agent(m.To())
-	if agent != nil {
-		agent.Message(m)
-	}
-	//private.Message(m)
+func Message(m *messaging.Message) bool {
+	return exchange.Message(m)
 }
 
 // Broadcast - broadcast a message
@@ -61,6 +54,10 @@ func Constructor(name string) messaging.Agent {
 	return nil
 }
 
+func Exists(name string) bool {
+	return ctor.get(name) != nil
+}
+
 // GetMessage - get a message
 func GetMessage(name string) *messaging.Message {
 	return msg.get(name)
@@ -68,9 +65,10 @@ func GetMessage(name string) *messaging.Message {
 
 // StoreMessage - store a message
 func StoreMessage(m *messaging.Message) {
-	msg.store(m)
+	msg.store(m.Name, m)
 }
 
+/*
 // ModifyMessage - modify a message
 func ModifyMessage(m *messaging.Message) {
 	msg.modify(m)
@@ -81,7 +79,5 @@ func DeleteMessage(name string) {
 	msg.delete(name)
 }
 
-// GetMessageBody -
-func GetMessageBody[T any](name string) (t T, ok bool) {
-	return
-}
+
+*/

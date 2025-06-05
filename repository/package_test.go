@@ -23,10 +23,17 @@ func ExampleRegisterConstructor() {
 	RegisterConstructor("one", fn2)
 	Constructor("one")
 
+	name := "one"
+	fmt.Printf("test: Exist(\"%v\") %v\n", name, Exists(name))
+	name = "invalid"
+	fmt.Printf("test: Exist(\"%v\") %v\n", name, Exists(name))
+
 	//Output:
 	//test: RegisterConstructor() [initial]
 	//test: RegisterConstructor() [replaced]
 	//test: RegisterConstructor() [initial]
 	//test: RegisterConstructor() [replaced]
+	//test: Exist("one") true
+	//test: Exist("invalid") false
 
 }

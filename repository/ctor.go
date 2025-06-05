@@ -1,22 +1,16 @@
 package repository
 
-import (
-	"github.com/behavioral-ai/core/messaging"
-	"sync"
-)
-
 // ctorM - constructor map
-type ctorM struct {
-	m *sync.Map
+//type ctorM struct {
+//	m *sync.Map
+//}
+
+// newCtorMap - new agent func map
+func newCtorMap[T, U any]() *mapT[T, U] {
+	return newMap[T, U]()
 }
 
-// newCtorMap - create a new agent map
-func newCtorMap() *ctorM {
-	c := new(ctorM)
-	c.m = new(sync.Map)
-	return c
-}
-
+/*
 func (c *ctorM) get(name string) messaging.NewAgent {
 	v, ok := c.m.Load(name)
 	if !ok {
@@ -34,3 +28,6 @@ func (c *ctorM) store(name string, fn messaging.NewAgent) {
 	}
 	c.m.Store(name, fn)
 }
+
+
+*/

@@ -10,14 +10,12 @@ const (
 const (
 	RegistryHost1Key = "registry-host1"
 	RegistryHost2Key = "registry-host2"
-	CollectiveKey    = "collective"
-	DomainKey        = "domain"
 )
 
 // Service - in the real world
 type Service struct {
-	Message func(msg *messaging.Message)
-	Advise  func(msg *messaging.Message)
+	Message func(msg *messaging.Message) bool
+	Advise  func(msg *messaging.Message) *messaging.Status
 	Trace   func(name, task, observation, action string)
 
 	SubscribeCreate    func(msg *messaging.Message)
@@ -27,11 +25,13 @@ type Service struct {
 // Serve -
 var Serve = func() *Service {
 	return &Service{
-		Message: func(msg *messaging.Message) {
+		Message: func(msg *messaging.Message) bool {
 			agent.message(msg)
+			return true
 		},
-		Advise: func(msg *messaging.Message) {
+		Advise: func(msg *messaging.Message) *messaging.Status {
 			agent.advise(msg)
+			return messaging.StatusOK()
 		},
 		SubscribeCreate: func(msg *messaging.Message) {
 			agent.subscribe(msg)
