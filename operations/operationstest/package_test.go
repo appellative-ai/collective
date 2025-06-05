@@ -9,8 +9,8 @@ func ExampleNewService() {
 	m := messaging.NewAddressableMessage(messaging.ChannelControl, messaging.ConfigEvent, "core:to/test", "core:from/test")
 	s.Message(m)
 	s.Advise(m)
-	s.Subscribe(m)
-	s.CancelSubscription(m)
+	s.SubscriptionCreate(m)
+	s.SubscriptionCancel(m)
 	s.Trace("core:agent/operations/collective", "task", "going well", "none")
 
 	//Output:

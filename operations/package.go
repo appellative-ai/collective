@@ -18,7 +18,7 @@ type Service struct {
 	Advise  func(msg *messaging.Message) *messaging.Status
 	Trace   func(name, task, observation, action string)
 
-	SubscribeCreate    func(msg *messaging.Message)
+	SubscriptionCreate func(msg *messaging.Message)
 	SubscriptionCancel func(msg *messaging.Message)
 }
 
@@ -33,7 +33,7 @@ var Serve = func() *Service {
 			agent.advise(msg)
 			return messaging.StatusOK()
 		},
-		SubscribeCreate: func(msg *messaging.Message) {
+		SubscriptionCreate: func(msg *messaging.Message) {
 			agent.subscribe(msg)
 		},
 		SubscriptionCancel: func(msg *messaging.Message) {

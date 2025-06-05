@@ -11,16 +11,18 @@ import (
 // NewService -
 func NewService() *operations.Service {
 	return &operations.Service{
-		Message: func(msg *messaging.Message) {
+		Message: func(msg *messaging.Message) bool {
 			fmt.Printf("%v  -> %v\n", "message", msg)
+			return true
 		},
-		Advise: func(msg *messaging.Message) {
+		Advise: func(msg *messaging.Message) *messaging.Status {
 			fmt.Printf("%v   -> %v\n", "advise", msg)
+			return messaging.StatusOK()
 		},
-		Subscribe: func(msg *messaging.Message) {
+		SubscriptionCreate: func(msg *messaging.Message) {
 			fmt.Printf("%v-> %v\n", "subscribe", msg)
 		},
-		CancelSubscription: func(msg *messaging.Message) {
+		SubscriptionCancel: func(msg *messaging.Message) {
 			fmt.Printf("%v   -> %v\n", "cancel", msg)
 		},
 		Trace: func(name, task, observation, action string) {
