@@ -26,7 +26,7 @@ type agentT struct {
 	running  bool
 	duration time.Duration
 	cache    *cacheT
-	intf     private.Interface
+	intf     *private.Interface
 
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
@@ -44,6 +44,7 @@ func newAgent() *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
 	a.cache = newCache()
+	a.intf = private.NewInterface()
 
 	//a.handler = handler
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
@@ -94,7 +95,11 @@ func (a *agentT) Message(m *messaging.Message) {
 func (a *agentT) configure(m *messaging.Message) {
 	switch m.ContentType() {
 	case private.ContentTypeInterface:
-		a.intf = private.InterfaceContent(m)
+		var status *messaging.Status
+		a.intf, status = private.InterfaceContent(m)
+		if !status.OK() {
+			messaging.Reply(m, status, a.Name())
+		}
 	}
 	messaging.Reply(m, messaging.StatusOK(), a.Name())
 }
@@ -114,34 +119,37 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getRepresentation(name, fragment string) (messaging.Content, *messaging.Status) {
+func (a *agentT) getRepresentation(name string) (messaging.Content, *messaging.Status) {
 	if name == "" {
 		return messaging.Content{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
-	ct, err := a.cache.get(name, fragment)
+	ct, err := a.cache.get(name)
 	if err == nil {
 		return ct, messaging.StatusOK()
 	}
-	// Cache miss
-	//ct,status := a.intf.Rep(http.MethodGet,name,fragment,"",nil)
-	//ct1 := messaging.Content{Fragment: fragment, Type: ct.Type, Value: nil}
-	//a.cache.put(name, fragment, ct1)
+	ct2, status := a.intf.Representation(http.MethodGet, name, "", "", nil)
+	if !status.OK() {
+		return messaging.Content{}, status
+	}
+	a.cache.put(name, ct2)
 	return messaging.Content{}, messaging.StatusNotFound()
 }
 
-func (a *agentT) putRepresentation(name, author string, ct messaging.Content) *messaging.Status {
-	if name == "" || author == "" || ct.Type == "" || ct.Value == nil {
+func (a *agentT) putRepresentation(name, author, contentType string, value any) *messaging.Status {
+	if name == "" || author == "" || contentType == "" || value == nil {
 		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
+	ct := messaging.Content{Type: contentType, Value: value}
 	buf, status := messaging.Marshal[[]byte](&ct)
 	if !status.OK() {
 		return status.WithLocation(name)
 	}
-	//_, status = a.intf.Rep(http.MethodPut, name, ct.Fragment, author, buf)
-	if !status.OK() {
+	_, status2 := a.intf.Representation(http.MethodPut, name, author, contentType, buf)
+	if !status2.OK() {
 		return status.WithLocation(name)
 	}
-	a.cache.put(name, ct.Fragment, messaging.Content{Fragment: ct.Fragment, Type: ct.Type, Value: buf})
+	// TODO: remove after initial testing
+	a.cache.put(name, ct)
 	return status
 }
 

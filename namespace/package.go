@@ -52,10 +52,6 @@ var (
 	counter = new(atomic.Int64)
 )
 
-func Collective() string {
-	return agent.collective()
-}
-
 // Name -
 type Name struct {
 	Collective string `json:"collective"`
@@ -69,12 +65,12 @@ func ParseName(name string) Name {
 	return parse(name)
 }
 
-func AddVersion(name, version string) string {
-	return addVersion(name, version)
+func AddFragment(name, fragment string) string {
+	return addFragment(name, fragment)
 }
 
 func Versioned(name string) string {
-	return AddVersion(name, fmt.Sprintf("%v", counter.Add(1)))
+	return AddFragment(name, fmt.Sprintf("%v", counter.Add(1)))
 }
 
 // Accessor -

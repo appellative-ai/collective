@@ -30,13 +30,13 @@ func parse(name string) Name {
 	return n
 }
 
-func addVersion(name, version string) string {
+func addFragment(name, fragment string) string {
 	if name == "" {
 		return name
 	}
 	i := strings.Index(name, Fragment)
 	if i == -1 {
-		return name + Fragment + version
+		return name + Fragment + fragment
 	}
 	return name
 }

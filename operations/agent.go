@@ -119,16 +119,15 @@ func (a *agentT) configure(m *messaging.Message) {
 			// TODO: Initialize linked collectives by reading the configured collective links and then reference the
 			//       registry for collective host names
 		}
-
 	}
 	messaging.Reply(m, messaging.StatusOK(), a.Name())
 }
 
 func (a *agentT) configureAgents() {
-	a.agents.Broadcast(private.NewInterfaceMessage(private.Interface{
-		Rep: representation,
-		Ctx: context,
-		Th:  thing,
-		Rel: relation,
+	a.agents.Broadcast(private.NewInterfaceMessage(&private.Interface{
+		Representation: representation,
+		Context:        context,
+		Thing:          thing,
+		Relation:       relation,
 	}))
 }

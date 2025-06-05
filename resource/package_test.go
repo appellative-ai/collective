@@ -17,26 +17,25 @@ func ExampleResolveBinary() {
 	NewAgent()
 	name := "core:type/binary"
 	bytes := []byte("this is a test buffer")
-	fragment := "v1"
 
-	status := Resolver.AddRepresentation(name, "author", messaging.Content{Fragment: fragment, Type: messaging.ContentTypeBinary, Value: bytes})
+	status := Resolver.AddRepresentation(name, "author", messaging.ContentTypeBinary, bytes)
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
-	ct, status2 := Resolver.Representation(name, fragment)
+	ct, status2 := Resolver.Representation(name)
 	fmt.Printf("test: Representation() -> [ct:%v] [status:%v]\n", ct, status2)
 
 	if buf, ok := ct.Value.([]byte); ok {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", string(buf), status2)
 	}
 
-	s3, status3 := messaging.NewT[[]byte](&ct)
-	fmt.Printf("test: NewT[[]byte]() -> [value:%v] [status:%v]\n", string(s3), status3)
+	s3, status3 := messaging.New[[]byte](&ct)
+	fmt.Printf("test: New[[]byte]() -> [value:%v] [status:%v]\n", string(s3), status3)
 
 	//Output:
 	//test: AddRepresentation() -> [status:OK]
-	//test: Representation() -> [ct:fragment: v1 type: application/octet-stream value: true] [status:OK]
+	//test: Representation() -> [ct:fragment:  type: application/octet-stream value: true] [status:OK]
 	//test: Representation() -> [value:this is a test buffer] [status:OK]
-	//test: NewT[[]byte]() -> [value:this is a test buffer] [status:OK]
+	//test: New[[]byte]() -> [value:this is a test buffer] [status:OK]
 
 }
 
@@ -44,26 +43,24 @@ func ExampleResolveString() {
 	NewAgent()
 	name := "core:type/binary"
 	s := "this is a test string"
-	fragment := "v1"
 
-	status := Resolver.AddRepresentation(name, "author", messaging.Content{Fragment: fragment, Type: messaging.ContentTypeText, Value: s})
+	status := Resolver.AddRepresentation(name, "author", messaging.ContentTypeText, s)
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
-	ct, status2 := Resolver.Representation(name, fragment)
+	ct, status2 := Resolver.Representation(name)
 	fmt.Printf("test: Representation() -> [ct:%v] [status:%v]\n", ct, status2)
 
 	if buf, ok := ct.Value.([]byte); ok {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", string(buf), status2)
 	}
 
-	s3, status3 := messaging.NewT[string](&ct)
-	fmt.Printf("test: NewT[string]() -> [value:%v] [status:%v]\n", string(s3), status3)
+	s3, status3 := messaging.New[string](&ct)
+	fmt.Printf("test: New[string]() -> [value:%v] [status:%v]\n", string(s3), status3)
 
 	//Output:
 	//test: AddRepresentation() -> [status:OK]
-	//test: Representation() -> [ct:fragment: v1 type: text/plain charset=utf-8 value: true] [status:OK]
-	//test: Representation() -> [value:this is a test string] [status:OK]
-	//test: NewT[string]() -> [value:this is a test string] [status:OK]
+	//test: Representation() -> [ct:fragment:  type: text/plain charset=utf-8 value: true] [status:OK]
+	//test: New[string]() -> [value:this is a test string] [status:OK]
 
 }
 
@@ -77,26 +74,24 @@ func ExampleResolveType() {
 		Zip:   "54321",
 	}
 	name := "core:type/address"
-	fragment := "v2"
 
-	status := Resolver.AddRepresentation(name, "author", messaging.Content{Fragment: fragment, Type: messaging.ContentTypeJson, Value: addr})
+	status := Resolver.AddRepresentation(name, "author", messaging.ContentTypeJson, addr)
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
-	ct, status2 := Resolver.Representation(name, fragment)
+	ct, status2 := Resolver.Representation(name)
 	fmt.Printf("test: Representation() -> [ct:%v] [status:%v]\n", ct, status2)
 
 	if buf, ok := ct.Value.([]byte); ok {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", len(buf), status2)
 	}
 
-	s3, status3 := messaging.NewT[Address](&ct)
-	fmt.Printf("test: NewT[Address]() -> [value:%v] [status:%v]\n", s3, status3)
+	s3, status3 := messaging.New[Address](&ct)
+	fmt.Printf("test: New[Address]() -> [value:%v] [status:%v]\n", s3, status3)
 
 	//Output:
 	//test: AddRepresentation() -> [status:OK]
-	//test: Representation() -> [ct:fragment: v2 type: application/json value: true] [status:OK]
-	//test: Representation() -> [value:77] [status:OK]
-	//test: NewT[Address]() -> [value:{123 Main  Anytown Ohio 54321}] [status:OK]
+	//test: Representation() -> [ct:fragment:  type: application/json value: true] [status:OK]
+	//test: New[Address]() -> [value:{123 Main  Anytown Ohio 54321}] [status:OK]
 
 }
 
@@ -110,25 +105,24 @@ func ExampleResolveMap() {
 		"Zip":   "54321",
 	}
 	name := "core:type/map"
-	fragment := "v2"
+	//fragment := "v2"
 
-	status := Resolver.AddRepresentation(name, "author", messaging.Content{Fragment: fragment, Type: messaging.ContentTypeJson, Value: m})
+	status := Resolver.AddRepresentation(name, "author", messaging.ContentTypeJson, m)
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
-	ct, status2 := Resolver.Representation(name, fragment)
+	ct, status2 := Resolver.Representation(name)
 	fmt.Printf("test: Representation() -> [ct:%v] [status:%v]\n", ct, status2)
 
 	if buf, ok := ct.Value.([]byte); ok {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", len(buf), status2)
 	}
 
-	s3, status3 := messaging.NewT[map[string]string](&ct)
-	fmt.Printf("test: NewT[map[string]string]() -> [value:%v] [status:%v]\n", s3, status3)
+	s3, status3 := messaging.New[map[string]string](&ct)
+	fmt.Printf("test: New[map[string]string]() -> [value:%v] [status:%v]\n", s3, status3)
 
 	//Output:
 	//test: AddRepresentation() -> [status:OK]
-	//test: Representation() -> [ct:fragment: v2 type: application/json value: true] [status:OK]
-	//test: Representation() -> [value:77] [status:OK]
-	//test: NewT[map[string]string]() -> [value:map[City:Anytown Line1:123 Main Line2: State:Ohio Zip:54321]] [status:OK]
+	//test: Representation() -> [ct:fragment:  type: application/json value: true] [status:OK]
+	//test: New[map[string]string]() -> [value:map[City:Anytown Line1:123 Main Line2: State:Ohio Zip:54321]] [status:OK]
 
 }

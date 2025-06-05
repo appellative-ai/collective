@@ -13,9 +13,13 @@ type resolutionKey struct {
 	Fragment string `json:"fragment"`
 }
 
+/*
 type content struct {
 	body messaging.Content
 }
+
+
+*/
 
 type cacheT struct {
 	m *sync.Map
@@ -27,18 +31,17 @@ func newCache() *cacheT {
 	return c
 }
 
-func (c *cacheT) get(name, fragment string) (messaging.Content, error) {
-	key := resolutionKey{Name: name, Fragment: fragment}
-	value, ok := c.m.Load(key)
+func (c *cacheT) get(name string) (messaging.Content, error) {
+	v, ok := c.m.Load(name)
 	if !ok {
 		return messaging.Content{}, errors.New(fmt.Sprintf("resource [%v] not found", name))
 	}
-	if value1, ok1 := value.(content); ok1 {
-		return value1.body, nil
+	if v1, ok1 := v.(messaging.Content); ok1 {
+		return v1, nil
 	}
 	return messaging.Content{}, nil
 }
 
-func (c *cacheT) put(name, fragment string, ct messaging.Content) {
-	c.m.Store(resolutionKey{Name: name, Fragment: fragment}, content{body: ct})
+func (c *cacheT) put(name string, ct messaging.Content) {
+	c.m.Store(name, ct)
 }

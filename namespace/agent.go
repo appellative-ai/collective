@@ -22,7 +22,7 @@ type agentT struct {
 	running   bool
 	duration  time.Duration
 	relations *relationT
-	intf      private.Interface
+	intf      *private.Interface
 
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
@@ -38,6 +38,7 @@ func newAgent() *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
 	a.relations = newRelation()
+	a.intf = private.NewInterface()
 
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
@@ -87,7 +88,11 @@ func (a *agentT) Message(m *messaging.Message) {
 func (a *agentT) configure(m *messaging.Message) {
 	switch m.ContentType() {
 	case private.ContentTypeInterface:
-		a.intf = private.InterfaceContent(m)
+		var status *messaging.Status
+		a.intf, status = private.InterfaceContent(m)
+		if !status.OK() {
+			messaging.Reply(m, status, a.Name())
+		}
 	}
 	messaging.Reply(m, messaging.StatusOK(), a.Name())
 }
@@ -108,9 +113,13 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
+/*
 func (a *agentT) collective() string {
 	return a.intf.Collective
 }
+
+
+*/
 
 func (a *agentT) addThing(name, cname, authority, author string) *messaging.Status {
 	if name == "" || authority == "" {

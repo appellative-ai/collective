@@ -4,10 +4,10 @@ import (
 	"github.com/behavioral-ai/core/messaging"
 )
 
-func representation(method, name, fragment, author string, value any) (messaging.Content, *messaging.Status) {
+func representation(method, name, author, contentType string, value []byte) (messaging.Content, *messaging.Status) {
 	return messaging.Content{}, messaging.StatusOK()
 }
 
-func context(method, name, author, ct string, value any) (messaging.Content, *messaging.Status) {
+func context(method, name, author, contentType string, value []byte) (messaging.Content, *messaging.Status) {
 	return messaging.Content{}, messaging.StatusOK()
 }
