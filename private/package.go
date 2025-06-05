@@ -53,7 +53,7 @@ func NewInterface() *Interface {
 
 func NewInterfaceMessage(i *Interface) *messaging.Message {
 	m := messaging.NewMessage(messaging.ChannelControl, messaging.ConfigEvent)
-	m.SetContent(ContentTypeInterface, "", i)
+	m.SetContent(ContentTypeInterface, i)
 	return m
 }
 

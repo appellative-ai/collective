@@ -1,23 +1,29 @@
 package resourcetest
 
 import (
+	"fmt"
 	"github.com/behavioral-ai/collective/resource"
 	"github.com/behavioral-ai/core/messaging"
 )
 
-var Resolver = func() *resource.Resolution {
+// NewResolver -
+func NewResolver() *resource.Resolution {
 	return &resource.Resolution{
-		Representation: func(name, fragment string) (resource.Content, *messaging.Status) {
-			return resource.Content{}, messaging.StatusOK()
+		Representation: func(name string) (messaging.Content, *messaging.Status) {
+			fmt.Printf("%v  -> %v\n", "representation", name)
+			return messaging.Content{}, messaging.StatusOK()
 		},
-		AddRepresentation: func(name, fragment, author string, value any) *messaging.Status {
+		AddRepresentation: func(name, author, contentType string, value any) *messaging.Status {
+			fmt.Printf("%v  -> %v,%v,%v,%v\n", "addRepresentation", name, author, contentType, value)
 			return messaging.StatusOK()
 		},
-		Context: func(name string) (resource.Content, *messaging.Status) {
-			return resource.Content{}, messaging.StatusOK()
+		Context: func(name string) (messaging.Content, *messaging.Status) {
+			fmt.Printf("%v  -> %v\n", "context", name)
+			return messaging.Content{}, messaging.StatusOK()
 		},
-		AddContext: func(name, author string, ct resource.Content) *messaging.Status {
+		AddContext: func(name, author, contentType string, value any) *messaging.Status {
+			fmt.Printf("%v  -> %v,%v,%v,%v\n", "addContext", name, author, contentType, value)
 			return messaging.StatusOK()
 		},
 	}
-}()
+}
