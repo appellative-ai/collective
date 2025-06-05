@@ -88,11 +88,11 @@ func (a *agentT) Message(m *messaging.Message) {
 func (a *agentT) configure(m *messaging.Message) {
 	switch m.ContentType() {
 	case private.ContentTypeInterface:
-		var status *messaging.Status
-		a.intf, status = private.InterfaceContent(m)
+		intf, status := private.InterfaceContent(m)
 		if !status.OK() {
 			messaging.Reply(m, status, a.Name())
 		}
+		a.intf = intf
 	}
 	messaging.Reply(m, messaging.StatusOK(), a.Name())
 }
@@ -113,19 +113,11 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-/*
-func (a *agentT) collective() string {
-	return a.intf.Collective
-}
-
-
-*/
-
-func (a *agentT) addThing(name, cname, authority, author string) *messaging.Status {
-	if name == "" || authority == "" {
-		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v or authority %v", name, authority)))
+func (a *agentT) addThing(name, cname, author string) *messaging.Status {
+	if name == "" || author == "" {
+		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v or authority %v", name, author)))
 	}
-	_, status := httpPutThing(name, cname, authority, author)
+	status := a.intf.Thing(http.MethodPut, name, cname, author)
 	if !status.OK() {
 		return status.WithMessage(fmt.Sprintf("name %v", name))
 	}
@@ -133,13 +125,15 @@ func (a *agentT) addThing(name, cname, authority, author string) *messaging.Stat
 }
 
 func (a *agentT) addRelation(name, cname, thing1, thing2, author string) *messaging.Status {
-	if name == "" || thing1 == "" || thing2 == "" {
+	if name == "" || thing1 == "" || thing2 == "" || author == "" {
 		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name1 %v or name2 %v or author %v", thing1, thing2, author)))
 	}
-	_, status := httpPutRelation(name, cname, thing1, thing2, author)
+	// TODO: remove after initial testing
+	a.relations.put(name, thing1, thing2)
+
+	status := a.intf.Relation(http.MethodPut, name, cname, thing1, thing2, author)
 	if !status.OK() {
 		return status.WithMessage(fmt.Sprintf("name1 %v", name))
 	}
-	a.relations.put(name, thing1, thing2)
 	return status
 }

@@ -95,7 +95,7 @@ type Adder struct {
 var Add = func() *Adder {
 	return &Adder{
 		Thing: func(name, cname, author string) *messaging.Status {
-			return agent.addThing(name, cname, "", author)
+			return agent.addThing(name, cname, author)
 		},
 		Relation: func(name, cname, thing1, thing2, author string) *messaging.Status {
 			return agent.addRelation(name, cname, thing1, thing2, author)

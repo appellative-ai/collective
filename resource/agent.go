@@ -95,11 +95,11 @@ func (a *agentT) Message(m *messaging.Message) {
 func (a *agentT) configure(m *messaging.Message) {
 	switch m.ContentType() {
 	case private.ContentTypeInterface:
-		var status *messaging.Status
-		a.intf, status = private.InterfaceContent(m)
+		intf, status := private.InterfaceContent(m)
 		if !status.OK() {
 			messaging.Reply(m, status, a.Name())
 		}
+		a.intf = intf
 	}
 	messaging.Reply(m, messaging.StatusOK(), a.Name())
 }
