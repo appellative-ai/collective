@@ -8,19 +8,19 @@ import (
 func ExampleNewMap() {
 	m := newMap[string, messaging.NewAgent]()
 	name := ""
-	t := m.get("")
-	fmt.Printf("test:  get(\"%v\") -> %v\n", name, t)
+	t := m.load("")
+	fmt.Printf("test:  load(\"%v\") -> %v\n", name, t)
 
 	name = "common:core:ctor/test"
 	m.store(name, nil)
 	//fmt.Printf("test:  store(\"%v\") -> %v\n", name, t)
 
 	m.store(name, func() messaging.Agent { return nil })
-	t = m.get(name)
-	fmt.Printf("test:  get(\"%v\") -> %v\n", name, t != nil)
+	t = m.load(name)
+	fmt.Printf("test:  load(\"%v\") -> %v\n", name, t != nil)
 
 	//Output:
-	//test:  get("") -> <nil>
-	//test:  get("common:core:ctor/test") -> true
+	//test:  load("") -> <nil>
+	//test:  load("common:core:ctor/test") -> true
 
 }

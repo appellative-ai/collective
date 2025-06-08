@@ -8,7 +8,7 @@ import (
 func ExampleNewMessageMap() {
 	m := newMessageMap[string, *messaging.Message]()
 	name := ""
-	t := m.get("")
+	t := m.load("")
 	fmt.Printf("test:  get(\"%v\") -> %v\n", name, t)
 
 	name = "common:core:ctor/test"
@@ -16,7 +16,7 @@ func ExampleNewMessageMap() {
 	//fmt.Printf("test:  store(\"%v\") -> %v\n", name, t)
 
 	m.store(name, messaging.NewMessage(messaging.ChannelControl, "test:name"))
-	t = m.get(name)
+	t = m.load(name)
 	fmt.Printf("test:  get(\"%v\") -> %v\n", name, t)
 
 	//Output:

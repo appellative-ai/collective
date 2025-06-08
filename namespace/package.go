@@ -73,6 +73,10 @@ func Versioned(name string) string {
 	return AddFragment(name, fmt.Sprintf("%v", counter.Add(1)))
 }
 
+func Kind(name string) string {
+	return ParseName(name).Kind
+}
+
 // Accessor -
 type Accessor struct {
 	//Version string // returned on a Get

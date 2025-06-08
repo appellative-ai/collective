@@ -16,7 +16,7 @@ func newMap[T, U any]() *mapT[T, U] {
 	return c
 }
 
-func (m *mapT[T, U]) get(t T) (u U) {
+func (m *mapT[T, U]) load(t T) (u U) {
 	v, ok := m.m.Load(t)
 	if !ok {
 		return u

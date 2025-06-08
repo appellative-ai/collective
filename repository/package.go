@@ -51,7 +51,7 @@ func RegisterConstructor(name string, fn messaging.NewAgent) {
 
 // NewAgent - construct a new agent
 func NewAgent(name string) messaging.Agent {
-	fn := ctor.get(name)
+	fn := ctor.load(name)
 	if fn != nil {
 		return fn()
 	}
@@ -59,7 +59,7 @@ func NewAgent(name string) messaging.Agent {
 }
 
 func Exists(name string) bool {
-	return ctor.get(name) != nil
+	return ctor.load(name) != nil
 }
 
 // RegisterExchangeLink - register a new agent function
@@ -67,12 +67,20 @@ func RegisterExchangeLink(name string, fn rest.ExchangeLink) {
 	if name == "" || fn == nil {
 		return
 	}
-	ctor.store(name, fn)
+	link.store(name, fn)
+}
+
+// ExchangeLink - register an exchange link function
+func ExchangeLink(name string) rest.ExchangeLink {
+	if name == "" {
+		return nil
+	}
+	return link.load(name)
 }
 
 // GetMessage - get a message
 func GetMessage(name string) *messaging.Message {
-	return msg.get(name)
+	return msg.load(name)
 }
 
 // StoreMessage - store a message
