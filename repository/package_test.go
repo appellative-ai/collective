@@ -18,10 +18,10 @@ func ExampleRegisterConstructor() {
 	fn2()
 
 	RegisterConstructor("one", fn)
-	Constructor("one")
+	NewAgent("one")
 
 	RegisterConstructor("one", fn2)
-	Constructor("one")
+	NewAgent("one")
 
 	name := "one"
 	fmt.Printf("test: Exist(\"%v\") %v\n", name, Exists(name))

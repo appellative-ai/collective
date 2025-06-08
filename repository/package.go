@@ -1,10 +1,14 @@
 package repository
 
-import "github.com/behavioral-ai/core/messaging"
+import (
+	"github.com/behavioral-ai/core/messaging"
+	"github.com/behavioral-ai/core/rest"
+)
 
 var (
 	exchange = messaging.NewExchange()
 	ctor     = newCtorMap[string, messaging.NewAgent]()
+	link     = newLinkMap[string, rest.ExchangeLink]()
 	msg      = newMessageMap[string, *messaging.Message]()
 )
 
@@ -19,7 +23,7 @@ func Agent(name string) messaging.Agent {
 	if agent != nil {
 		return agent
 	}
-	agent = Constructor(name)
+	agent = NewAgent(name)
 	if agent == nil {
 		return nil
 	}
@@ -45,8 +49,8 @@ func RegisterConstructor(name string, fn messaging.NewAgent) {
 	ctor.store(name, fn)
 }
 
-// Constructor - construct a new agent
-func Constructor(name string) messaging.Agent {
+// NewAgent - construct a new agent
+func NewAgent(name string) messaging.Agent {
 	fn := ctor.get(name)
 	if fn != nil {
 		return fn()
@@ -56,6 +60,14 @@ func Constructor(name string) messaging.Agent {
 
 func Exists(name string) bool {
 	return ctor.get(name) != nil
+}
+
+// RegisterExchangeLink - register a new agent function
+func RegisterExchangeLink(name string, fn rest.ExchangeLink) {
+	if name == "" || fn == nil {
+		return
+	}
+	ctor.store(name, fn)
 }
 
 // GetMessage - get a message
