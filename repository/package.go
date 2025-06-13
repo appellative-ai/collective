@@ -63,7 +63,7 @@ func Exists(name string) bool {
 }
 
 // RegisterExchangeLink - register a new agent function
-func RegisterExchangeLink(name string, fn rest.ExchangeLink) {
+func RegisterExchangeLink(name string, fn func(next rest.Exchange) rest.Exchange) {
 	if name == "" || fn == nil {
 		return
 	}

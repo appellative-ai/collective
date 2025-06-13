@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 	"github.com/behavioral-ai/core/messaging"
+	"reflect"
 )
 
 func ExampleNewMap() {
@@ -11,13 +12,19 @@ func ExampleNewMap() {
 	t := m.load("")
 	fmt.Printf("test:  load(\"%v\") -> %v\n", name, t)
 
-	name = "common:core:ctor/test"
-	m.store(name, nil)
+	//name = "common:core:ctor/test"
+	//m.store(name, nil)
 	//fmt.Printf("test:  store(\"%v\") -> %v\n", name, t)
 
-	m.store(name, func() messaging.Agent { return nil })
+	m.store(name, func() messaging.Agent {
+		fmt.Printf("in messaging.Agent\n")
+		return nil
+	})
 	t = m.load(name)
-	fmt.Printf("test:  load(\"%v\") -> %v\n", name, t != nil)
+	if t != nil {
+		t()
+	}
+	fmt.Printf("test:  load(\"%v\") -> %v\n", name, reflect.TypeOf(t))
 
 	//Output:
 	//test:  load("") -> <nil>

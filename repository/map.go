@@ -28,5 +28,6 @@ func (m *mapT[T, U]) load(t T) (u U) {
 }
 
 func (m *mapT[T, U]) store(t T, u U) {
+
 	m.m.Store(t, u)
 }

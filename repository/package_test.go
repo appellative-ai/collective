@@ -3,6 +3,7 @@ package repository
 import (
 	"fmt"
 	"github.com/behavioral-ai/core/messaging"
+	"github.com/behavioral-ai/core/rest"
 )
 
 func ExampleRegisterConstructor() {
@@ -35,5 +36,21 @@ func ExampleRegisterConstructor() {
 	//test: RegisterConstructor() [replaced]
 	//test: Exist("one") true
 	//test: Exist("invalid") false
+
+}
+
+func ExampleRegisterExchange() {
+	fn := func(next rest.Exchange) rest.Exchange {
+		fmt.Printf("test: Exchange link function\n")
+		return nil
+	}
+	name := "test"
+	RegisterExchangeLink(name, fn)
+
+	l := ExchangeLink(name)
+	fmt.Printf("test: ExchangeLink() -> %v\n", l)
+
+	//Output:
+	//test: ExchangeLink() -> 0x11113c0
 
 }
