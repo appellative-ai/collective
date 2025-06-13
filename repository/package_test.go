@@ -48,9 +48,9 @@ func ExampleRegisterExchange() {
 	RegisterExchangeLink(name, fn)
 
 	l := ExchangeLink(name)
-	fmt.Printf("test: ExchangeLink() -> %v\n", l)
+	fmt.Printf("test: ExchangeLink() -> %v\n", l != nil)
 
 	//Output:
-	//test: ExchangeLink() -> 0x11113c0
+	//test: ExchangeLink() -> true
 
 }

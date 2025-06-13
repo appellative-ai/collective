@@ -71,7 +71,7 @@ func RegisterExchangeLink(name string, fn func(next rest.Exchange) rest.Exchange
 }
 
 // ExchangeLink - register an exchange link function
-func ExchangeLink(name string) rest.ExchangeLink {
+func ExchangeLink(name string) func(next rest.Exchange) rest.Exchange {
 	if name == "" {
 		return nil
 	}
