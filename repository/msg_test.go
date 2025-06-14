@@ -2,25 +2,26 @@ package repository
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/core/host"
 	"github.com/behavioral-ai/core/messaging"
 )
 
 func ExampleNewMessageMap() {
-	m := newMessageMap[string, *messaging.Message]()
+	m := host.NewSyncMap[string, *messaging.Message]()
 	name := ""
-	t := m.load("")
-	fmt.Printf("test:  get(\"%v\") -> %v\n", name, t)
+	t := m.Load("")
+	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t)
 
 	name = "common:core:ctor/test"
-	m.store(name, nil)
+	m.Store(name, nil)
 	//fmt.Printf("test:  store(\"%v\") -> %v\n", name, t)
 
-	m.store(name, messaging.NewMessage(messaging.ChannelControl, "test:name"))
-	t = m.load(name)
-	fmt.Printf("test:  get(\"%v\") -> %v\n", name, t)
+	m.Store(name, messaging.NewMessage(messaging.ChannelControl, "test:name"))
+	t = m.Load(name)
+	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t)
 
 	//Output:
-	//test:  get("") -> <nil>
-	//test:  get("common:core:ctor/test") -> [chan:ctrl] [from:] [to:] [test:name]
+	//test:  Load("") -> <nil>
+	//test:  Load("common:core:ctor/test") -> [chan:ctrl] [from:] [to:[]] [test:name]
 
 }

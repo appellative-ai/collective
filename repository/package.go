@@ -1,15 +1,16 @@
 package repository
 
 import (
+	"github.com/behavioral-ai/core/host"
 	"github.com/behavioral-ai/core/messaging"
 	"github.com/behavioral-ai/core/rest"
 )
 
 var (
 	exchange = messaging.NewExchange()
-	ctor     = newCtorMap[string, messaging.NewAgent]()
-	link     = newLinkMap[string, rest.ExchangeLink]()
-	msg      = newMessageMap[string, *messaging.Message]()
+	ctor     = host.NewSyncMap[string, messaging.NewAgent]()
+	link     = host.NewSyncMap[string, rest.ExchangeLink]()
+	msg      = host.NewSyncMap[string, *messaging.Message]()
 )
 
 // Register - register an agent
@@ -46,12 +47,12 @@ func RegisterConstructor(name string, fn messaging.NewAgent) {
 	if name == "" || fn == nil {
 		return
 	}
-	ctor.store(name, fn)
+	ctor.Store(name, fn)
 }
 
 // NewAgent - construct a new agent
 func NewAgent(name string) messaging.Agent {
-	fn := ctor.load(name)
+	fn := ctor.Load(name)
 	if fn != nil {
 		return fn()
 	}
@@ -59,7 +60,7 @@ func NewAgent(name string) messaging.Agent {
 }
 
 func Exists(name string) bool {
-	return ctor.load(name) != nil
+	return ctor.Load(name) != nil
 }
 
 // RegisterExchangeLink - register a new agent function
@@ -67,7 +68,7 @@ func RegisterExchangeLink(name string, fn func(next rest.Exchange) rest.Exchange
 	if name == "" || fn == nil {
 		return
 	}
-	link.store(name, fn)
+	link.Store(name, fn)
 }
 
 // ExchangeLink - register an exchange link function
@@ -75,17 +76,17 @@ func ExchangeLink(name string) func(next rest.Exchange) rest.Exchange {
 	if name == "" {
 		return nil
 	}
-	return link.load(name)
+	return link.Load(name)
 }
 
 // GetMessage - get a message
 func GetMessage(name string) *messaging.Message {
-	return msg.load(name)
+	return msg.Load(name)
 }
 
 // StoreMessage - store a message
 func StoreMessage(m *messaging.Message) {
-	msg.store(m.Name, m)
+	msg.Store(m.Name, m)
 }
 
 /*

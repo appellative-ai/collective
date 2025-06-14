@@ -2,25 +2,26 @@ package repository
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/core/host"
 	"github.com/behavioral-ai/core/rest"
 )
 
 func ExampleNewLinkMap() {
-	m := newLinkMap[string, rest.ExchangeLink]()
+	m := host.NewSyncMap[string, rest.ExchangeLink]()
 	name := ""
-	t := m.load("")
-	fmt.Printf("test:  load(\"%v\") -> %v\n", name, t)
+	t := m.Load("")
+	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t)
 
 	name = "common:core:ctor/test"
-	m.store(name, nil)
+	m.Store(name, nil)
 	//fmt.Printf("test:  store(\"%v\") -> %v\n", name, t)
 
-	m.store(name, func(next rest.Exchange) rest.Exchange { return nil })
-	t = m.load(name)
-	fmt.Printf("test:  load(\"%v\") -> %v\n", name, t != nil)
+	m.Store(name, func(next rest.Exchange) rest.Exchange { return nil })
+	t = m.Load(name)
+	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t != nil)
 
 	//Output:
-	//test:  load("") -> <nil>
-	//test:  load("common:core:ctor/test") -> true
+	//test:  Load("") -> <nil>
+	//test:  Load("common:core:ctor/test") -> true
 
 }
