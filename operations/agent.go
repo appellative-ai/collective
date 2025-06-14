@@ -91,6 +91,29 @@ func (a *agentT) emissaryFinalize() {
 }
 
 func (a *agentT) message(m *messaging.Message) {
+	if m == nil {
+		return
+	}
+	recipients := m.To()
+	if len(recipients) == 0 {
+		return
+	}
+
+	var local []string
+	var nonLocal []string
+	for _, to := range recipients {
+		if messaging.Origin.IsLocalCollective(to) {
+			local = append(local, to)
+		} else {
+			nonLocal = append(nonLocal, to)
+		}
+	}
+	if len(local) > 0 {
+		m.DeleteTo()
+		m.AddTo(local...)
+		repository.Message(m)
+	}
+	// TODO : non-local
 }
 
 func (a *agentT) advise(m *messaging.Message) {
