@@ -14,10 +14,10 @@ func ExampleNewService() {
 	s.Trace("core:agent/operations/collective", "task", "going well", "none")
 
 	//Output:
-	//message  -> [chan:ctrl] [from:core:from/test] [to:core:to/test] [core:event/config]
-	//advise   -> [chan:ctrl] [from:core:from/test] [to:core:to/test] [core:event/config]
-	//subscribe-> [chan:ctrl] [from:core:from/test] [to:core:to/test] [core:event/config]
-	//cancel   -> [chan:ctrl] [from:core:from/test] [to:core:to/test] [core:event/config]
-	//2025-06-02T17:28:47.896Z [core:agent/operations/collective] [task] [going well] [none]
+	//message  -> [chan:ctrl] [from:core:from/test] [to:[core:to/test]] [common:core:event/config]
+	//advise   -> [chan:ctrl] [from:core:from/test] [to:[core:to/test]] [common:core:event/config]
+	//subscribe-> [chan:ctrl] [from:core:from/test] [to:[core:to/test]] [common:core:event/config]
+	//cancel   -> [chan:ctrl] [from:core:from/test] [to:[core:to/test]] [common:core:event/config]
+	//2025-06-14T22:22:48.229Z [core:agent/operations/collective] [task] [going well] [none]
 
 }
