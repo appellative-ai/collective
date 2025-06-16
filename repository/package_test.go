@@ -41,16 +41,16 @@ func ExampleRegisterConstructor() {
 
 func ExampleRegisterExchange() {
 	fn := func(next rest.Exchange) rest.Exchange {
-		fmt.Printf("test: Exchange link function\n")
+		fmt.Printf("test: Exchange handler function\n")
 		return nil
 	}
 	name := "test"
-	RegisterExchangeLink(name, fn)
+	RegisterExchangeHandler(name, fn)
 
-	l := ExchangeLink(name)
-	fmt.Printf("test: ExchangeLink() -> %v\n", l != nil)
+	l := ExchangeHandler(name)
+	fmt.Printf("test: ExchangeHandler() -> %v\n", l != nil)
 
 	//Output:
-	//test: ExchangeLink() -> true
+	//test: ExchangeHandler() -> true
 
 }

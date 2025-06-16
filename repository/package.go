@@ -63,16 +63,16 @@ func Exists(name string) bool {
 	return ctor.Load(name) != nil
 }
 
-// RegisterExchangeLink - register a new agent function
-func RegisterExchangeLink(name string, fn func(next rest.Exchange) rest.Exchange) {
+// RegisterExchangeHandler - register a new handler function
+func RegisterExchangeHandler(name string, fn func(next rest.Exchange) rest.Exchange) {
 	if name == "" || fn == nil {
 		return
 	}
 	link.Store(name, fn)
 }
 
-// ExchangeLink - register an exchange link function
-func ExchangeLink(name string) func(next rest.Exchange) rest.Exchange {
+// ExchangeHandler - return an exchange handler function
+func ExchangeHandler(name string) func(next rest.Exchange) rest.Exchange {
 	if name == "" {
 		return nil
 	}
