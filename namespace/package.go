@@ -33,9 +33,10 @@ const (
 
 const (
 	CollectiveKind = "collective" // References a collective in the registry/root collective
-	Link           = "link"       // Resource that contains a name of another collective
-	Handler        = "handler"    // Function used as a link in a Micro-REST chain
-	ThingKind      = "thing"      // Generic kind
+	ImportKind     = "import"     // Resource that contains a name of another collective
+	HandlerKind    = "handler"    // Function used as a link in a Micro-REST chain
+	ThingKind      = "thing"
+	LinkKind       = "link" // Http URI
 
 	AgentKind   = "agent"  // Used to define a thing that is empowered, agents are members of the collective, not just things.
 	AspectKind  = "aspect" // Used for making connections resources: self, info
