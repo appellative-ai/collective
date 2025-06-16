@@ -28,24 +28,21 @@ const (
 	Slash    = "/"
 )
 
-// TODO: differentiate between a link that is an http reference, and a link that is to another collective
-// Kinds
-
 const (
 	CollectiveKind = "collective" // References a collective in the registry/root collective
 	ImportKind     = "import"     // References another collective to import
 	HandlerKind    = "handler"    // Function used as a link in a Micro-REST chain
-	ThingKind      = "thing"      // Generic thing
 	LinkKind       = "link"       // Http URI
 
-	AgentKind   = "agent"  // Used to define a thing that is empowered, agents are members of the collective, not just things.
-	AspectKind  = "aspect" // Used for making connections resources: self, info
-	EventKind   = "event"  // Messaging events
-	PersonKind  = "person" // Used for authorization and ownership resources: self, info, instance
-	ServiceKind = "service"
-	TaskKind    = "task" // Used for tracing agent activity. What is the agent tasked with
-	TypeKind    = "type" // Programming language types
+	AgentKind   = "agent"   // Used to define a thing that is empowered, agents are members of the collective, not just things.
+	AspectKind  = "aspect"  // Used for making connections resources: self, info
+	EventKind   = "event"   // Messaging events
+	PersonKind  = "person"  // Used for authorization and ownership resources: self, info, instance
+	ServiceKind = "service" // Service name
+	TaskKind    = "task"    // Used for tracing agent activity. What is the agent tasked with
+	TypeKind    = "type"    // Programming language types
 
+	ThingKind    = "thing"    // Generic thing
 	RelationKind = "relation" // Used for relating 2 resources
 	FrameKind    = "frame"    // Used as a container for names, similar to a dir entry on a file system
 )
