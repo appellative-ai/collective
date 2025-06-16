@@ -32,7 +32,7 @@ const (
 	ThingKind    = "thing"    // Generic thing
 	RelationKind = "relation" // Used for relating 2 resources
 	FrameKind    = "frame"    // Used as a container for names, similar to a dir entry on a file system
-	
+
 	CollectiveKind = "collective" // References a collective in the registry/root collective
 	ImportKind     = "import"     // References another collective to import
 	HandlerKind    = "handler"    // Function used as a link in a Micro-REST chain
