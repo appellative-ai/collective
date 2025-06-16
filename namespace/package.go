@@ -28,13 +28,14 @@ const (
 	Slash    = "/"
 )
 
+// TODO: differentiate between a link that is an http reference, and a link that is to another collective
 // Kinds
 
 const (
 	CollectiveKind = "collective" // References a collective in the registry/root collective
 	Link           = "link"       // Resource that contains a name of another collective
-
-	ThingKind = "thing" // Generic kind
+	Handler        = "handler"    // Function used as a link in a Micro-REST chain
+	ThingKind      = "thing"      // Generic kind
 
 	AgentKind   = "agent"  // Used to define a thing that is empowered, agents are members of the collective, not just things.
 	AspectKind  = "aspect" // Used for making connections resources: self, info
