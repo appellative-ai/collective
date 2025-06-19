@@ -1,13 +1,13 @@
-package repository
+package exchange
 
 import (
 	"fmt"
 	"github.com/behavioral-ai/core/host"
-	"github.com/behavioral-ai/core/messaging"
+	"github.com/behavioral-ai/core/rest"
 )
 
-func ExampleNewCtorMap() {
-	m := host.NewSyncMap[string, messaging.NewAgent]()
+func ExampleNewLinkMap() {
+	m := host.NewSyncMap[string, rest.ExchangeLink]()
 	name := ""
 	t := m.Load("")
 	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t)
@@ -16,7 +16,7 @@ func ExampleNewCtorMap() {
 	m.Store(name, nil)
 	//fmt.Printf("test:  store(\"%v\") -> %v\n", name, t)
 
-	m.Store(name, func() messaging.Agent { return nil })
+	m.Store(name, func(next rest.Exchange) rest.Exchange { return nil })
 	t = m.Load(name)
 	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t != nil)
 

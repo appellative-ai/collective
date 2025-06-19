@@ -2,9 +2,9 @@ package operations
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/collective/exchange"
 	"github.com/behavioral-ai/collective/namespace"
 	"github.com/behavioral-ai/collective/private"
-	"github.com/behavioral-ai/collective/repository"
 	"github.com/behavioral-ai/collective/resource"
 	"github.com/behavioral-ai/core/messaging"
 	"time"
@@ -28,7 +28,7 @@ type agentT struct {
 }
 
 func init() {
-	repository.RegisterConstructor(NamespaceName, func() messaging.Agent {
+	exchange.RegisterConstructor(NamespaceName, func() messaging.Agent {
 		return newAgent()
 	})
 }
@@ -111,7 +111,7 @@ func (a *agentT) message(m *messaging.Message) {
 	if len(local) > 0 {
 		m.DeleteTo()
 		m.AddTo(local...)
-		repository.Message(m)
+		exchange.Message(m)
 	}
 	// TODO : non-local
 }
