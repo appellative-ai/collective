@@ -96,6 +96,12 @@ func (a *agentT) message(m *messaging.Message) {
 	}
 	recipients := m.To()
 	if len(recipients) == 0 {
+		status, _, _ := messaging.StatusContent(m)
+		if status != nil {
+			fmt.Printf("%v\n", status)
+		} else {
+			fmt.Printf("%v\n", m)
+		}
 		return
 	}
 
