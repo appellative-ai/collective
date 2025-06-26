@@ -28,15 +28,17 @@ const (
 	Slash    = "/"
 )
 
+//RelationKind = "relation" // Used for relating 2 resources
+
 const (
-	ThingKind    = "thing"    // Generic thing
-	RelationKind = "relation" // Used for relating 2 resources
-	FrameKind    = "frame"    // Used as a container for names, similar to a dir entry on a file system
+	ThingKind = "thing" // Generic thing
+	LinkKind  = "link"  // Associate 2 things
+	FrameKind = "frame" // Used as a container for names, similar to a dir entry on a file system
 
 	CollectiveKind = "collective" // References a collective in the registry/root collective
 	ImportKind     = "import"     // References another collective to import
 	HandlerKind    = "handler"    // Function used as a link in a Micro-REST chain
-	LinkKind       = "link"       // Http URI
+	UriKind        = "uri"        // Http URI
 
 	AgentKind   = "agent"   // Used to define a thing that is empowered, agents are members of the collective, not just things.
 	AspectKind  = "aspect"  // Used for making connections resources: self, info
@@ -45,6 +47,7 @@ const (
 	ServiceKind = "service" // Service name
 	TaskKind    = "task"    // Used for tracing agent activity. What is the agent tasked with
 	TypeKind    = "type"    // Programming language types
+	ViewKind    = "view"    // View names are for namespace retrievals.
 
 )
 
