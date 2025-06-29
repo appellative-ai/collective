@@ -28,12 +28,18 @@ const (
 	Slash    = "/"
 )
 
+// For humans : thing -> understanding -> relation
 //RelationKind = "relation" // Used for relating 2 resources
+// What is a name? -> a word or phrase that constitutes the distinctive designation of a person or thing
+//
 
 const (
-	ThingKind = "thing" // Generic thing
-	LinkKind  = "link"  // Associate 2 things
-	FrameKind = "frame" // Used as a container for names, similar to a dir entry on a file system
+	ThingKind  = "thing"  // A name
+	LinkKind   = "link"   // Associate 2 things
+	FrameKind  = "frame"  // A container for things, similar to a dir entry on a file system
+	AspectKind = "aspect" // A way in which something can be viewed by the mind. Aspects vary from real
+	// and contextualized(LH), to artificial and de-contextualized(RH).
+	// A named understanding, often linked with things, enabling relations/connections/associations and generalization.
 
 	CollectiveKind = "collective" // References a collective in the registry/root collective
 	ImportKind     = "import"     // References another collective to import
@@ -41,7 +47,6 @@ const (
 	UriKind        = "uri"        // Http URI
 
 	AgentKind   = "agent"   // Used to define a thing that is empowered, agents are members of the collective, not just things.
-	AspectKind  = "aspect"  // Used for making connections resources: self, info
 	EventKind   = "event"   // Messaging events
 	PersonKind  = "person"  // Used for authorization and ownership resources: self, info, instance
 	ServiceKind = "service" // Service name
