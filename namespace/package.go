@@ -34,13 +34,19 @@ const (
 //
 
 const (
-	ThingKind  = "thing"  // A name
-	LinkKind   = "link"   // Associate 2 things
-	FrameKind  = "frame"  // A container for things, similar to a dir entry on a file system
-	AspectKind = "aspect" // A way in which something can be viewed by the mind. Aspects vary from real
-	// and contextualized(LH), to artificial and de-contextualized(RH).
-	// A named understanding, often linked with things, enabling relations/connections/associations and generalization.
+	ThingKind = "thing" // A name
+	LinkKind  = "link"  // Associate 2 things
+	FrameKind = "frame" // A container for things, similar to a dir entry on a file system
 
+	// AspectKind - A way in which something can be viewed by the mind. Aspects vary from real
+	//	and contextualized(LH), to artificial and de-contextualized(RH).
+	//	A named understanding, often linked with things, enabling relations/connections/associations and generalization.
+	//	For analogies, a "relation" is used instead of an aspect.
+	//  Are analogy "relations" an understanding?  In  these cases, the relations we perceive only
+	//  exist in the mind of the observer.
+	AspectKind = "aspect"
+
+	// CollectiveKind -
 	CollectiveKind = "collective" // References a collective in the registry/root collective
 	ImportKind     = "import"     // References another collective to import
 	HandlerKind    = "handler"    // Function used as a link in a Micro-REST chain
