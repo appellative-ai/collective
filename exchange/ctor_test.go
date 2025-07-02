@@ -7,7 +7,7 @@ import (
 )
 
 func ExampleNewCtorMap() {
-	m := host.NewSyncMap[string, messaging.NewAgent]()
+	m := host.NewSyncMap[string, messaging.NewAgentFunc]()
 	name := ""
 	t := m.Load("")
 	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t)

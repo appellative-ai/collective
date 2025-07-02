@@ -8,7 +8,7 @@ import (
 
 var (
 	exchange  = messaging.NewExchange()
-	ctor      = host.NewSyncMap[string, messaging.NewAgent]()
+	ctor      = host.NewSyncMap[string, messaging.NewAgentFunc]()
 	exHandler = host.NewSyncMap[string, rest.ExchangeLink]()
 )
 
@@ -42,7 +42,7 @@ func Broadcast(m *messaging.Message) {
 }
 
 // RegisterConstructor - register a new agent function
-func RegisterConstructor(name string, fn messaging.NewAgent) {
+func RegisterConstructor(name string, fn messaging.NewAgentFunc) {
 	if name == "" || fn == nil {
 		return
 	}

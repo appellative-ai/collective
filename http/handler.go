@@ -2,6 +2,7 @@ package http
 
 import (
 	"fmt"
+	"github.com/behavioral-ai/collective/testfs"
 	"github.com/behavioral-ai/core/httpx"
 	"net/http"
 	"strings"
@@ -23,16 +24,16 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.URL.Path {
 	case textResource:
-		name = tfs.BehavioralAITextExample
+		name = testfs.BehavioralAITextExample
 	case htmlResource:
-		name = tfs.BehavioralAIHtmlExample
+		name = testfs.BehavioralAIHtmlExample
 	case jsonResource:
-		name = tfs.BehavioralAIJsonExample
+		name = testfs.BehavioralAIJsonExample
 	default:
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	buf, err := tfs.ReadFile(name)
+	buf, err := testfs.ReadFile(name)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

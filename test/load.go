@@ -9,10 +9,10 @@ import (
 
 func loadResolver(resolver *resource.Resolution) *messaging.Status {
 	url, _ := url.Parse(testfs.ResiliencyInterpret1)
-	status := resolver.AddRepresentation(ResiliencyInterpret, "", "author", resource.Content{})
+	status := resolver.AddRepresentation(ResiliencyInterpret, "", "author", "") //resource.Content{})
 	if !status.OK() {
 		return status
 	}
 	url, _ = url.Parse(testfs.ResiliencyThreshold1)
-	return resolver.AddRepresentation(ResiliencyThreshold, "", "author", resource.Content{})
+	return resolver.AddRepresentation(ResiliencyThreshold, "", "author", "") //resource.Content{})
 }

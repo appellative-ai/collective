@@ -9,10 +9,9 @@ func emissaryAttend(a *agentT) {
 	var paused = false
 	if paused {
 	}
-	a.ticker.Start(-1)
 	for {
 		select {
-		case <-a.ticker.C():
+		case <-a.ticker.T.C:
 			// TODO: query collective for new messages and advice
 		default:
 		}

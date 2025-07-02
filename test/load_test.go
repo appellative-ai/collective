@@ -10,10 +10,10 @@ func ExampleLoadResolver() {
 	status := loadResolver(r)
 	fmt.Printf("test: loadResolver() -> [status:%v]\n", status)
 
-	access, status1 := r.Representation("", ResiliencyThreshold, "")
+	access, status1 := r.Representation(ResiliencyThreshold)
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [%v]\n", ResiliencyThreshold, status1, access)
 
-	access, status1 = r.Representation("", ResiliencyInterpret, "")
+	access, status1 = r.Representation(ResiliencyInterpret)
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] %v]\n", ResiliencyInterpret, status1, access)
 
 	//Output:
