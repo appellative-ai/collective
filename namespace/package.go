@@ -35,7 +35,7 @@ const (
 
 const (
 	ThingKind = "thing" // A name
-	LinkKind  = "link"  // Associate 2 things
+	JoinKind  = "join"  // Join 2 things
 	FrameKind = "frame" // A container for things, similar to a dir entry on a file system
 
 	// AspectKind - A way in which something can be viewed by the mind. Aspects vary from real
@@ -48,7 +48,7 @@ const (
 
 	// CollectiveKind -
 	CollectiveKind = "collective" // References a collective in the registry/root collective
-	ImportKind     = "import"     // References another collective to import
+	LinkKind       = "link"       // References another collective to link to
 	HandlerKind    = "handler"    // Function used as a link in a Micro-REST chain
 	UriKind        = "uri"        // Http URI
 
