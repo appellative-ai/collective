@@ -72,6 +72,7 @@ const (
 	TaskKind    = "task"    // Used for tracing agent activity. What is the agent tasked with
 	TypeKind    = "type"    // Programming language types
 	ViewKind    = "view"    // View names are for namespace retrievals.
+	NetworkKind = "network" // A network of agents configuration
 
 )
 
