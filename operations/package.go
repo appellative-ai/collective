@@ -41,9 +41,8 @@ type Service struct {
 	AddRepresentation func(name, author, contentType string, value any) *messaging.Status
 	AddContext        func(name, author, contentType string, value any) *messaging.Status
 
-	AddThing     func(name, cname, author string) *messaging.Status
-	AddJoin      func(name, cname, thing1, thing2, author string) *messaging.Status
-	AddOrderJoin func(name, cname, thing1, thing2, author string) *messaging.Status
+	AddThing func(name, cname, author string) *messaging.Status
+	AddJoin  func(name, cname, thing1, thing2, author string) *messaging.Status
 }
 
 // Serve -
@@ -61,9 +60,12 @@ var Serve = func() *Service {
 		AddJoin: func(name, cname, thing1, thing2, author string) *messaging.Status {
 			return messaging.StatusOK()
 		},
-		AddOrderJoin: func(name, cname, thing1, thing2, author string) *messaging.Status {
-			return messaging.StatusOK()
-		},
+		/*
+			AddOrderJoin: func(name, cname, thing1, thing2, author string) *messaging.Status {
+				return messaging.StatusOK()
+			},
+
+		*/
 		/*
 			SubscriptionCreate: func(msg *messaging.Message) {
 				agent.subscribe(msg)
