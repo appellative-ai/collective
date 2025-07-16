@@ -1,12 +1,11 @@
 package repository
 
 import (
-	"github.com/appellative-ai/core/host"
 	"github.com/appellative-ai/core/messaging"
 )
 
 var (
-	msg = host.NewSyncMap[string, *messaging.Message]()
+	msg = messaging.NewSyncMap[string, *messaging.Message]()
 )
 
 // LoadMessage - get a message

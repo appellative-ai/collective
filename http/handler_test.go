@@ -2,8 +2,7 @@ package http
 
 import (
 	"fmt"
-	"github.com/appellative-ai/core/httpx"
-	"github.com/appellative-ai/core/iox"
+	"io"
 	"net/http"
 	"net/http/httptest"
 )
@@ -41,9 +40,9 @@ func exchange(rsc string) {
 
 	Handler(rec, req)
 	rec.Flush()
-	fmt.Printf("test: Handler() -> [status:%v] [ct:%v] [len:%v]\n", rec.Result().StatusCode, rec.Result().Header.Get(httpx.ContentType), rec.Result().Header.Get(httpx.ContentLength))
+	fmt.Printf("test: Handler() -> [status:%v] [ct:%v] [len:%v]\n", rec.Result().StatusCode, rec.Result().Header.Get(contentType), rec.Result().Header.Get(contentLength))
 
-	buf, err := iox.ReadAll(rec.Result().Body, nil)
+	buf, err := io.ReadAll(rec.Result().Body)
 	fmt.Printf("test: Handler() -> [len:%v] [err:%v]\n", len(buf), err)
 
 }

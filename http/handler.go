@@ -3,7 +3,6 @@ package http
 import (
 	"fmt"
 	"github.com/appellative-ai/collective/testfs"
-	"github.com/appellative-ai/core/httpx"
 	"net/http"
 	"strings"
 )
@@ -13,6 +12,8 @@ const (
 	textResource      = "/collective:appellative-ai:text"
 	htmlResource      = "/collective:appellative-ai:html"
 	jsonResource      = "/collective:appellative-ai:json"
+	contentType       = "Content-Type"
+	contentLength     = "Content-Length"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -38,8 +39,8 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 	}
-	w.Header().Add(httpx.ContentType, http.DetectContentType(buf))
-	w.Header().Add(httpx.ContentLength, fmt.Sprintf("%v", len(buf)))
+	w.Header().Add(contentType, http.DetectContentType(buf))
+	w.Header().Add(contentLength, fmt.Sprintf("%v", len(buf)))
 	w.WriteHeader(http.StatusOK)
 	w.Write(buf)
 }
