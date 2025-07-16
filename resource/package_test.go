@@ -18,7 +18,7 @@ func ExampleResolveBinary() {
 	name := "core:type/binary"
 	bytes := []byte("this is a test buffer")
 
-	status := Resolver.AddRepresentation(name, "author", messaging.ContentTypeBinary, bytes)
+	status := agent.putRepresentation(name, "author", messaging.ContentTypeBinary, bytes)
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
 	ct, status2 := Resolver.Representation(name)
@@ -44,7 +44,7 @@ func ExampleResolveString() {
 	name := "core:type/binary"
 	s := "this is a test string"
 
-	status := Resolver.AddRepresentation(name, "author", messaging.ContentTypeText, s)
+	status := agent.putRepresentation(name, "author", messaging.ContentTypeText, s)
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
 	ct, status2 := Resolver.Representation(name)
@@ -75,7 +75,7 @@ func ExampleResolveType() {
 	}
 	name := "core:type/address"
 
-	status := Resolver.AddRepresentation(name, "author", messaging.ContentTypeJson, addr)
+	status := agent.putRepresentation(name, "author", messaging.ContentTypeJson, addr)
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
 	ct, status2 := Resolver.Representation(name)
@@ -107,7 +107,7 @@ func ExampleResolveMap() {
 	name := "core:type/map"
 	//fragment := "v2"
 
-	status := Resolver.AddRepresentation(name, "author", messaging.ContentTypeJson, m)
+	status := agent.putRepresentation(name, "author", messaging.ContentTypeJson, m)
 	fmt.Printf("test: AddRepresentation() -> [status:%v]\n", status)
 
 	ct, status2 := Resolver.Representation(name)

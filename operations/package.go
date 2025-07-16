@@ -12,19 +12,16 @@ const (
 	RegistryHost2Key = "registry-host2"
 )
 
-// Service - in the real world
-type Service struct {
+// Notification - notification interface
+type Notification struct {
 	Message func(msg *messaging.Message) bool
 	Advise  func(msg *messaging.Message) *messaging.Status
 	Trace   func(name, task, observation, action string)
-
-	SubscriptionCreate func(msg *messaging.Message)
-	SubscriptionCancel func(msg *messaging.Message)
 }
 
-// Serve -
-var Serve = func() *Service {
-	return &Service{
+// Notifier -
+var Notifier = func() *Notification {
+	return &Notification{
 		Message: func(msg *messaging.Message) bool {
 			agent.message(msg)
 			return true
@@ -33,15 +30,49 @@ var Serve = func() *Service {
 			agent.advise(msg)
 			return messaging.StatusOK()
 		},
-		SubscriptionCreate: func(msg *messaging.Message) {
-			agent.subscribe(msg)
-		},
-		SubscriptionCancel: func(msg *messaging.Message) {
-			agent.cancel(msg)
-		},
 		Trace: func(name, task, observation, action string) {
 			agent.trace(name, task, observation, action)
 		},
+	}
+}()
+
+// Service - servicing add functions
+type Service struct {
+	AddRepresentation func(name, author, contentType string, value any) *messaging.Status
+	AddContext        func(name, author, contentType string, value any) *messaging.Status
+
+	AddThing     func(name, cname, author string) *messaging.Status
+	AddJoin      func(name, cname, thing1, thing2, author string) *messaging.Status
+	AddOrderJoin func(name, cname, thing1, thing2, author string) *messaging.Status
+}
+
+// Serve -
+var Serve = func() *Service {
+	return &Service{
+		AddRepresentation: func(name, author, contentType string, value any) *messaging.Status {
+			return messaging.StatusOK()
+		},
+		AddContext: func(name, author, contentType string, t any) *messaging.Status {
+			return messaging.StatusOK()
+		},
+		AddThing: func(name, cname, author string) *messaging.Status {
+			return messaging.StatusOK()
+		},
+		AddJoin: func(name, cname, thing1, thing2, author string) *messaging.Status {
+			return messaging.StatusOK()
+		},
+		AddOrderJoin: func(name, cname, thing1, thing2, author string) *messaging.Status {
+			return messaging.StatusOK()
+		},
+		/*
+			SubscriptionCreate: func(msg *messaging.Message) {
+				agent.subscribe(msg)
+			},
+			SubscriptionCancel: func(msg *messaging.Message) {
+				agent.cancel(msg)
+			},
+
+		*/
 	}
 }()
 
