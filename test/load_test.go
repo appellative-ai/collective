@@ -2,7 +2,7 @@ package test
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/collective/resource"
+	"github.com/appellative-ai/collective/resource"
 )
 
 func ExampleLoadResolver() {
@@ -18,7 +18,7 @@ func ExampleLoadResolver() {
 
 	//Output:
 	//test: loadResolver() -> [status:OK]
-	//test: Get("behavioral-ai:resiliency:type/operative/threshold") -> [status:OK] [vers:  type: text/plain; charset=utf-8 resource: true]
-	//test: Get("behavioral-ai:resiliency:type/operative/interpret") -> [status:OK] vers:  type: text/plain; charset=utf-8 resource: true]
+	//test: Get("appellative-ai:resiliency:type/operative/threshold") -> [status:OK] [vers:  type: text/plain; charset=utf-8 resource: true]
+	//test: Get("appellative-ai:resiliency:type/operative/interpret") -> [status:OK] vers:  type: text/plain; charset=utf-8 resource: true]
 
 }

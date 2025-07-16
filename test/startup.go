@@ -2,12 +2,12 @@ package test
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/collective/resource"
+	"github.com/appellative-ai/collective/resource"
 )
 
 const (
-	ResiliencyThreshold = "behavioral-ai:resiliency:type/operative/threshold"
-	ResiliencyInterpret = "behavioral-ai:resiliency:type/operative/interpret"
+	ResiliencyThreshold = "appellative-ai:resiliency:type/operative/threshold"
+	ResiliencyInterpret = "appellative-ai:resiliency:type/operative/interpret"
 )
 
 // Testing

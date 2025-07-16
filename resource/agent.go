@@ -3,8 +3,8 @@ package resource
 import (
 	"errors"
 	"fmt"
-	"github.com/behavioral-ai/collective/private"
-	"github.com/behavioral-ai/core/messaging"
+	"github.com/appellative-ai/collective/private"
+	"github.com/appellative-ai/core/messaging"
 	"net/http"
 	"time"
 )

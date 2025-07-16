@@ -2,7 +2,7 @@ package private
 
 import (
 	"errors"
-	"github.com/behavioral-ai/core/messaging"
+	"github.com/appellative-ai/core/messaging"
 	"net/http"
 )
 

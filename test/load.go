@@ -1,9 +1,9 @@
 package test
 
 import (
-	"github.com/behavioral-ai/collective/resource"
-	"github.com/behavioral-ai/collective/testfs"
-	"github.com/behavioral-ai/core/messaging"
+	"github.com/appellative-ai/collective/resource"
+	"github.com/appellative-ai/collective/testfs"
+	"github.com/appellative-ai/core/messaging"
 	"net/url"
 )
 

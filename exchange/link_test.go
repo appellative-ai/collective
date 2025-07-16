@@ -2,8 +2,8 @@ package exchange
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/core/host"
-	"github.com/behavioral-ai/core/rest"
+	"github.com/appellative-ai/core/host"
+	"github.com/appellative-ai/core/rest"
 )
 
 func ExampleNewLinkMap() {

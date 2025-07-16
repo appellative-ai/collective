@@ -2,13 +2,13 @@ package testfs
 
 import (
 	"embed"
-	"github.com/behavioral-ai/core/iox"
+	"github.com/appellative-ai/core/iox"
 )
 
 const (
-	BehavioralAIHtmlExample = "file:///f:/files/behavioral-ai/example.html"
-	BehavioralAIJsonExample = "file:///f:/files/behavioral-ai/threshold.json"
-	BehavioralAITextExample = "file:///f:/files/behavioral-ai/get-resp.txt"
+	BehavioralAIHtmlExample = "file:///f:/files/appellative-ai/example.html"
+	BehavioralAIJsonExample = "file:///f:/files/appellative-ai/threshold.json"
+	BehavioralAITextExample = "file:///f:/files/appellative-ai/get-resp.txt"
 
 	ResiliencyTrafficProfile1 = "file:///f:/files/metrics/traffic-profile-1.json"
 

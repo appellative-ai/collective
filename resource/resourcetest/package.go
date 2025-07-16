@@ -2,8 +2,8 @@ package resourcetest
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/collective/resource"
-	"github.com/behavioral-ai/core/messaging"
+	"github.com/appellative-ai/collective/resource"
+	"github.com/appellative-ai/core/messaging"
 )
 
 // NewResolver -

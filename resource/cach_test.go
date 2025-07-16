@@ -3,7 +3,7 @@ package resource
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/behavioral-ai/core/messaging"
+	"github.com/appellative-ai/core/messaging"
 	"net/http"
 )
 

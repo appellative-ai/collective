@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/behavioral-ai/core/host"
-	"github.com/behavioral-ai/core/messaging"
+	"github.com/appellative-ai/core/host"
+	"github.com/appellative-ai/core/messaging"
 )
 
 var (

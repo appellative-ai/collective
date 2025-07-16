@@ -2,8 +2,8 @@ package exchange
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/core/messaging"
-	"github.com/behavioral-ai/core/rest"
+	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/rest"
 )
 
 func ExampleRegisterConstructor() {

@@ -2,9 +2,9 @@ package operationstest
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/collective/operations"
-	"github.com/behavioral-ai/core/fmtx"
-	"github.com/behavioral-ai/core/messaging"
+	"github.com/appellative-ai/collective/operations"
+	"github.com/appellative-ai/core/fmtx"
+	"github.com/appellative-ai/core/messaging"
 	"time"
 )
 

@@ -2,17 +2,17 @@ package http
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/collective/testfs"
-	"github.com/behavioral-ai/core/httpx"
+	"github.com/appellative-ai/collective/testfs"
+	"github.com/appellative-ai/core/httpx"
 	"net/http"
 	"strings"
 )
 
 const (
 	CollectivePattern = "/collective"
-	textResource      = "/collective:behavioral-ai:text"
-	htmlResource      = "/collective:behavioral-ai:html"
-	jsonResource      = "/collective:behavioral-ai:json"
+	textResource      = "/collective:appellative-ai:text"
+	htmlResource      = "/collective:appellative-ai:html"
+	jsonResource      = "/collective:appellative-ai:json"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {

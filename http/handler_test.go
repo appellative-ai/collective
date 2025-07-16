@@ -2,8 +2,8 @@ package http
 
 import (
 	"fmt"
-	"github.com/behavioral-ai/core/httpx"
-	"github.com/behavioral-ai/core/iox"
+	"github.com/appellative-ai/core/httpx"
+	"github.com/appellative-ai/core/iox"
 	"net/http"
 	"net/http/httptest"
 )

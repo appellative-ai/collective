@@ -1,7 +1,7 @@
 package operations
 
 import (
-	"github.com/behavioral-ai/core/messaging"
+	"github.com/appellative-ai/core/messaging"
 )
 
 func representation(method, name, author, contentType string, value []byte) (messaging.Content, *messaging.Status) {

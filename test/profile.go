@@ -1,12 +1,12 @@
 package test
 
 import (
-	"github.com/behavioral-ai/collective/resource"
-	"github.com/behavioral-ai/core/messaging"
+	"github.com/appellative-ai/collective/resource"
+	"github.com/appellative-ai/core/messaging"
 )
 
 const (
-	ProfileName = "behavioral-ai:resiliency:type/domain/metrics/profile"
+	ProfileName = "appellative-ai:resiliency:type/domain/metrics/profile"
 )
 
 func LoadProfile(r *resource.Resolution) *messaging.Status {
