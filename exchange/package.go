@@ -27,16 +27,19 @@ func NewAgent(name string) messaging.Agent {
 
 // Agent - get an agent
 func Agent(name string) messaging.Agent {
-	agent := exchange.Get(name)
-	if agent != nil {
+	return exchange.Get(name)
+	/*
+		if agent != nil {
+			return agent
+		}
+		agent = NewAgent(name)
+		if agent == nil {
+			return nil
+		}
+		Register(agent)
 		return agent
-	}
-	agent = NewAgent(name)
-	if agent == nil {
-		return nil
-	}
-	Register(agent)
-	return agent
+
+	*/
 }
 
 // Exists -
