@@ -57,23 +57,28 @@ func (a *agentT) Message(m *messaging.Message) {
 	if m == nil {
 		return
 	}
-	if !a.state.running {
-		if m.Name == messaging.ConfigEvent {
-			a.configure(m)
-			return
-		}
-		if m.Name == messaging.StartupEvent {
-			a.run()
-			a.state.running = true
+	switch m.Name {
+	case messaging.ConfigEvent:
+		if a.state.running {
 			return
 		}
 		return
-	}
-	if m.Name == messaging.ShutdownEvent {
+	case messaging.StartupEvent:
+		if a.state.running {
+			return
+		}
+		a.state.running = true
+		a.run()
+		return
+	case messaging.ShutdownEvent:
+		if !a.state.running {
+			return
+		}
 		a.state.running = false
 	}
 	switch m.Channel() {
 	case messaging.ChannelControl, messaging.ChannelEmissary:
+
 		a.emissary.C <- m
 	default:
 		fmt.Printf("limiter - invalid channel %v\n", m)
