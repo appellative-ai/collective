@@ -33,6 +33,8 @@ func ExampleRegisterConstructor() {
 	//test: RegisterConstructor() [initial]
 	//test: RegisterConstructor() [replaced]
 	//test: RegisterConstructor() [initial]
+	//test: RegisterConstructor() [initial]
+	//test: RegisterConstructor() [replaced]
 	//test: RegisterConstructor() [replaced]
 	//test: Exist("one") true
 	//test: Exist("invalid") false

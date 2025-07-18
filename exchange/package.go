@@ -16,6 +16,15 @@ func Register(a messaging.Agent) error {
 	return exchange.Register(a)
 }
 
+// NewAgent - construct a new agent
+func NewAgent(name string) messaging.Agent {
+	fn := ctor.Load(name)
+	if fn != nil {
+		return fn()
+	}
+	return nil
+}
+
 // Agent - get an agent
 func Agent(name string) messaging.Agent {
 	agent := exchange.Get(name)
@@ -30,6 +39,11 @@ func Agent(name string) messaging.Agent {
 	return agent
 }
 
+// Exists -
+func Exists(name string) bool {
+	return ctor.Load(name) != nil
+}
+
 // Message - message an agent
 func Message(m *messaging.Message) bool {
 	return exchange.Message(m)
@@ -40,25 +54,13 @@ func Broadcast(m *messaging.Message) {
 	exchange.Broadcast(m)
 }
 
-// RegisterConstructor - register a new agent function
+// RegisterConstructor - register a new agent function, used for local agent assignments
 func RegisterConstructor(name string, fn messaging.NewAgentFunc) {
 	if name == "" || fn == nil {
 		return
 	}
 	ctor.Store(name, fn)
-}
-
-// NewAgent - construct a new agent
-func NewAgent(name string) messaging.Agent {
-	fn := ctor.Load(name)
-	if fn != nil {
-		return fn()
-	}
-	return nil
-}
-
-func Exists(name string) bool {
-	return ctor.Load(name) != nil
+	Register(fn())
 }
 
 // RegisterExchangeHandler - register a new handler function
