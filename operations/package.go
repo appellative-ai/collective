@@ -12,30 +12,6 @@ const (
 	RegistryHost2Key = "registry-host2"
 )
 
-// Notification - notification interface
-type Notification struct {
-	Message func(msg *messaging.Message) bool
-	Advise  func(msg *messaging.Message) *messaging.Status
-	Trace   func(name, task, observation, action string)
-}
-
-// Notifier -
-var Notifier = func() *Notification {
-	return &Notification{
-		Message: func(msg *messaging.Message) bool {
-			agent.message(msg)
-			return true
-		},
-		Advise: func(msg *messaging.Message) *messaging.Status {
-			agent.advise(msg)
-			return messaging.StatusOK()
-		},
-		Trace: func(name, task, observation, action string) {
-			agent.trace(name, task, observation, action)
-		},
-	}
-}()
-
 // Service - servicing add functions
 type Service struct {
 	AddRepresentation func(name, author, contentType string, value any) *messaging.Status

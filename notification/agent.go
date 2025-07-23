@@ -1,10 +1,9 @@
-package operations
+package notification
 
 import (
 	"fmt"
 	"github.com/appellative-ai/collective/exchange"
 	"github.com/appellative-ai/collective/namespace"
-	"github.com/appellative-ai/collective/private"
 	"github.com/appellative-ai/collective/resource"
 	"github.com/appellative-ai/core/messaging"
 	"time"
@@ -20,8 +19,8 @@ var (
 )
 
 type agentT struct {
-	state  *operationsT
-	agents *messaging.Exchange
+	running bool
+	agents  *messaging.Exchange
 
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
@@ -59,22 +58,22 @@ func (a *agentT) Message(m *messaging.Message) {
 	}
 	switch m.Name {
 	case messaging.ConfigEvent:
-		if a.state.running {
+		if a.running {
 			return
 		}
 		return
 	case messaging.StartupEvent:
-		if a.state.running {
+		if a.running {
 			return
 		}
-		a.state.running = true
+		a.running = true
 		a.run()
 		return
 	case messaging.ShutdownEvent:
-		if !a.state.running {
+		if !a.running {
 			return
 		}
-		a.state.running = false
+		a.running = false
 	}
 	switch m.Channel() {
 	case messaging.ChannelControl, messaging.ChannelEmissary:
@@ -95,15 +94,53 @@ func (a *agentT) emissaryFinalize() {
 	a.ticker.Stop()
 }
 
+func (a *agentT) message(m *messaging.Message) {
+	if m == nil {
+		return
+	}
+	recipients := m.To()
+	if len(recipients) == 0 {
+		status, _, _ := messaging.StatusContent(m)
+		if status != nil {
+			fmt.Printf("%v\n", status)
+		} else {
+			fmt.Printf("%v\n", m)
+		}
+		return
+	}
+
+	var local []string
+	var nonLocal []string
+	for _, to := range recipients {
+		if messaging.Origin.IsLocalCollective(to) {
+			local = append(local, to)
+		} else {
+			nonLocal = append(nonLocal, to)
+		}
+	}
+	if len(local) > 0 {
+		m.DeleteTo()
+		m.AddTo(local...)
+		exchange.Message(m)
+	}
+	// TODO : non-local
+}
+
+func (a *agentT) advise(m *messaging.Message) {
+}
+
+func (a *agentT) trace(name, task, observation, action string) {
+}
+
 func (a *agentT) configure(m *messaging.Message) {
 	switch m.ContentType() {
 	case messaging.ContentTypeMap:
-		cfg, status := messaging.MapContent(m)
-		if !status.OK() {
-			messaging.Reply(m, messaging.EmptyMapError(a.Name()), a.Name())
-			return
-		}
-		a.state = initialize(cfg)
+		//cfg, status := messaging.MapContent(m)
+		//if !status.OK() {
+		//	messaging.Reply(m, messaging.EmptyMapError(a.Name()), a.Name())
+		//	return
+		//}
+		//a.state = initialize(cfg)
 		// Initialize linked collectives
 		if messaging.Origin.Collective != "" {
 			// TODO: Initialize linked collectives by reading the configured collective links and then reference the
@@ -114,10 +151,5 @@ func (a *agentT) configure(m *messaging.Message) {
 }
 
 func (a *agentT) configureAgents() {
-	a.agents.Broadcast(private.NewInterfaceMessage(&private.Interface{
-		Representation: representation,
-		Context:        context,
-		Thing:          thing,
-		Relation:       relation,
-	}))
+
 }
