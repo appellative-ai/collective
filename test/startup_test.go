@@ -2,11 +2,11 @@ package test
 
 import (
 	"fmt"
-	"github.com/appellative-ai/collective/resource"
+	"github.com/appellative-ai/collective/resolution"
 )
 
 func ExampleStartup() {
-	r := resource.Resolver
+	r := resolution.Resolver
 	Startup()
 
 	name := ResiliencyThreshold
@@ -22,8 +22,8 @@ func ExampleStartup() {
 	fmt.Printf("test: Get(\"%v\") -> [status:%v] [buf:%v]\n", name, status1, access)
 
 	//Output:
-	//test: Get("appellative-ai:resiliency:type/operative/threshold") -> [status:OK] [access:vers:  type: text/plain; charset=utf-8 resource: true]
-	//test: Get("appellative-ai:resiliency:type/operative/interpret") -> [status:OK] [access:vers:  type: text/plain; charset=utf-8 resource: true]
-	//test: Get("appellative-ai:resiliency:type/domain/metrics/profile") -> [status:OK] [buf:vers:  type: text/plain; charset=utf-8 resource: true]
+	//test: Get("appellative-ai:resiliency:type/operative/threshold") -> [status:OK] [access:vers:  type: text/plain; charset=utf-8 resolution: true]
+	//test: Get("appellative-ai:resiliency:type/operative/interpret") -> [status:OK] [access:vers:  type: text/plain; charset=utf-8 resolution: true]
+	//test: Get("appellative-ai:resiliency:type/domain/metrics/profile") -> [status:OK] [buf:vers:  type: text/plain; charset=utf-8 resolution: true]
 
 }

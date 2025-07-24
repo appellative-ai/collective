@@ -2,7 +2,7 @@ package test
 
 import (
 	"fmt"
-	"github.com/appellative-ai/collective/resource"
+	"github.com/appellative-ai/collective/resolution"
 )
 
 const (
@@ -11,16 +11,16 @@ const (
 )
 
 // Testing
-//r.activity = func(hostName string, agent messaging.Agent, eventing, source string, resource any) {
-//	fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), eventing, source, resource)
+//r.activity = func(hostName string, agent messaging.Agent, eventing, source string, resolution any) {
+//	fmt.Printf("active-> %v [%v] [%v] [%v] [%v]\n", messaging.FmtRFC3339Millis(time.Now().UTC()), agent.Uri(), eventing, source, resolution)
 //}
 
 func Startup() {
-	status := loadResolver(resource.Resolver)
+	status := loadResolver(resolution.Resolver)
 	if !status.OK() {
 		fmt.Printf("error on loading Resolver: %v\n", status)
 	}
-	status = LoadProfile(resource.Resolver)
+	status = LoadProfile(resolution.Resolver)
 	if !status.OK() {
 		fmt.Printf("error on loading Resolver: %v\n", status)
 	}

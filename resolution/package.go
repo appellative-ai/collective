@@ -1,20 +1,20 @@
-package resource
+package resolution
 
 import (
 	"github.com/appellative-ai/core/messaging"
 )
 
-// Resolution - in the real world
+// Interface - resolution in the real world
 // Can only add in current collective. An empty collective is assuming the local vs distributed
 // How to handle local vs distributed
-type Resolution struct {
+type Interface struct {
 	Representation func(name string) (messaging.Content, *messaging.Status)
 	Context        func(name string) (messaging.Content, *messaging.Status)
 }
 
 // Resolver -
-var Resolver = func() *Resolution {
-	return &Resolution{
+var Resolver = func() *Interface {
+	return &Interface{
 		Representation: func(name string) (messaging.Content, *messaging.Status) {
 			return agent.getRepresentation(name)
 		},

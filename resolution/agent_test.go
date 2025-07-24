@@ -1,4 +1,4 @@
-package resource
+package resolution
 
 import "fmt"
 
@@ -8,6 +8,6 @@ func ExampleNewAgent() {
 	fmt.Printf("test: newHttpAgent() -> [%v]\n", a)
 
 	//Output:
-	//test: newHttpAgent() -> [common:core:agent/resource/collective]
+	//test: newHttpAgent() -> [common:core:agent/resolution/collective]
 
 }

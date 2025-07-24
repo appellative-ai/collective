@@ -1,4 +1,4 @@
-package resource
+package resolution
 
 import (
 	"errors"
@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	NamespaceName   = "common:core:agent/resource/collective"
+	NamespaceName   = "common:core:agent/resolution/collective"
 	defaultDuration = time.Second * 10
 )
 
@@ -164,8 +164,8 @@ func (a *agentT) putRepresentation(name, author, contentType string, value any) 
 		err = errors.New(fmt.Sprintf("nsName is empty on call to PutValue()"))
 		return messaging.NewStatusError(http.StatusBadRequest, err, r.agent.Uri())
 	}
-	if resource == nil {
-		err = errors.New(fmt.Sprintf("resource is nil on call to PutValue() for nsName : %v", nsName))
+	if resolution == nil {
+		err = errors.New(fmt.Sprintf("resolution is nil on call to PutValue() for nsName : %v", nsName))
 		return messaging.NewStatusError(http.StatusNoContent, err, r.agent.Uri())
 	}
 
@@ -200,7 +200,7 @@ func (a *agentT) putRepresentation(name, author, contentType string, value any) 
 		ct = httpx.ContentTypeJson
 	}
 	if len(buf) == 0 {
-		err = errors.New(fmt.Sprintf("resource is empty on call to PutValue() for nsName : %v", name))
+		err = errors.New(fmt.Sprintf("resolution is empty on call to PutValue() for nsName : %v", name))
 		return messaging.NewStatus(http.StatusNoContent, err)
 	}
 

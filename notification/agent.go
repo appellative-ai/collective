@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/appellative-ai/collective/exchange"
 	"github.com/appellative-ai/collective/namespace"
-	"github.com/appellative-ai/collective/resource"
+	"github.com/appellative-ai/collective/resolution"
 	"github.com/appellative-ai/core/messaging"
 	"time"
 )
@@ -35,7 +35,7 @@ func init() {
 func newAgent() *agentT {
 	a := new(agentT)
 	a.agents = messaging.NewExchange()
-	a.agents.Register(resource.NewAgent())
+	a.agents.Register(resolution.NewAgent())
 	a.agents.Register(namespace.NewAgent())
 	agent = a
 

@@ -1,28 +1,25 @@
-package resource
+package resolution
 
 import (
 	"github.com/appellative-ai/core/messaging"
 )
 
-// emissary attention
-func emissaryAttend(a *agentT) {
-	var paused = false
+// master attention
+func masterAttend(a *agentT) {
+	paused := false
 	if paused {
 	}
+
 	for {
 		select {
-		case <-a.ticker.T.C:
-		default:
-		}
-		select {
-		case msg := <-a.emissary.C:
+		case msg := <-a.master.C:
 			switch msg.Name {
 			case messaging.PauseEvent:
 				paused = true
 			case messaging.ResumeEvent:
 				paused = false
 			case messaging.ShutdownEvent:
-				a.emissaryFinalize()
+				a.masterFinalize()
 				return
 			default:
 			}

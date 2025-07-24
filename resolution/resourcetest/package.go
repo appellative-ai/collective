@@ -2,13 +2,13 @@ package resourcetest
 
 import (
 	"fmt"
-	"github.com/appellative-ai/collective/resource"
+	"github.com/appellative-ai/collective/resolution"
 	"github.com/appellative-ai/core/messaging"
 )
 
 // NewResolver -
-func NewResolver() *resource.Resolution {
-	return &resource.Resolution{
+func NewResolver() *resolution.Resolution {
+	return &resolution.Resolution{
 		Representation: func(name string) (messaging.Content, *messaging.Status) {
 			fmt.Printf("%v  -> %v\n", "representation", name)
 			return messaging.Content{}, messaging.StatusOK()

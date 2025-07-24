@@ -18,7 +18,7 @@ import (
 //     registry:{dns-name}:collective/{collective-name}
 //
 // TODO : add activity
-//        Can we add frame resource version to activity?
+//        Can we add frame resolution version to activity?
 //        Need author, frame, things, Accessor
 //        Need counts, lists of aspects
 
@@ -73,7 +73,7 @@ const (
 	TypeKind    = "type"    // Programming language types
 	ViewKind    = "view"    // View names are for namespace retrievals.
 	NetworkKind = "network" // A network of agents configuration
-
+	QueryKind   = "query"
 )
 
 var (
@@ -105,32 +105,24 @@ func Kind(name string) string {
 	return ParseName(name).Kind
 }
 
-// Accessor -
-type Accessor struct {
-	//Version string // returned on a Get
-	Type    string // Content-Type
-	Content any
+// Interface - notification interface
+type Interface struct {
+	Relation  func(instance, pattern, name string, filter Name) *messaging.Status
+	Retrieval func(name string, filter Name) (*messaging.Content, *messaging.Status)
+	Request   func(name string, filter Name) *messaging.Status
 }
 
-// Adder - add
-type Adder struct {
-	Thing    func(name, cname, author string) *messaging.Status
-	Relation func(name, cname, thing1, thing2, author string) *messaging.Status
-	// What exactly are the results?
-	// How to query+select/return generational information
-	// Content can be captured if provided.
-	ConnectThing  func(name, frame, author string, access Accessor) (results string, status *messaging.Status)
-	ConnectAspect func(name []string, frame, author string, access Accessor) (results string, status *messaging.Status)
-}
-
-// Add -
-var Add = func() *Adder {
-	return &Adder{
-		Thing: func(name, cname, author string) *messaging.Status {
-			return agent.addThing(name, cname, author)
+// Invoke -
+var Invoke = func() *Interface {
+	return &Interface{
+		Relation: func(instance, pattern, name string, filter Name) *messaging.Status {
+			return messaging.StatusOK()
 		},
-		Relation: func(name, cname, thing1, thing2, author string) *messaging.Status {
-			return agent.addRelation(name, cname, thing1, thing2, author)
+		Retrieval: func(name string, filter Name) (*messaging.Content, *messaging.Status) {
+			return nil, messaging.StatusOK()
+		},
+		Request: func(name string, filter Name) *messaging.Status {
+			return messaging.StatusOK()
 		},
 	}
 }()

@@ -1,4 +1,4 @@
-package resource
+package resolution
 
 import (
 	"errors"
@@ -26,7 +26,7 @@ func newCache() *cacheT {
 func (c *cacheT) get(name string) (messaging.Content, error) {
 	v, ok := c.m.Load(name)
 	if !ok {
-		return messaging.Content{}, errors.New(fmt.Sprintf("resource [%v] not found", name))
+		return messaging.Content{}, errors.New(fmt.Sprintf("resolution [%v] not found", name))
 	}
 	if v1, ok1 := v.(messaging.Content); ok1 {
 		return v1, nil

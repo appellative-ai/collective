@@ -1,4 +1,4 @@
-package resource
+package resolution
 
 import (
 	"encoding/json"
@@ -34,6 +34,6 @@ func ExampleNewCache() {
 
 	//Output:
 	//test: newCache.get("test:thing:text") -> [fragment:  type: text/plain; charset=utf-8 value: true] [err:<nil>]
-	//test: newCache.get("test:thing:text#1.2.4") -> [fragment:  type:  value: false] [err:resource [test:thing:text#1.2.4] not found]
+	//test: newCache.get("test:thing:text#1.2.4") -> [fragment:  type:  value: false] [err:resolution [test:thing:text#1.2.4] not found]
 
 }

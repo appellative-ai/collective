@@ -2,11 +2,11 @@ package test
 
 import (
 	"fmt"
-	"github.com/appellative-ai/collective/resource"
+	"github.com/appellative-ai/collective/resolution"
 )
 
 func ExampleLoadResolver() {
-	r := resource.Resolver
+	r := resolution.Resolver
 	status := loadResolver(r)
 	fmt.Printf("test: loadResolver() -> [status:%v]\n", status)
 
@@ -18,7 +18,7 @@ func ExampleLoadResolver() {
 
 	//Output:
 	//test: loadResolver() -> [status:OK]
-	//test: Get("appellative-ai:resiliency:type/operative/threshold") -> [status:OK] [vers:  type: text/plain; charset=utf-8 resource: true]
-	//test: Get("appellative-ai:resiliency:type/operative/interpret") -> [status:OK] vers:  type: text/plain; charset=utf-8 resource: true]
+	//test: Get("appellative-ai:resiliency:type/operative/threshold") -> [status:OK] [vers:  type: text/plain; charset=utf-8 resolution: true]
+	//test: Get("appellative-ai:resiliency:type/operative/interpret") -> [status:OK] vers:  type: text/plain; charset=utf-8 resolution: true]
 
 }
