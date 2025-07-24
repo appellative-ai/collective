@@ -2,12 +2,12 @@ package exchange
 
 import (
 	"fmt"
-	"github.com/appellative-ai/core/messaging"
 	"github.com/appellative-ai/core/rest"
+	"github.com/appellative-ai/core/std"
 )
 
 func ExampleNewLinkMap() {
-	m := messaging.NewSyncMap[string, rest.ExchangeLink]()
+	m := std.NewSyncMap[string, rest.ExchangeLink]()
 	name := ""
 	t := m.Load("")
 	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t)

@@ -3,10 +3,11 @@ package repository
 import (
 	"fmt"
 	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/std"
 )
 
 func ExampleNewMessageMap() {
-	m := messaging.NewSyncMap[string, *messaging.Message]()
+	m := std.NewSyncMap[string, *messaging.Message]()
 	name := ""
 	t := m.Load("")
 	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t)

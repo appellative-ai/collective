@@ -7,6 +7,7 @@ import (
 	"github.com/appellative-ai/collective/private"
 	"github.com/appellative-ai/collective/resolution"
 	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/std"
 	"time"
 )
 
@@ -100,17 +101,17 @@ func (a *agentT) configure(m *messaging.Message) {
 	case messaging.ContentTypeMap:
 		cfg, status := messaging.MapContent(m)
 		if !status.OK() {
-			messaging.Reply(m, messaging.EmptyMapError(a.Name()), a.Name())
+			//messaging.Reply(m, messaging.EmptyMapError(a.Name()), a.Name())
 			return
 		}
 		a.state = initialize(cfg)
 		// Initialize linked collectives
-		if messaging.Origin.Collective != "" {
+		if std.Origin.Collective != "" {
 			// TODO: Initialize linked collectives by reading the configured collective links and then reference the
 			//       registry for collective host names
 		}
 	}
-	messaging.Reply(m, messaging.StatusOK(), a.Name())
+	messaging.Reply(m, std.StatusOK, a.Name())
 }
 
 func (a *agentT) configureAgents() {

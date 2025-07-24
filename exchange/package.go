@@ -3,12 +3,13 @@ package exchange
 import (
 	"github.com/appellative-ai/core/messaging"
 	"github.com/appellative-ai/core/rest"
+	"github.com/appellative-ai/core/std"
 )
 
 var (
 	exchange  = messaging.NewExchange()
-	ctor      = messaging.NewSyncMap[string, messaging.NewAgentFunc]()
-	exHandler = messaging.NewSyncMap[string, rest.ExchangeLink]()
+	ctor      = std.NewSyncMap[string, messaging.NewAgentFunc]()
+	exHandler = std.NewSyncMap[string, rest.ExchangeLink]()
 )
 
 // Register - register an agent

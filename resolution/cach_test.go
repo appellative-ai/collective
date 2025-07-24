@@ -3,7 +3,7 @@ package resolution
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/std"
 	"net/http"
 )
 
@@ -16,7 +16,7 @@ func ExampleNewCache() {
 		fmt.Printf("test: json.Marshall() -> [err:%v]\n", err)
 	} else {
 
-		c.put(name, messaging.Content{Fragment: "", Type: http.DetectContentType(buf), Value: buf})
+		c.put(name, std.Content{Fragment: "", Type: http.DetectContentType(buf), Value: buf})
 		//fmt.Printf("test: newCache.put(1) -> [status:%v]\n", status)
 
 		content, err1 := c.get(name)

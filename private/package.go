@@ -3,6 +3,7 @@ package private
 import (
 	"errors"
 	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/std"
 	"net/http"
 )
 
@@ -10,11 +11,11 @@ const (
 	ContentTypeInterface = "application/x-interface"
 )
 
-type Representation func(method, name, author, contentType string, value []byte) (messaging.Content, *messaging.Status)
-type Context func(method, name, author, contentType string, value []byte) (messaging.Content, *messaging.Status)
+type Representation func(method, name, author, contentType string, value []byte) (std.Content, *std.Status)
+type Context func(method, name, author, contentType string, value []byte) (std.Content, *std.Status)
 
-type Thing func(method, name, cname, author string) *messaging.Status
-type Relation func(method, name, cname, thing1, thing2, author string) *messaging.Status
+type Thing func(method, name, cname, author string) *std.Status
+type Relation func(method, name, cname, thing1, thing2, author string) *std.Status
 
 // Interface -
 type Interface struct {
@@ -26,27 +27,27 @@ type Interface struct {
 
 func NewInterface() *Interface {
 	i := new(Interface)
-	i.Representation = func(method, name, author, contentType string, value []byte) (messaging.Content, *messaging.Status) {
+	i.Representation = func(method, name, author, contentType string, value []byte) (std.Content, *std.Status) {
 		if method == http.MethodGet {
-			return messaging.Content{}, messaging.StatusNotFound()
+			return std.Content{}, std.StatusNotFound
 		} else {
-			return messaging.Content{}, messaging.StatusOK()
+			return std.Content{}, std.StatusOK
 
 		}
 	}
-	i.Context = func(method, name, author, contentType string, value []byte) (messaging.Content, *messaging.Status) {
+	i.Context = func(method, name, author, contentType string, value []byte) (std.Content, *std.Status) {
 		if method == http.MethodGet {
-			return messaging.Content{}, messaging.StatusNotFound()
+			return std.Content{}, std.StatusNotFound
 		} else {
-			return messaging.Content{}, messaging.StatusOK()
+			return std.Content{}, std.StatusOK
 
 		}
 	}
-	i.Thing = func(method, name, cname, author string) *messaging.Status {
-		return messaging.StatusOK()
+	i.Thing = func(method, name, cname, author string) *std.Status {
+		return std.StatusOK
 	}
-	i.Relation = func(method, name, cname, thing1, thing2, author string) *messaging.Status {
-		return messaging.StatusOK()
+	i.Relation = func(method, name, cname, thing1, thing2, author string) *std.Status {
+		return std.StatusOK
 	}
 	return i
 }
@@ -57,9 +58,9 @@ func NewInterfaceMessage(i *Interface) *messaging.Message {
 	return m
 }
 
-func InterfaceContent(m *messaging.Message) (*Interface, *messaging.Status) {
+func InterfaceContent(m *messaging.Message) (*Interface, *std.Status) {
 	if !messaging.ValidContent(m, messaging.ConfigEvent, ContentTypeInterface) {
-		return nil, messaging.NewStatus(messaging.StatusInvalidContent, errors.New("invalid content"))
+		return nil, std.NewStatus(std.StatusInvalidContent, "", errors.New("invalid content"))
 	}
-	return messaging.New[*Interface](m.Content)
+	return std.New[*Interface](m.Content)
 }

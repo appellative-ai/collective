@@ -3,6 +3,7 @@ package resolution
 import (
 	"fmt"
 	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/std"
 )
 
 type Address struct {
@@ -28,7 +29,7 @@ func ExampleResolveBinary() {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", string(buf), status2)
 	}
 
-	s3, status3 := messaging.New[[]byte](&ct)
+	s3, status3 := std.New[[]byte](&ct)
 	fmt.Printf("test: New[[]byte]() -> [value:%v] [status:%v]\n", string(s3), status3)
 
 	//Output:
@@ -54,7 +55,7 @@ func ExampleResolveString() {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", string(buf), status2)
 	}
 
-	s3, status3 := messaging.New[string](&ct)
+	s3, status3 := std.New[string](&ct)
 	fmt.Printf("test: New[string]() -> [value:%v] [status:%v]\n", string(s3), status3)
 
 	//Output:
@@ -85,7 +86,7 @@ func ExampleResolveType() {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", len(buf), status2)
 	}
 
-	s3, status3 := messaging.New[Address](&ct)
+	s3, status3 := std.New[Address](&ct)
 	fmt.Printf("test: New[Address]() -> [value:%v] [status:%v]\n", s3, status3)
 
 	//Output:
@@ -117,7 +118,7 @@ func ExampleResolveMap() {
 		fmt.Printf("test: Representation() -> [value:%v] [status:%v]\n", len(buf), status2)
 	}
 
-	s3, status3 := messaging.New[map[string]string](&ct)
+	s3, status3 := std.New[map[string]string](&ct)
 	fmt.Printf("test: New[map[string]string]() -> [value:%v] [status:%v]\n", s3, status3)
 
 	//Output:

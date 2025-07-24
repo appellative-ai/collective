@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/appellative-ai/collective/private"
 	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/std"
 	"net/http"
 	"time"
 )
@@ -94,7 +95,7 @@ func (a *agentT) configure(m *messaging.Message) {
 		}
 		a.intf = intf
 	}
-	messaging.Reply(m, messaging.StatusOK(), a.Name())
+	messaging.Reply(m, std.StatusOK, a.Name())
 }
 
 // Run - run the agent
@@ -113,27 +114,27 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) addThing(name, cname, author string) *messaging.Status {
+func (a *agentT) addThing(name, cname, author string) *std.Status {
 	if name == "" || author == "" {
-		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v or authority %v", name, author)))
+		return std.NewStatus(http.StatusBadRequest, "", errors.New(fmt.Sprintf("error: invalid argument name %v or authority %v", name, author)))
 	}
 	status := a.intf.Thing(http.MethodPut, name, cname, author)
 	if !status.OK() {
-		return status.WithMessage(fmt.Sprintf("name %v", name))
+		return status //.WithMessage(fmt.Sprintf("name %v", name))
 	}
 	return status
 }
 
-func (a *agentT) addRelation(name, cname, thing1, thing2, author string) *messaging.Status {
+func (a *agentT) addRelation(name, cname, thing1, thing2, author string) *std.Status {
 	if name == "" || thing1 == "" || thing2 == "" || author == "" {
-		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name1 %v or name2 %v or author %v", thing1, thing2, author)))
+		return std.NewStatus(http.StatusBadRequest, "", errors.New(fmt.Sprintf("error: invalid argument name1 %v or name2 %v or author %v", thing1, thing2, author)))
 	}
 	// TODO: remove after initial testing
 	a.relations.put(name, thing1, thing2)
 
 	status := a.intf.Relation(http.MethodPut, name, cname, thing1, thing2, author)
 	if !status.OK() {
-		return status.WithMessage(fmt.Sprintf("name1 %v", name))
+		return status //.WithMessage(fmt.Sprintf("name1 %v", name))
 	}
 	return status
 }

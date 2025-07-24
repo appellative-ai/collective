@@ -1,10 +1,5 @@
 package test
 
-import (
-	"fmt"
-	"github.com/appellative-ai/collective/resolution"
-)
-
 const (
 	ResiliencyThreshold = "appellative-ai:resiliency:type/operative/threshold"
 	ResiliencyInterpret = "appellative-ai:resiliency:type/operative/interpret"
@@ -16,12 +11,15 @@ const (
 //}
 
 func Startup() {
-	status := loadResolver(resolution.Resolver)
-	if !status.OK() {
-		fmt.Printf("error on loading Resolver: %v\n", status)
-	}
-	status = LoadProfile(resolution.Resolver)
-	if !status.OK() {
-		fmt.Printf("error on loading Resolver: %v\n", status)
-	}
+	/*
+		status := loadResolver(resolution.Resolver)
+		if !status.OK() {
+			fmt.Printf("error on loading Resolver: %v\n", status)
+		}
+		status = LoadProfile(resolution.Resolver)
+		if !status.OK() {
+			fmt.Printf("error on loading Resolver: %v\n", status)
+		}
+	
+	*/
 }

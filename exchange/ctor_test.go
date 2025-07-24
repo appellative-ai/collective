@@ -3,10 +3,11 @@ package exchange
 import (
 	"fmt"
 	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/std"
 )
 
 func ExampleNewCtorMap() {
-	m := messaging.NewSyncMap[string, messaging.NewAgentFunc]()
+	m := std.NewSyncMap[string, messaging.NewAgentFunc]()
 	name := ""
 	t := m.Load("")
 	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t)

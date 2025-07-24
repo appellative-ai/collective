@@ -1,9 +1,7 @@
 package namespace
 
 import (
-	"fmt"
-	"github.com/appellative-ai/core/messaging"
-	"sync/atomic"
+	"github.com/appellative-ai/core/std"
 )
 
 // Namespace names format:
@@ -21,12 +19,6 @@ import (
 //        Can we add frame resolution version to activity?
 //        Need author, frame, things, Accessor
 //        Need counts, lists of aspects
-
-const (
-	Fragment = "#"
-	Colon    = ":"
-	Slash    = "/"
-)
 
 // For humans : thing -> understanding -> relation
 //RelationKind = "relation" // Used for relating 2 resources
@@ -76,53 +68,26 @@ const (
 	QueryKind   = "query"
 )
 
-var (
-	counter = new(atomic.Int64)
-)
-
 // Name -
-type Name struct {
-	Collective string `json:"collective"`
-	Domain     string `json:"domain"`
-	Kind       string `json:"kind"`
-	Path       string `json:"path"`
-	Fragment   string `json:"fragment"`
-}
-
-func ParseName(name string) Name {
-	return parse(name)
-}
-
-func AddFragment(name, fragment string) string {
-	return addFragment(name, fragment)
-}
-
-func Versioned(name string) string {
-	return AddFragment(name, fmt.Sprintf("%v", counter.Add(1)))
-}
-
-func Kind(name string) string {
-	return ParseName(name).Kind
-}
 
 // Interface - notification interface
 type Interface struct {
-	Relation  func(instance, pattern, name string, filter Name) *messaging.Status
-	Retrieval func(name string, filter Name) (*messaging.Content, *messaging.Status)
-	Request   func(name string, filter Name) *messaging.Status
+	Relation  func(instance, pattern, name string, filter std.Name) *std.Status
+	Retrieval func(name string, filter std.Name) (*std.Content, *std.Status)
+	Request   func(name string, filter std.Name) *std.Status
 }
 
 // Invoke -
 var Invoke = func() *Interface {
 	return &Interface{
-		Relation: func(instance, pattern, name string, filter Name) *messaging.Status {
-			return messaging.StatusOK()
+		Relation: func(instance, pattern, name string, filter std.Name) *std.Status {
+			return std.StatusOK
 		},
-		Retrieval: func(name string, filter Name) (*messaging.Content, *messaging.Status) {
-			return nil, messaging.StatusOK()
+		Retrieval: func(name string, filter std.Name) (*std.Content, *std.Status) {
+			return nil, std.StatusOK
 		},
-		Request: func(name string, filter Name) *messaging.Status {
-			return messaging.StatusOK()
+		Request: func(name string, filter std.Name) *std.Status {
+			return std.StatusOK
 		},
 	}
 }()

@@ -6,6 +6,7 @@ import (
 	"github.com/appellative-ai/collective/namespace"
 	"github.com/appellative-ai/collective/resolution"
 	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/std"
 	"time"
 )
 
@@ -112,7 +113,7 @@ func (a *agentT) message(m *messaging.Message) {
 	var local []string
 	var nonLocal []string
 	for _, to := range recipients {
-		if messaging.Origin.IsLocalCollective(to) {
+		if std.Origin.IsLocalCollective(to) {
 			local = append(local, to)
 		} else {
 			nonLocal = append(nonLocal, to)
@@ -142,12 +143,12 @@ func (a *agentT) configure(m *messaging.Message) {
 		//}
 		//a.state = initialize(cfg)
 		// Initialize linked collectives
-		if messaging.Origin.Collective != "" {
+		if std.Origin.Collective != "" {
 			// TODO: Initialize linked collectives by reading the configured collective links and then reference the
 			//       registry for collective host names
 		}
 	}
-	messaging.Reply(m, messaging.StatusOK(), a.Name())
+	messaging.Reply(m, std.StatusOK, a.Name())
 }
 
 func (a *agentT) configureAgents() {

@@ -4,3 +4,5 @@ github.com/appellative-ai/core v0.0.0-20250718133250-efc0f9bb9486 h1:EpeUgV7iVoB
 github.com/appellative-ai/core v0.0.0-20250718133250-efc0f9bb9486/go.mod h1:a8kfuZMJHcdtdksSK+aYw2Mp6lT+i25oQEB+UCqwyhs=
 github.com/appellative-ai/core v0.0.0-20250718214136-5f1b6f89c8bc h1:EnU+940jwQOWWhg6r0a9rxIfObl9zogSugXnhy5sYcU=
 github.com/appellative-ai/core v0.0.0-20250718214136-5f1b6f89c8bc/go.mod h1:a8kfuZMJHcdtdksSK+aYw2Mp6lT+i25oQEB+UCqwyhs=
+github.com/appellative-ai/core v0.0.0-20250724161709-d151c98ae9df h1:9UMDFh9zgbCgN4srwx/S56IXbhnAU7fp1BzfL1UBZh8=
+github.com/appellative-ai/core v0.0.0-20250724161709-d151c98ae9df/go.mod h1:a8kfuZMJHcdtdksSK+aYw2Mp6lT+i25oQEB+UCqwyhs=

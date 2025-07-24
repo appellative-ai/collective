@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/appellative-ai/collective/private"
 	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/std"
 	"net/http"
 	"time"
 )
@@ -107,7 +108,7 @@ func (a *agentT) configure(m *messaging.Message) {
 		}
 		a.intf = intf
 	}
-	messaging.Reply(m, messaging.StatusOK(), a.Name())
+	messaging.Reply(m, std.StatusOK, a.Name())
 }
 
 // Run - run the agent
@@ -125,34 +126,34 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
-func (a *agentT) getRepresentation(name string) (messaging.Content, *messaging.Status) {
+func (a *agentT) getRepresentation(name string) (std.Content, *std.Status) {
 	if name == "" {
-		return messaging.Content{}, messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
+		return std.Content{}, std.NewStatus(http.StatusBadRequest, "", errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	ct, err := a.cache.get(name)
 	if err == nil {
-		return ct, messaging.StatusOK()
+		return ct, std.StatusOK
 	}
 	ct2, status := a.intf.Representation(http.MethodGet, name, "", "", nil)
 	if !status.OK() {
-		return messaging.Content{}, status
+		return std.Content{}, status
 	}
 	a.cache.put(name, ct2)
-	return messaging.Content{}, messaging.StatusNotFound()
+	return std.Content{}, std.StatusNotFound
 }
 
-func (a *agentT) putRepresentation(name, author, contentType string, value any) *messaging.Status {
+func (a *agentT) putRepresentation(name, author, contentType string, value any) *std.Status {
 	if name == "" || author == "" || contentType == "" || value == nil {
-		return messaging.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
+		return std.NewStatus(http.StatusBadRequest, "", errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
-	ct := messaging.Content{Type: contentType, Value: value}
-	buf, status := messaging.Marshal[[]byte](&ct)
+	ct := std.Content{Type: contentType, Value: value}
+	buf, status := std.Marshal[[]byte](&ct)
 	if !status.OK() {
-		return status.WithLocation(name)
+		return status //.WithLocation(name)
 	}
 	_, status2 := a.intf.Representation(http.MethodPut, name, author, contentType, buf)
 	if !status2.OK() {
-		return status.WithLocation(name)
+		return status //.WithLocation(name)
 	}
 	// TODO: remove after initial testing
 	a.cache.put(name, ct)

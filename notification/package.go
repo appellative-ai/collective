@@ -1,13 +1,16 @@
 package notification
 
-import "github.com/appellative-ai/core/messaging"
+import (
+	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/std"
+)
 
 // Interface - notification interface
 type Interface struct {
 	Message        func(msg *messaging.Message) bool
 	ReceiveMessage func(name string) *messaging.Message
 
-	Advise        func(msg *messaging.Message) *messaging.Status
+	Advise        func(msg *messaging.Message) *std.Status
 	ReceiveAdvice func(name string) *messaging.Message
 
 	Trace func(name, task, observation, action string)
@@ -24,9 +27,9 @@ var Notifier = func() *Interface {
 			//agent.message(msg)
 			return nil
 		},
-		Advise: func(msg *messaging.Message) *messaging.Status {
+		Advise: func(msg *messaging.Message) *std.Status {
 			//agent.advise(msg)
-			return messaging.StatusOK()
+			return std.StatusOK
 		},
 		ReceiveAdvice: func(name string) *messaging.Message {
 			//agent.message(msg)

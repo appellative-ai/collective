@@ -3,7 +3,7 @@ package resolution
 import (
 	"errors"
 	"fmt"
-	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/std"
 	"sync"
 )
 
@@ -23,17 +23,17 @@ func newCache() *cacheT {
 	return c
 }
 
-func (c *cacheT) get(name string) (messaging.Content, error) {
+func (c *cacheT) get(name string) (std.Content, error) {
 	v, ok := c.m.Load(name)
 	if !ok {
-		return messaging.Content{}, errors.New(fmt.Sprintf("resolution [%v] not found", name))
+		return std.Content{}, errors.New(fmt.Sprintf("resolution [%v] not found", name))
 	}
-	if v1, ok1 := v.(messaging.Content); ok1 {
+	if v1, ok1 := v.(std.Content); ok1 {
 		return v1, nil
 	}
-	return messaging.Content{}, nil
+	return std.Content{}, nil
 }
 
-func (c *cacheT) put(name string, ct messaging.Content) {
+func (c *cacheT) put(name string, ct std.Content) {
 	c.m.Store(name, ct)
 }
