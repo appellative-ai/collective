@@ -68,10 +68,15 @@ const (
 	QueryKind   = "query"
 )
 
+type Arg struct {
+	Name  string
+	Value any
+}
+
 // Interface - notification interface
 type Interface struct {
-	Relation  func(instance, pattern, name string, filter std.Name) *std.Status
-	Retrieval func(name string, filter std.Name) (*std.Content, *std.Status)
+	Relation  func(instance, pattern, name string, args []Arg) *std.Status
+	Retrieval func(name string, args []Arg) (*std.Content, *std.Status)
 	AddThing  func(name, cname, author string) *std.Status
 	AddLink   func(name, cname, thing1, thing2, author string) *std.Status
 }
@@ -79,10 +84,10 @@ type Interface struct {
 // Invoke -
 var Invoke = func() *Interface {
 	return &Interface{
-		Relation: func(instance, pattern, name string, filter std.Name) *std.Status {
+		Relation: func(instance, pattern, name string, args []Arg) *std.Status {
 			return std.StatusOK
 		},
-		Retrieval: func(name string, filter std.Name) (*std.Content, *std.Status) {
+		Retrieval: func(name string, args []Arg) (*std.Content, *std.Status) {
 			return nil, std.StatusOK
 		},
 		AddThing: func(name, cname, author string) *std.Status {
