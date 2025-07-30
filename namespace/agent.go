@@ -1,12 +1,9 @@
 package namespace
 
 import (
-	"errors"
-	"fmt"
 	"github.com/appellative-ai/collective/private"
 	"github.com/appellative-ai/core/messaging"
 	"github.com/appellative-ai/core/std"
-	"net/http"
 	"time"
 )
 
@@ -20,10 +17,10 @@ var (
 )
 
 type agentT struct {
-	running   bool
-	duration  time.Duration
-	relations *relationT
-	intf      *private.Interface
+	running  bool
+	duration time.Duration
+	//relations *relationT
+	//intf      *private.Interface
 
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
@@ -38,8 +35,8 @@ func NewAgent() messaging.Agent {
 func newAgent() *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
-	a.relations = newRelation()
-	a.intf = private.NewInterface()
+	//a.relations = newRelation()
+	//a.intf = private.NewInterface()
 
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
@@ -89,11 +86,11 @@ func (a *agentT) Message(m *messaging.Message) {
 func (a *agentT) configure(m *messaging.Message) {
 	switch m.ContentType() {
 	case private.ContentTypeInterface:
-		intf, status := private.InterfaceContent(m)
+		_, status := private.InterfaceContent(m)
 		if !status.OK() {
 			messaging.Reply(m, status, a.Name())
 		}
-		a.intf = intf
+		//a.intf = intf
 	}
 	messaging.Reply(m, std.StatusOK, a.Name())
 }
@@ -114,6 +111,7 @@ func (a *agentT) masterFinalize() {
 	a.master.Close()
 }
 
+/*
 func (a *agentT) addThing(name, cname, author string) *std.Status {
 	if name == "" || author == "" {
 		return std.NewStatus(http.StatusBadRequest, "", errors.New(fmt.Sprintf("error: invalid argument name %v or authority %v", name, author)))
@@ -138,3 +136,6 @@ func (a *agentT) addRelation(name, cname, thing1, thing2, author string) *std.St
 	}
 	return status
 }
+
+
+*/

@@ -69,14 +69,14 @@ const (
 )
 
 type Arg struct {
-	Name  string
-	Value any
+	Name  string `json:"name"`
+	Value any    `json:"value"`
 }
 
 // Interface - notification interface
 type Interface struct {
-	Relation  func(instance, pattern, name string, args []Arg) *std.Status
 	Retrieval func(name string, args []Arg) (*std.Content, *std.Status)
+	Relation  func(name, instance, pattern string, args []Arg) *std.Status
 	AddThing  func(name, cname, author string) *std.Status
 	AddLink   func(name, cname, thing1, thing2, author string) *std.Status
 }
@@ -84,11 +84,11 @@ type Interface struct {
 // Invoke -
 var Invoke = func() *Interface {
 	return &Interface{
-		Relation: func(instance, pattern, name string, args []Arg) *std.Status {
-			return std.StatusOK
-		},
 		Retrieval: func(name string, args []Arg) (*std.Content, *std.Status) {
 			return nil, std.StatusOK
+		},
+		Relation: func(name, instance, pattern string, args []Arg) *std.Status {
+			return std.StatusOK
 		},
 		AddThing: func(name, cname, author string) *std.Status {
 			return std.StatusOK

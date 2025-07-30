@@ -1,0 +1,9 @@
+[
+  {
+    "name":"test:agent",
+    "cname":"headers",
+    "thing1":"core:thing/first",
+    "thing2":"core:thing/second",
+    "author":"core:person/bob"
+  }
+]

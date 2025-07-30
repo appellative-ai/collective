@@ -1,0 +1,14 @@
+[
+  {
+    "name":"test:agent",
+    "args":[
+      {
+        "name":"kind",
+        "value":"aspect"
+      },
+      {
+        "name":"count","value":25
+      }
+    ]
+  }
+]
