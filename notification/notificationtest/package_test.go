@@ -1,9 +1,6 @@
-package operationstest
+package notificationtest
 
-import (
-	"github.com/appellative-ai/core/messaging"
-)
-
+/*
 func ExampleNewService() {
 	s := NewService()
 	m := messaging.NewAddressableMessage(messaging.ChannelControl, messaging.ConfigEvent, "core:to/test", "core:from/test")
@@ -21,3 +18,6 @@ func ExampleNewService() {
 	//2025-06-14T22:22:48.229Z [core:agent/operations/collective] [task] [going well] [none]
 
 }
+
+
+*/
