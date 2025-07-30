@@ -43,6 +43,16 @@ func Agent(name string) messaging.Agent {
 	*/
 }
 
+// AgentT - get typed agent
+func AgentT[T any](name string) (t T, ok bool) {
+	a := Agent(name)
+	if a == nil {
+		return
+	}
+	t, ok = any(a).(T)
+	return
+}
+
 // Exists -
 func Exists(name string) bool {
 	return ctor.Load(name) != nil
