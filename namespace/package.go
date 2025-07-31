@@ -76,7 +76,7 @@ type Arg struct {
 // Interface - notification interface
 type Interface struct {
 	Retrieval func(name string, args []Arg) (*std.Content, *std.Status)
-	Relation  func(name, instance, pattern string, args []Arg) *std.Status
+	Relation  func(name string, args []Arg) *std.Status
 	AddThing  func(name, cname, author string) *std.Status
 	AddLink   func(name, cname, thing1, thing2, author string) *std.Status
 }
@@ -87,7 +87,7 @@ var Invoke = func() *Interface {
 		Retrieval: func(name string, args []Arg) (*std.Content, *std.Status) {
 			return nil, std.StatusOK
 		},
-		Relation: func(name, instance, pattern string, args []Arg) *std.Status {
+		Relation: func(name string, args []Arg) *std.Status {
 			return std.StatusOK
 		},
 		AddThing: func(name, cname, author string) *std.Status {
