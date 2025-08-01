@@ -1,10 +1,9 @@
 package namespace
 
 import (
-	"github.com/appellative-ai/collective/private"
+	"github.com/appellative-ai/core/httpx"
 	"github.com/appellative-ai/core/messaging"
-	"github.com/appellative-ai/core/rest"
-	"github.com/appellative-ai/core/std"
+	"net/http"
 	"time"
 )
 
@@ -21,7 +20,7 @@ type agentT struct {
 	running  bool
 	duration time.Duration
 
-	ex       rest.Exchange
+	ex       func(req *http.Request) (*http.Response, error)
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 }
@@ -34,7 +33,7 @@ func NewAgent() messaging.Agent {
 func newAgent() *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
-	//a.ex =
+	a.ex = httpx.Do
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	return a
@@ -53,7 +52,7 @@ func (a *agentT) Message(m *messaging.Message) {
 	}
 	if !a.running {
 		if m.Name == messaging.ConfigEvent {
-			a.configure(m)
+			messaging.UpdateContent[func(req *http.Request) (*http.Response, error)](&a.ex, m)
 			return
 		}
 		if m.Name == messaging.StartupEvent {
@@ -74,18 +73,6 @@ func (a *agentT) Message(m *messaging.Message) {
 	default:
 		a.emissary.Send(m)
 	}
-}
-
-func (a *agentT) configure(m *messaging.Message) {
-	switch m.ContentType() {
-	case private.ContentTypeInterface:
-		_, status := private.InterfaceContent(m)
-		if !status.OK() {
-			messaging.Reply(m, status, a.Name())
-		}
-		//a.intf = intf
-	}
-	messaging.Reply(m, std.StatusOK, a.Name())
 }
 
 // Run - run the agent

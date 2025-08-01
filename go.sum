@@ -1,10 +1,4 @@
-github.com/appellative-ai/core v0.0.0-20250716191654-e43fbfd4d1fc h1:rpknpCFb1pFxpNlxrIB2fcBgmx9TTSUzM9JhE6N7ens=
-github.com/appellative-ai/core v0.0.0-20250716191654-e43fbfd4d1fc/go.mod h1:a8kfuZMJHcdtdksSK+aYw2Mp6lT+i25oQEB+UCqwyhs=
-github.com/appellative-ai/core v0.0.0-20250718133250-efc0f9bb9486 h1:EpeUgV7iVoBgSSxTsUGdMYRcTIFyAs8JRrbfRTUL20k=
-github.com/appellative-ai/core v0.0.0-20250718133250-efc0f9bb9486/go.mod h1:a8kfuZMJHcdtdksSK+aYw2Mp6lT+i25oQEB+UCqwyhs=
-github.com/appellative-ai/core v0.0.0-20250718214136-5f1b6f89c8bc h1:EnU+940jwQOWWhg6r0a9rxIfObl9zogSugXnhy5sYcU=
-github.com/appellative-ai/core v0.0.0-20250718214136-5f1b6f89c8bc/go.mod h1:a8kfuZMJHcdtdksSK+aYw2Mp6lT+i25oQEB+UCqwyhs=
-github.com/appellative-ai/core v0.0.0-20250724161709-d151c98ae9df h1:9UMDFh9zgbCgN4srwx/S56IXbhnAU7fp1BzfL1UBZh8=
-github.com/appellative-ai/core v0.0.0-20250724161709-d151c98ae9df/go.mod h1:a8kfuZMJHcdtdksSK+aYw2Mp6lT+i25oQEB+UCqwyhs=
 github.com/appellative-ai/core v0.0.0-20250724190012-a25511dc9947 h1:hH58aaYHawhTl/JruiBM63iYLeYf3DhFb9TY49guUXg=
 github.com/appellative-ai/core v0.0.0-20250724190012-a25511dc9947/go.mod h1:a8kfuZMJHcdtdksSK+aYw2Mp6lT+i25oQEB+UCqwyhs=
+github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
+github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=

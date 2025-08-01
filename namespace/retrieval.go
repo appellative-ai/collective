@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type tagRetrieval struct {
+type retrieval struct {
 	Name string `json:"name"`
 	Args []Arg  `json:"args"`
 }

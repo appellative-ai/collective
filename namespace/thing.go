@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type tagThing struct {
+type thing struct {
 	Name   string `json:"name"`
 	CName  string `json:"cname"`
 	Author string `json:"author"`

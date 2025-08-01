@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type tagRelation struct {
+type relation struct {
 	Name     string `json:"name"`
 	Instance string `json:"instance"`
 	Pattern  string `json:"pattern"`

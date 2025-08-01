@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type tagLink struct {
+type link struct {
 	Name   string `json:"name"`
 	CName  string `json:"cname"`
 	Thing1 string `json:"thing1"`
