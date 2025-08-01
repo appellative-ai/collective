@@ -3,6 +3,7 @@ package namespace
 import (
 	"github.com/appellative-ai/collective/private"
 	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/rest"
 	"github.com/appellative-ai/core/std"
 	"time"
 )
@@ -19,12 +20,10 @@ var (
 type agentT struct {
 	running  bool
 	duration time.Duration
-	//relations *relationT
-	//intf      *private.Interface
 
+	ex       rest.Exchange
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
-	master   *messaging.Channel
 }
 
 func NewAgent() messaging.Agent {
@@ -35,12 +34,9 @@ func NewAgent() messaging.Agent {
 func newAgent() *agentT {
 	a := new(agentT)
 	a.duration = defaultDuration
-	//a.relations = newRelation()
-	//a.intf = private.NewInterface()
-
+	//a.ex =
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
 	a.emissary = messaging.NewEmissaryChannel()
-	a.master = messaging.NewMasterChannel()
 	return a
 }
 
@@ -73,11 +69,8 @@ func (a *agentT) Message(m *messaging.Message) {
 	switch m.Channel() {
 	case messaging.ChannelEmissary:
 		a.emissary.Send(m)
-	case messaging.ChannelMaster:
-		a.master.Send(m)
 	case messaging.ChannelControl:
 		a.emissary.Send(m)
-		a.master.Send(m)
 	default:
 		a.emissary.Send(m)
 	}
@@ -97,7 +90,6 @@ func (a *agentT) configure(m *messaging.Message) {
 
 // Run - run the agent
 func (a *agentT) run() {
-	go masterAttend(a)
 	go emissaryAttend(a)
 
 }
@@ -106,36 +98,3 @@ func (a *agentT) emissaryFinalize() {
 	a.emissary.Close()
 	a.ticker.Stop()
 }
-
-func (a *agentT) masterFinalize() {
-	a.master.Close()
-}
-
-/*
-func (a *agentT) addThing(name, cname, author string) *std.Status {
-	if name == "" || author == "" {
-		return std.NewStatus(http.StatusBadRequest, "", errors.New(fmt.Sprintf("error: invalid argument name %v or authority %v", name, author)))
-	}
-	status := a.intf.Thing(http.MethodPut, name, cname, author)
-	if !status.OK() {
-		return status //.WithMessage(fmt.Sprintf("name %v", name))
-	}
-	return status
-}
-
-func (a *agentT) addRelation(name, cname, thing1, thing2, author string) *std.Status {
-	if name == "" || thing1 == "" || thing2 == "" || author == "" {
-		return std.NewStatus(http.StatusBadRequest, "", errors.New(fmt.Sprintf("error: invalid argument name1 %v or name2 %v or author %v", thing1, thing2, author)))
-	}
-	// TODO: remove after initial testing
-	a.relations.put(name, thing1, thing2)
-
-	status := a.intf.Relation(http.MethodPut, name, cname, thing1, thing2, author)
-	if !status.OK() {
-		return status //.WithMessage(fmt.Sprintf("name1 %v", name))
-	}
-	return status
-}
-
-
-*/

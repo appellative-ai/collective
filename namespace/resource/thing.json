@@ -1,7 +1,0 @@
-[
-  {
-    "name":"test:agent",
-    "cname":"headers",
-    "author":"core:person/bob"
-  }
-]

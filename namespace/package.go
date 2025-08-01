@@ -85,16 +85,16 @@ type Interface struct {
 var Invoke = func() *Interface {
 	return &Interface{
 		Retrieval: func(name string, args []Arg) (*std.Content, *std.Status) {
-			return nil, std.StatusOK
+			return agent.retrieval(name, args)
 		},
 		Relation: func(name string, args []Arg) *std.Status {
-			return std.StatusOK
+			return agent.relation(name, args)
 		},
 		AddThing: func(name, cname, author string) *std.Status {
-			return std.StatusOK
+			return agent.addThing(name, cname, author)
 		},
 		AddLink: func(name, cname, thing1, thing2, author string) *std.Status {
-			return std.StatusOK
+			return agent.addLink(name, cname, thing1, thing2, author)
 		},
 	}
 }()
