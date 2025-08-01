@@ -9,8 +9,8 @@ import (
 
 const (
 	NamespaceAgentName = "common:core:agent/namespace/collective"
-	defaultDuration    = time.Second * 10
-	defaultTimeout     = time.Second * 3
+	duration           = time.Second * 10
+	timeout            = time.Second * 3
 )
 
 var (
@@ -34,9 +34,9 @@ func NewAgent() messaging.Agent {
 func newAgent() *agentT {
 	a := new(agentT)
 	agent = a
-	a.timeout = defaultTimeout
+	a.timeout = timeout
 	a.ex = httpx.Do
-	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, defaultDuration)
+	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	return a
 }

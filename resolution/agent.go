@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	NamespaceName   = "common:core:agent/resolution/collective"
-	defaultDuration = time.Second * 10
-	defaultTimeout  = time.Second * 3
+	NamespaceName = "common:core:agent/resolution/collective"
+	duration      = time.Second * 10
+	timeout       = time.Second * 3
 )
 
 var (
@@ -43,10 +43,10 @@ func NewAgent() messaging.Agent {
 func newAgent() *agentT {
 	a := new(agentT)
 	agent = a
-	a.timeout = defaultTimeout
+	a.timeout = timeout
 	a.cache = newCache()
 
-	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, defaultDuration)
+	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	return a
 }
