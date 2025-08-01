@@ -1,4 +1,4 @@
-package resourcetest
+package resolutiontest
 
 func ExampleNewResolver() {
 	s := NewResolver()

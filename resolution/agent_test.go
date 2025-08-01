@@ -5,9 +5,9 @@ import "fmt"
 func ExampleNewAgent() {
 	a := newAgent()
 
-	fmt.Printf("test: newHttpAgent() -> [%v]\n", a)
+	fmt.Printf("test: newAgent() -> [%v]\n", a)
 
 	//Output:
-	//test: newHttpAgent() -> [common:core:agent/resolution/collective]
+	//test: newAgent() -> [common:core:agent/resolution/collective]
 
 }

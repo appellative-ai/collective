@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/appellative-ai/collective/exchange"
 	"github.com/appellative-ai/collective/namespace"
-	"github.com/appellative-ai/collective/private"
+	"github.com/appellative-ai/collective/notification"
 	"github.com/appellative-ai/collective/resolution"
 	"github.com/appellative-ai/core/messaging"
 	"github.com/appellative-ai/core/std"
@@ -36,14 +36,14 @@ func init() {
 
 func newAgent() *agentT {
 	a := new(agentT)
+	agent = a
 	a.agents = messaging.NewExchange()
 	a.agents.Register(resolution.NewAgent())
 	a.agents.Register(namespace.NewAgent())
-	agent = a
+	a.agents.Register(notification.NewAgent())
 
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, duration)
 	a.emissary = messaging.NewEmissaryChannel()
-	a.configureAgents()
 	return a
 }
 
@@ -114,11 +114,8 @@ func (a *agentT) configure(m *messaging.Message) {
 	messaging.Reply(m, std.StatusOK, a.Name())
 }
 
-func (a *agentT) configureAgents() {
-	a.agents.Broadcast(private.NewInterfaceMessage(&private.Interface{
-		Representation: representation,
-		Context:        context,
-		Thing:          thing,
-		Relation:       relation,
-	}))
+func (a *agentT) configureLogging(log func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) {
+	if log != nil {
+		a.agents.Broadcast(messaging.NewConfigMessage(log))
+	}
 }

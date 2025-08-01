@@ -3,13 +3,14 @@ package namespace
 import (
 	"github.com/appellative-ai/core/httpx"
 	"github.com/appellative-ai/core/messaging"
-	"net/http"
+	"github.com/appellative-ai/core/rest"
 	"time"
 )
 
 const (
 	NamespaceAgentName = "common:core:agent/namespace/collective"
 	defaultDuration    = time.Second * 10
+	defaultTimeout     = time.Second * 3
 )
 
 var (
@@ -17,24 +18,25 @@ var (
 )
 
 type agentT struct {
-	running  bool
-	duration time.Duration
+	running bool
+	timeout time.Duration
 
-	ex       func(req *http.Request) (*http.Response, error)
+	ex       rest.Exchange
+	logFunc  func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 }
 
 func NewAgent() messaging.Agent {
-	agent = newAgent()
-	return agent
+	return newAgent()
 }
 
 func newAgent() *agentT {
 	a := new(agentT)
-	a.duration = defaultDuration
+	agent = a
+	a.timeout = defaultTimeout
 	a.ex = httpx.Do
-	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
+	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, defaultDuration)
 	a.emissary = messaging.NewEmissaryChannel()
 	return a
 }
@@ -50,19 +52,25 @@ func (a *agentT) Message(m *messaging.Message) {
 	if m == nil {
 		return
 	}
-	if !a.running {
-		if m.Name == messaging.ConfigEvent {
-			messaging.UpdateContent[func(req *http.Request) (*http.Response, error)](&a.ex, m)
+	switch m.Name {
+	case messaging.ConfigEvent:
+		if a.running {
 			return
 		}
-		if m.Name == messaging.StartupEvent {
-			a.run()
-			a.running = true
-			return
-		}
+		messaging.UpdateContent[time.Duration](&a.timeout, m)
+		messaging.UpdateContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](&a.logFunc, m)
 		return
-	}
-	if m.Name == messaging.ShutdownEvent {
+	case messaging.StartupEvent:
+		if a.running {
+			return
+		}
+		a.running = true
+		a.run()
+		return
+	case messaging.ShutdownEvent:
+		if !a.running {
+			return
+		}
 		a.running = false
 	}
 	switch m.Channel() {

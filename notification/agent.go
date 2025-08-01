@@ -3,9 +3,9 @@ package notification
 import (
 	"fmt"
 	"github.com/appellative-ai/collective/exchange"
-	"github.com/appellative-ai/collective/namespace"
-	"github.com/appellative-ai/collective/resolution"
+	"github.com/appellative-ai/core/httpx"
 	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/rest"
 	"github.com/appellative-ai/core/std"
 	"time"
 )
@@ -21,24 +21,22 @@ var (
 
 type agentT struct {
 	running bool
-	agents  *messaging.Exchange
+	timeout time.Duration
 
+	ex       rest.Exchange
+	logFunc  func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 }
 
-func init() {
-	exchange.RegisterConstructor(NamespaceName, func() messaging.Agent {
-		return newAgent()
-	})
+func NewAgent() messaging.Agent {
+	return newAgent()
 }
 
 func newAgent() *agentT {
 	a := new(agentT)
-	a.agents = messaging.NewExchange()
-	a.agents.Register(resolution.NewAgent())
-	a.agents.Register(namespace.NewAgent())
 	agent = a
+	a.ex = httpx.Do
 
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, duration)
 	a.emissary = messaging.NewEmissaryChannel()
@@ -62,6 +60,8 @@ func (a *agentT) Message(m *messaging.Message) {
 		if a.running {
 			return
 		}
+		messaging.UpdateContent[time.Duration](&a.timeout, m)
+		messaging.UpdateContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](&a.logFunc, m)
 		return
 	case messaging.StartupEvent:
 		if a.running {

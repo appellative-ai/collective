@@ -3,8 +3,8 @@ package resolution
 import (
 	"errors"
 	"fmt"
-	"github.com/appellative-ai/collective/private"
 	"github.com/appellative-ai/core/messaging"
+	"github.com/appellative-ai/core/rest"
 	"github.com/appellative-ai/core/std"
 	"net/http"
 	"time"
@@ -13,6 +13,7 @@ import (
 const (
 	NamespaceName   = "common:core:agent/resolution/collective"
 	defaultDuration = time.Second * 10
+	defaultTimeout  = time.Second * 3
 )
 
 var (
@@ -24,33 +25,29 @@ type text struct {
 }
 
 type agentT struct {
-	running  bool
-	duration time.Duration
-	cache    *cacheT
-	intf     *private.Interface
+	running bool
+	timeout time.Duration
+	cache   *cacheT
 
+	ex       rest.Exchange
+	logFunc  func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 	master   *messaging.Channel
 }
 
 func NewAgent() messaging.Agent {
-	if agent == nil {
-		agent = newAgent()
-	}
-	return agent
+	return newAgent()
 }
 
 func newAgent() *agentT {
 	a := new(agentT)
-	a.duration = defaultDuration
+	agent = a
+	a.timeout = defaultTimeout
 	a.cache = newCache()
-	a.intf = private.NewInterface()
 
-	//a.handler = handler
-	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, a.duration)
+	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, defaultDuration)
 	a.emissary = messaging.NewEmissaryChannel()
-	a.master = messaging.NewMasterChannel()
 	return a
 }
 
@@ -65,20 +62,20 @@ func (a *agentT) Message(m *messaging.Message) {
 	if m == nil {
 		return
 	}
-
 	switch m.Name {
 	case messaging.ConfigEvent:
 		if a.running {
 			return
 		}
-		a.configure(m)
+		messaging.UpdateContent[time.Duration](&a.timeout, m)
+		messaging.UpdateContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](&a.logFunc, m)
 		return
 	case messaging.StartupEvent:
 		if a.running {
 			return
 		}
-		a.run()
 		a.running = true
+		a.run()
 		return
 	case messaging.ShutdownEvent:
 		if !a.running {
@@ -99,31 +96,14 @@ func (a *agentT) Message(m *messaging.Message) {
 	}
 }
 
-func (a *agentT) configure(m *messaging.Message) {
-	switch m.ContentType() {
-	case private.ContentTypeInterface:
-		intf, status := private.InterfaceContent(m)
-		if !status.OK() {
-			messaging.Reply(m, status, a.Name())
-		}
-		a.intf = intf
-	}
-	messaging.Reply(m, std.StatusOK, a.Name())
-}
-
 // Run - run the agent
 func (a *agentT) run() {
-	go masterAttend(a)
 	go emissaryAttend(a)
 }
 
 func (a *agentT) emissaryFinalize() {
 	a.emissary.Close()
 	a.ticker.Stop()
-}
-
-func (a *agentT) masterFinalize() {
-	a.master.Close()
 }
 
 func (a *agentT) getRepresentation(name string) (std.Content, *std.Status) {
@@ -134,11 +114,11 @@ func (a *agentT) getRepresentation(name string) (std.Content, *std.Status) {
 	if err == nil {
 		return ct, std.StatusOK
 	}
-	ct2, status := a.intf.Representation(http.MethodGet, name, "", "", nil)
-	if !status.OK() {
-		return std.Content{}, status
-	}
-	a.cache.put(name, ct2)
+	//ct2, status := a.intf.Representation(http.MethodGet, name, "", "", nil)
+	//if !status.OK() {
+	//	return std.Content{}, status
+	//}
+	//a.cache.put(name, ct2)
 	return std.Content{}, std.StatusNotFound
 }
 
@@ -147,16 +127,16 @@ func (a *agentT) putRepresentation(name, author, contentType string, value any) 
 		return std.NewStatus(http.StatusBadRequest, "", errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	ct := std.Content{Type: contentType, Value: value}
-	buf, status := std.Marshal[[]byte](&ct)
+	_, status := std.Marshal[[]byte](&ct)
 	if !status.OK() {
 		return status //.WithLocation(name)
 	}
-	_, status2 := a.intf.Representation(http.MethodPut, name, author, contentType, buf)
-	if !status2.OK() {
-		return status //.WithLocation(name)
-	}
+	//_, status2 := a.intf.Representation(http.MethodPut, name, author, contentType, buf)
+	//if !status2.OK() {
+	//	return status //.WithLocation(name)
+	//}
 	// TODO: remove after initial testing
-	a.cache.put(name, ct)
+	//a.cache.put(name, ct)
 	return status
 }
 
