@@ -1,14 +1,11 @@
 package namespace
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/appellative-ai/core/httpx"
 	"github.com/appellative-ai/core/std"
 	"net/http"
-	"time"
 )
 
 type link struct {
@@ -24,17 +21,9 @@ func (a *agentT) addLink(name, cname, thing1, thing2, author string) *std.Status
 	if err != nil {
 		return std.NewStatus(http.StatusBadRequest, a.Name(), err)
 	}
-	newCtx, cancel := httpx.NewContext(nil, a.timeout)
-	defer cancel()
-	req, err1 := http.NewRequestWithContext(newCtx, http.MethodPost, a.url(requestLinkPath), bytes.NewBuffer(buf))
-	if err1 != nil {
-		return std.NewStatus(http.StatusInternalServerError, a.Name(), err1)
-	}
-	start := time.Now().UTC()
-	resp, err2 := a.ex(req)
-	a.log(start, time.Since(start), requestLinkRoute, req, resp, a.timeout)
-	if err2 != nil {
-		return std.NewStatus(http.StatusInternalServerError, a.Name(), err2)
+	resp, status := a.call(http.MethodPost, a.url(requestLinkPath), requestLinkRoute, nil, buf)
+	if !status.OK() {
+		return status
 	}
 	return std.NewStatus(resp.StatusCode, a.Name(), nil)
 }

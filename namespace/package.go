@@ -101,7 +101,8 @@ var Invoke = func() *Interface {
 			return agent.retrieval(name, args)
 		},
 		Relation: func(name string, args []Arg) *std.Status {
-			return agent.relation(name, args)
+			_, status := agent.relation(name, args)
+			return status
 		},
 		AddThing: func(name, cname, author string) *std.Status {
 			return agent.addThing(name, cname, author)

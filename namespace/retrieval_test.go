@@ -29,11 +29,9 @@ func ExampleCreateRetrieval() {
 }
 
 func ExampleCreateContent() {
-	content := std.Content{Value: nil}
 	resp := &http.Response{}
-
-	ok, err := createContent(resp, &content)
-	fmt.Printf("test: createRetrieval() -> [%v] [ok:%v] err:%v\n", content, ok, err)
+	content, err := createContent(resp)
+	fmt.Printf("test: createContent() -> [%v] err:%v\n", content, err)
 
 	buf, err1 := json.Marshal(&retrieval{
 		Name: "name",
@@ -44,15 +42,14 @@ func ExampleCreateContent() {
 	if err1 != nil {
 		fmt.Printf("test: json.Marshal() -> [err:%v]\n", err)
 	}
-	content = std.Content{Value: nil}
 	h := make(http.Header)
 	h.Add("Content-Type", std.ContentTypeJson)
 	resp = httpx.NewResponse(http.StatusOK, h, buf)
-	ok, err = createContent(resp, &content)
-	fmt.Printf("test: createRetrieval() -> [%v] [ok:%v] err:%v\n", content, ok, err)
+	content, err = createContent(resp)
+	fmt.Printf("test: createContent() -> [%v] err:%v\n", content, err)
 
 	//Output:
-	//test: createRetrieval() -> [fragment:  type:  value: false] [ok:false] err:<nil>
-	//test: createRetrieval() -> [fragment:  type: application/json value: true] [ok:true] err:<nil>
-
+	//test: createContent() -> [<nil>] err:<nil>
+	//test: createContent() -> [fragment:  type: application/json value: true] err:<nil>
+	
 }
