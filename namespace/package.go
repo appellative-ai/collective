@@ -12,8 +12,8 @@ const (
 
 	retrievalPath    = "/namespace/retrieval"
 	relationPath     = "/namespace/relation"
-	requestThingPath = "/namespace/requestThing"
-	requestLinkPath  = "/namespace/requestLink"
+	requestThingPath = "/namespace/request/thing"
+	requestLinkPath  = "/namespace/request/link"
 	localHost        = "localhost"
 )
 

@@ -107,7 +107,7 @@ func (a *agentT) log(start time.Time, duration time.Duration, route string, req 
 func (a *agentT) url(path string) string {
 	scheme := "https"
 	i := strings.Index(a.hosts[0], localHost)
-	if i > 0 {
+	if i >= 0 {
 		scheme = "http"
 	}
 	return scheme + "://" + a.hosts[0] + path
