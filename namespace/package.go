@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	retrievalRout     = "retrieval"
+	retrievalRoute    = "retrieval"
 	relationRoute     = "relation"
 	requestThingRoute = "request-thing"
 	requestLinkRoute  = "request-link"
