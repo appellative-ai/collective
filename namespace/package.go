@@ -4,11 +4,22 @@ import (
 	"github.com/appellative-ai/core/std"
 )
 
+const (
+	retrievalRout = "retrieval"
+	relationRoute = "relation"
+	requestRoute  = "request"
+
+	retrievalPath    = "/namespace/retrieval"
+	relationPath     = "/namespace/relation"
+	requestThingPath = "/namespace/requestThing"
+	requestLinkPath  = "/namespace/requestLink"
+)
+
 // Namespace names format:
 //  collective = domain-sub-domain
 //  domain = domain-sub-domain
 //
-//  {collective}:{domain}:{type}/{path}#{fragment}
+//  {collective}:{domain}:{kind}/{path}#{fragment}
 //
 //  Example:  wikipedia-eng:resiliency-traffic:agent/rate-limiting/request/http#v1.2.3
 //

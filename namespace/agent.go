@@ -20,9 +20,10 @@ var (
 type agentT struct {
 	running bool
 	timeout time.Duration
+	hosts   []string
+	logFunc func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
 
 	ex       rest.Exchange
-	logFunc  func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 }
@@ -35,6 +36,7 @@ func newAgent() *agentT {
 	a := new(agentT)
 	agent = a
 	a.timeout = timeout
+	a.hosts = []string{"invalid-host"}
 	a.ex = httpx.Do
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, duration)
 	a.emissary = messaging.NewEmissaryChannel()
@@ -58,6 +60,7 @@ func (a *agentT) Message(m *messaging.Message) {
 			return
 		}
 		messaging.UpdateContent[time.Duration](&a.timeout, m)
+		messaging.UpdateContent[[]string](&a.hosts, m)
 		messaging.UpdateContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](&a.logFunc, m)
 		return
 	case messaging.StartupEvent:
@@ -92,4 +95,14 @@ func (a *agentT) run() {
 func (a *agentT) emissaryFinalize() {
 	a.emissary.Close()
 	a.ticker.Stop()
+}
+
+func (a *agentT) log(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
+	if a.logFunc == nil {
+		return
+	}
+}
+
+func (a *agentT) url(path string) string {
+	return "https://" + a.hosts[0] + path
 }
