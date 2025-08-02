@@ -4,6 +4,7 @@ import (
 	"github.com/appellative-ai/core/httpx"
 	"github.com/appellative-ai/core/messaging"
 	"github.com/appellative-ai/core/rest"
+	"strings"
 	"time"
 )
 
@@ -89,7 +90,6 @@ func (a *agentT) Message(m *messaging.Message) {
 // Run - run the agent
 func (a *agentT) run() {
 	go emissaryAttend(a)
-
 }
 
 func (a *agentT) emissaryFinalize() {
@@ -101,8 +101,14 @@ func (a *agentT) log(start time.Time, duration time.Duration, route string, req 
 	if a.logFunc == nil {
 		return
 	}
+	a.logFunc(start, duration, route, req, resp, timeout)
 }
 
 func (a *agentT) url(path string) string {
-	return "https://" + a.hosts[0] + path
+	scheme := "https"
+	i := strings.Index(a.hosts[0], localHost)
+	if i > 0 {
+		scheme = "http"
+	}
+	return scheme + "://" + a.hosts[0] + path
 }

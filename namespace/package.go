@@ -5,14 +5,16 @@ import (
 )
 
 const (
-	retrievalRout = "retrieval"
-	relationRoute = "relation"
-	requestRoute  = "request"
+	retrievalRout     = "retrieval"
+	relationRoute     = "relation"
+	requestThingRoute = "request-thing"
+	requestLinkRoute  = "request-link"
 
 	retrievalPath    = "/namespace/retrieval"
 	relationPath     = "/namespace/relation"
 	requestThingPath = "/namespace/requestThing"
 	requestLinkPath  = "/namespace/requestLink"
+	localHost        = "localhost"
 )
 
 // Namespace names format:

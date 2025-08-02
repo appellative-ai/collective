@@ -8,6 +8,7 @@ import (
 	"github.com/appellative-ai/core/httpx"
 	"github.com/appellative-ai/core/std"
 	"net/http"
+	"time"
 )
 
 type link struct {
@@ -29,7 +30,9 @@ func (a *agentT) addLink(name, cname, thing1, thing2, author string) *std.Status
 	if err1 != nil {
 		return std.NewStatus(http.StatusInternalServerError, a.Name(), err1)
 	}
+	start := time.Now().UTC()
 	resp, err2 := a.ex(req)
+	a.log(start, time.Since(start), requestLinkRoute, req, resp, a.timeout)
 	if err2 != nil {
 		return std.NewStatus(http.StatusInternalServerError, a.Name(), err2)
 	}
