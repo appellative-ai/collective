@@ -67,8 +67,8 @@ func (a *agentT) Message(m *messaging.Message) {
 		if a.running {
 			return
 		}
-		messaging.UpdateContent[time.Duration](&a.timeout, m)
-		messaging.UpdateContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](&a.logFunc, m)
+		messaging.UpdateContent[time.Duration](m, &a.timeout)
+		messaging.UpdateContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](m, &a.logFunc)
 		return
 	case messaging.StartupEvent:
 		if a.running {
