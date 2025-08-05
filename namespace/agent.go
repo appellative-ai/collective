@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	NamespaceAgentName = "common:core:agent/namespace/collective"
-	duration           = time.Second * 10
-	timeout            = time.Second * 3
+	AgentName = "common:core:agent/namespace/collective"
+	duration  = time.Second * 10
+	timeout   = time.Second * 3
 )
 
 var (
@@ -48,7 +48,7 @@ func newAgent() *agentT {
 func (a *agentT) String() string { return a.Name() }
 
 // Name - agent name
-func (a *agentT) Name() string { return NamespaceAgentName }
+func (a *agentT) Name() string { return AgentName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {

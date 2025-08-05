@@ -11,9 +11,9 @@ import (
 )
 
 const (
-	NamespaceName = "common:core:agent/resolution/collective"
-	duration      = time.Second * 10
-	timeout       = time.Second * 3
+	AgentName = "common:core:agent/resolution/collective"
+	duration  = time.Second * 10
+	timeout   = time.Second * 3
 )
 
 var (
@@ -55,7 +55,7 @@ func newAgent() *agentT {
 func (a *agentT) String() string { return a.Name() }
 
 // Name - agent identifier
-func (a *agentT) Name() string { return NamespaceName }
+func (a *agentT) Name() string { return AgentName }
 
 // Message - message the agent
 func (a *agentT) Message(m *messaging.Message) {
