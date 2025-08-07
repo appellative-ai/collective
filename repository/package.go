@@ -11,7 +11,11 @@ var (
 
 // LoadMessage - get a message
 func LoadMessage(name string) *messaging.Message {
-	return msg.Load(name)
+	m, ok := msg.Load(name)
+	if !ok {
+		return nil
+	}
+	return m
 }
 
 // StoreMessage - store a message

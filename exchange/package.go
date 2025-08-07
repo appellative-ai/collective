@@ -19,8 +19,8 @@ func Register(a messaging.Agent) error {
 
 // NewAgent - construct a new agent
 func NewAgent(name string) messaging.Agent {
-	fn := ctor.Load(name)
-	if fn != nil {
+	fn, ok := ctor.Load(name)
+	if ok {
 		return fn()
 	}
 	return nil
@@ -55,7 +55,8 @@ func AgentT[T any](name string) (t T, ok bool) {
 
 // Exists -
 func Exists(name string) bool {
-	return ctor.Load(name) != nil
+	_, ok := ctor.Load(name)
+	return ok
 }
 
 // Message - message an agent
@@ -90,5 +91,9 @@ func ExchangeHandler(name string) func(next rest.Exchange) rest.Exchange {
 	if name == "" {
 		return nil
 	}
-	return exHandler.Load(name)
+	t, ok := exHandler.Load(name)
+	if !ok {
+		return nil
+	}
+	return t
 }

@@ -9,19 +9,19 @@ import (
 func ExampleNewCtorMap() {
 	m := std.NewSyncMap[string, messaging.NewAgentFunc]()
 	name := ""
-	t := m.Load("")
-	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t)
+	t, ok := m.Load("")
+	fmt.Printf("test:  Load(\"%v\") -> %v [ok:%v]\n", name, t, ok)
 
 	name = "common:core:ctor/test"
 	m.Store(name, nil)
 	//fmt.Printf("test:  store(\"%v\") -> %v\n", name, t)
 
 	m.Store(name, func() messaging.Agent { return nil })
-	t = m.Load(name)
-	fmt.Printf("test:  Load(\"%v\") -> %v\n", name, t != nil)
+	t, ok = m.Load(name)
+	fmt.Printf("test:  Load(\"%v\") -> %v [ok:%v]\n", name, t != nil, ok)
 
 	//Output:
-	//test:  Load("") -> <nil>
-	//test:  Load("common:core:ctor/test") -> true
+	//test:  Load("") -> <nil> [ok:false]
+	//test:  Load("common:core:ctor/test") -> true [ok:true]
 
 }
