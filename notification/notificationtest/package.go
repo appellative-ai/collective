@@ -9,19 +9,35 @@ import (
 	"time"
 )
 
-// NewNotifier -
-func NewNotifier() *notification.Interface {
-	return &notification.Interface{
+// NewSender -
+func NewSender() *notification.Sender {
+	return &notification.Sender{
 		Message: func(msg *messaging.Message) bool {
 			fmt.Printf("%v  -> %v\n", "message", msg)
 			return true
 		},
-		Advise: func(msg *messaging.Message) *std.Status {
+		Advice: func(msg *messaging.Message) *std.Status {
 			fmt.Printf("%v   -> %v\n", "advise", msg)
 			return std.StatusOK
 		},
+		Status: func(status any) {
+
+		},
 		Trace: func(name, task, observation, action string) {
 			fmt.Printf("%v [%v] [%v] [%v] [%v]", fmtx.FmtRFC3339Millis(time.Now().UTC()), name, task, observation, action)
+		},
+	}
+}
+
+// NewReceiver -
+func NewReceiver() *notification.Receiver {
+	return &notification.Receiver{
+		Message: func(name string) *messaging.Message {
+			//fmt.Printf("%v  -> %v\n", "message", msg)
+			return nil
+		},
+		Advice: func(name string) *messaging.Message {
+			return nil
 		},
 	}
 }

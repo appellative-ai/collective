@@ -5,38 +5,48 @@ import (
 	"github.com/appellative-ai/core/std"
 )
 
-// Interface - notification interface
-type Interface struct {
-	Message        func(msg *messaging.Message) bool
-	ReceiveMessage func(name string) *messaging.Message
-
-	Advise        func(msg *messaging.Message) *std.Status
-	ReceiveAdvice func(name string) *messaging.Message
-
-	Trace func(name, task, observation, action string)
+type Sender struct {
+	Message func(msg *messaging.Message) bool
+	Advice  func(msg *messaging.Message) *std.Status
+	Status  func(status any)
+	Trace   func(name, task, observation, action string)
 }
 
-// Notifier -
-var Notifier = func() *Interface {
-	return &Interface{
+type Receiver struct {
+	Message func(name string) *messaging.Message
+	Advice  func(name string) *messaging.Message
+}
+
+// Send -
+var Send = func() *Sender {
+	return &Sender{
 		Message: func(msg *messaging.Message) bool {
 			//agent.message(msg)
 			return true
 		},
-		ReceiveMessage: func(name string) *messaging.Message {
-			//agent.message(msg)
-			return nil
-		},
-		Advise: func(msg *messaging.Message) *std.Status {
+		Advice: func(msg *messaging.Message) *std.Status {
 			//agent.advise(msg)
 			return std.StatusOK
 		},
-		ReceiveAdvice: func(name string) *messaging.Message {
+		Status: func(status any) {
 			//agent.message(msg)
-			return nil
 		},
 		Trace: func(name, task, observation, action string) {
 			//agent.trace(name, task, observation, action)
+		},
+	}
+}()
+
+// Receive -
+var Receive = func() *Receiver {
+	return &Receiver{
+		Message: func(name string) *messaging.Message {
+			//agent.message(msg)
+			return nil
+		},
+		Advice: func(name string) *messaging.Message {
+			//agent.message(msg)
+			return nil
 		},
 	}
 }()
