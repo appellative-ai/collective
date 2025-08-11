@@ -9,9 +9,9 @@ import (
 	"time"
 )
 
-// NewSender -
-func NewSender() *notification.Sender {
-	return &notification.Sender{
+// NewNotifier -
+func NewNotifier() *notification.Interface {
+	return &notification.Interface{
 		Message: func(msg *messaging.Message) bool {
 			fmt.Printf("%v  -> %v\n", "message", msg)
 			return true
@@ -29,6 +29,7 @@ func NewSender() *notification.Sender {
 	}
 }
 
+/*
 // NewReceiver -
 func NewReceiver() *notification.Receiver {
 	return &notification.Receiver{
@@ -41,3 +42,6 @@ func NewReceiver() *notification.Receiver {
 		},
 	}
 }
+
+
+*/

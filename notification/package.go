@@ -5,21 +5,16 @@ import (
 	"github.com/appellative-ai/core/std"
 )
 
-type Sender struct {
+type Interface struct {
 	Message func(msg *messaging.Message) bool
 	Advice  func(msg *messaging.Message) *std.Status
 	Status  func(status any)
 	Trace   func(name, task, observation, action string)
 }
 
-type Receiver struct {
-	Message func(name string) *messaging.Message
-	Advice  func(name string) *messaging.Message
-}
-
-// Send -
-var Send = func() *Sender {
-	return &Sender{
+// Notifier -
+var Notifier = func() *Interface {
+	return &Interface{
 		Message: func(msg *messaging.Message) bool {
 			//agent.message(msg)
 			return true
@@ -37,6 +32,12 @@ var Send = func() *Sender {
 	}
 }()
 
+/*
+type Receiver struct {
+	Message func(name string) *messaging.Message
+	Advice  func(name string) *messaging.Message
+}
+
 // Receive -
 var Receive = func() *Receiver {
 	return &Receiver{
@@ -50,3 +51,6 @@ var Receive = func() *Receiver {
 		},
 	}
 }()
+
+
+*/
