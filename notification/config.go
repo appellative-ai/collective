@@ -16,12 +16,6 @@ func (a *agentT) configure(m *messaging.Message) {
 			return
 		}
 	}
-	if s, ok1 := messaging.ConfigContent[func(status any)](m); ok1 && s != nil {
-		if !a.running.Load() {
-			a.logStatus = s
-			return
-		}
-	}
 	if e, ok2 := messaging.ConfigContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](m); ok2 && e != nil {
 		if !a.running.Load() {
 			a.logExchange = e

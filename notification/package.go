@@ -3,15 +3,11 @@ package notification
 import (
 	"github.com/appellative-ai/core/messaging"
 	"github.com/appellative-ai/core/std"
-	"time"
 )
 
 type Interface struct {
 	Message func(msg *messaging.Message) *std.Status
 	Trace   func(name, task, observation, action string)
-
-	Status   func(name string, status any)
-	Exchange func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
 }
 
 // Notifier -
@@ -22,12 +18,6 @@ var Notifier = func() *Interface {
 		},
 		Trace: func(name, task, observation, action string) {
 			agent.trace(name, task, observation, action)
-		},
-		Status: func(name string, status any) {
-			agent.status(name, status)
-		},
-		Exchange: func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
-			agent.exchangeLog(start, duration, route, req, resp, timeout)
 		},
 	}
 }()

@@ -134,12 +134,6 @@ func (a *agentT) message(m *messaging.Message) *std.Status {
 func (a *agentT) trace(name, task, observation, action string) {
 }
 
-func (a *agentT) status(name string, status any) {
-}
-
-func (a *agentT) exchangeLog(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
-}
-
 func (a *agentT) isLocalCollective(name string) bool {
 	if strings.HasPrefix(name, a.collective+":") {
 		return true
