@@ -7,6 +7,7 @@ import (
 	"github.com/appellative-ai/core/messaging"
 	"github.com/appellative-ai/core/rest"
 	"github.com/appellative-ai/core/std"
+	"strings"
 	"sync/atomic"
 	"time"
 )
@@ -22,8 +23,9 @@ var (
 )
 
 type agentT struct {
-	running atomic.Bool
-	timeout time.Duration
+	running    atomic.Bool
+	timeout    time.Duration
+	collective string
 
 	exchange    rest.Exchange
 	logExchange func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
@@ -114,7 +116,7 @@ func (a *agentT) message(m *messaging.Message) *std.Status {
 	var local []string
 	var nonLocal []string
 	for _, to := range recipients {
-		if std.Origin.IsLocalCollective(to) {
+		if a.isLocalCollective(to) {
 			local = append(local, to)
 		} else {
 			nonLocal = append(nonLocal, to)
@@ -136,4 +138,11 @@ func (a *agentT) status(status any) {
 }
 
 func (a *agentT) exchangeLog(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
+}
+
+func (a *agentT) isLocalCollective(name string) bool {
+	if strings.HasPrefix(name, a.collective+":") {
+		return true
+	}
+	return false
 }

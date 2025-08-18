@@ -2,7 +2,7 @@ package namespace
 
 import (
 	"fmt"
-	"github.com/appellative-ai/core/logx"
+	"log"
 	"time"
 )
 
@@ -30,8 +30,9 @@ func ExampleCreateThing() {
 func ExampleAddThing() {
 	a := newAgent()
 
-	a.logFunc = func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
-		logx.LogEgress(nil, start, duration, route, req, resp, timeout)
+	a.logExchange = func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
+		log.Printf("%v %v %v %v %v %v\n", start, duration, route, req, resp, timeout)
+		//logx.LogEgress(nil, start, duration, route, req, resp, timeout)
 	}
 	status := a.addThing("name", "", "author")
 	fmt.Printf("test: addThing() -> [status:%v]\n", status)

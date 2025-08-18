@@ -2,7 +2,7 @@ package namespace
 
 import (
 	"fmt"
-	"github.com/appellative-ai/core/logx"
+	"log"
 	"time"
 )
 
@@ -37,8 +37,9 @@ func ExampleAddLink() {
 	status := a.addLink("name", "", "thing1", "thing2", "author")
 	fmt.Printf("test: addLink() -> [status:%v]\n", status)
 
-	a.logFunc = func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
-		logx.LogEgress(nil, start, duration, route, req, resp, timeout)
+	a.logExchange = func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
+		log.Printf("%v %v %v %v %v %v\n", start, duration, route, req, resp, timeout)
+		//logx.LogEgress(nil, start, duration, route, req, resp, timeout)
 	}
 	status = a.addLink("name", "", "thing1", "thing2", "author")
 	fmt.Printf("test: addLink() -> [status:%v]\n", status)
