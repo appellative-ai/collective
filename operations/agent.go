@@ -6,8 +6,10 @@ import (
 	"github.com/appellative-ai/collective/namespace"
 	"github.com/appellative-ai/collective/notification"
 	"github.com/appellative-ai/collective/resolution"
+	"github.com/appellative-ai/core/httpx"
 	"github.com/appellative-ai/core/messaging"
-	"github.com/appellative-ai/core/std"
+	"github.com/appellative-ai/core/rest"
+	"sync/atomic"
 	"time"
 )
 
@@ -21,8 +23,10 @@ var (
 )
 
 type agentT struct {
-	state  *operationsT
-	agents *messaging.Exchange
+	running  atomic.Bool
+	state    *operationsT
+	exchange rest.Exchange
+	agents   *messaging.Exchange
 
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
@@ -37,6 +41,8 @@ func init() {
 func newAgent() *agentT {
 	a := new(agentT)
 	agent = a
+	a.running.Store(false)
+	a.exchange = httpx.Do
 	a.agents = messaging.NewExchange()
 	a.agents.Register(resolution.NewAgent())
 	a.agents.Register(namespace.NewAgent())
@@ -60,22 +66,20 @@ func (a *agentT) Message(m *messaging.Message) {
 	}
 	switch m.Name {
 	case messaging.ConfigEvent:
-		if a.state.running {
-			return
-		}
+		a.configure(m)
 		return
 	case messaging.StartupEvent:
-		if a.state.running {
+		if a.running.Load() {
 			return
 		}
-		a.state.running = true
+		a.running.Store(true)
 		a.run()
 		return
 	case messaging.ShutdownEvent:
-		if !a.state.running {
+		if !a.running.Load() {
 			return
 		}
-		a.state.running = false
+		a.running.Store(false)
 	}
 	switch m.Channel() {
 	case messaging.ChannelControl, messaging.ChannelEmissary:
@@ -94,24 +98,6 @@ func (a *agentT) run() {
 func (a *agentT) emissaryFinalize() {
 	a.emissary.Close()
 	a.ticker.Stop()
-}
-
-func (a *agentT) configure(m *messaging.Message) {
-	switch m.ContentType() {
-	case messaging.ContentTypeMap:
-		cfg, status := messaging.MapContent(m)
-		if !status.OK() {
-			//messaging.Reply(m, messaging.EmptyMapError(a.Name()), a.Name())
-			return
-		}
-		a.state = initialize(cfg)
-		// Initialize linked collectives
-		if std.Origin.Collective != "" {
-			// TODO: Initialize linked collectives by reading the configured collective links and then reference the
-			//       registry for collective host names
-		}
-	}
-	messaging.Reply(m, std.StatusOK, a.Name())
 }
 
 func (a *agentT) configureLogging(log func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) {

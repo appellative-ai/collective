@@ -5,6 +5,7 @@ import (
 	"github.com/appellative-ai/core/messaging"
 	"github.com/appellative-ai/core/rest"
 	"strings"
+	"sync/atomic"
 	"time"
 )
 
@@ -19,12 +20,12 @@ var (
 )
 
 type agentT struct {
-	running bool
-	timeout time.Duration
-	hosts   []string
-	logFunc func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
+	running     atomic.Bool
+	timeout     time.Duration
+	hosts       []string
+	logExchange func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
 
-	ex       rest.Exchange
+	exchange rest.Exchange
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 }
@@ -36,9 +37,12 @@ func NewAgent() messaging.Agent {
 func newAgent() *agentT {
 	a := new(agentT)
 	agent = a
+	a.running.Store(false)
 	a.timeout = timeout
 	a.hosts = []string{"invalid-host"}
-	a.ex = httpx.Do
+
+	a.exchange = httpx.Do
+
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, duration)
 	a.emissary = messaging.NewEmissaryChannel()
 	return a
@@ -57,25 +61,20 @@ func (a *agentT) Message(m *messaging.Message) {
 	}
 	switch m.Name {
 	case messaging.ConfigEvent:
-		if a.running {
-			return
-		}
-		messaging.UpdateContent[time.Duration](m, &a.timeout)
-		messaging.UpdateContent[[]string](m, &a.hosts)
-		messaging.UpdateContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](m, &a.logFunc)
+		a.configure(m)
 		return
 	case messaging.StartupEvent:
-		if a.running {
+		if a.running.Load() {
 			return
 		}
-		a.running = true
+		a.running.Store(true)
 		a.run()
 		return
 	case messaging.ShutdownEvent:
-		if !a.running {
+		if !a.running.Load() {
 			return
 		}
-		a.running = false
+		a.running.Store(false)
 	}
 	switch m.Channel() {
 	case messaging.ChannelEmissary:
@@ -98,10 +97,10 @@ func (a *agentT) emissaryFinalize() {
 }
 
 func (a *agentT) log(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
-	if a.logFunc == nil {
+	if a.logExchange == nil {
 		return
 	}
-	a.logFunc(start, duration, route, req, resp, timeout)
+	a.logExchange(start, duration, route, req, resp, timeout)
 }
 
 func (a *agentT) url(path string) string {

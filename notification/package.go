@@ -3,31 +3,31 @@ package notification
 import (
 	"github.com/appellative-ai/core/messaging"
 	"github.com/appellative-ai/core/std"
+	"time"
 )
 
 type Interface struct {
-	Message func(msg *messaging.Message) bool
-	Advice  func(msg *messaging.Message) *std.Status
-	Status  func(status any)
+	Message func(msg *messaging.Message) *std.Status
 	Trace   func(name, task, observation, action string)
+
+	Status   func(status any)
+	Exchange func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
 }
 
 // Notifier -
 var Notifier = func() *Interface {
 	return &Interface{
-		Message: func(msg *messaging.Message) bool {
-			//agent.message(msg)
-			return true
-		},
-		Advice: func(msg *messaging.Message) *std.Status {
-			//agent.advise(msg)
-			return std.StatusOK
-		},
-		Status: func(status any) {
-			//agent.message(msg)
+		Message: func(msg *messaging.Message) *std.Status {
+			return agent.message(msg)
 		},
 		Trace: func(name, task, observation, action string) {
-			//agent.trace(name, task, observation, action)
+			agent.trace(name, task, observation, action)
+		},
+		Status: func(status any) {
+			agent.status(status)
+		},
+		Exchange: func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
+			agent.exchangeLog(start, duration, route, req, resp, timeout)
 		},
 	}
 }()

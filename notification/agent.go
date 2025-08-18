@@ -7,6 +7,7 @@ import (
 	"github.com/appellative-ai/core/messaging"
 	"github.com/appellative-ai/core/rest"
 	"github.com/appellative-ai/core/std"
+	"sync/atomic"
 	"time"
 )
 
@@ -21,11 +22,13 @@ var (
 )
 
 type agentT struct {
-	running bool
+	running atomic.Bool
 	timeout time.Duration
 
-	ex       rest.Exchange
-	logFunc  func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
+	exchange    rest.Exchange
+	logExchange func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
+	logStatus   func(status any)
+
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 }
@@ -37,12 +40,12 @@ func NewAgent() messaging.Agent {
 func newAgent() *agentT {
 	a := new(agentT)
 	agent = a
+	a.running.Store(false)
 	a.timeout = timeout
-	a.ex = httpx.Do
+	a.exchange = httpx.Do
 
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, duration)
 	a.emissary = messaging.NewEmissaryChannel()
-	a.configureAgents()
 	return a
 }
 
@@ -59,24 +62,20 @@ func (a *agentT) Message(m *messaging.Message) {
 	}
 	switch m.Name {
 	case messaging.ConfigEvent:
-		if a.running {
-			return
-		}
-		messaging.UpdateContent[time.Duration](m, &a.timeout)
-		messaging.UpdateContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](m, &a.logFunc)
+		a.configure(m)
 		return
 	case messaging.StartupEvent:
-		if a.running {
+		if a.running.Load() {
 			return
 		}
-		a.running = true
+		a.running.Store(true)
 		a.run()
 		return
 	case messaging.ShutdownEvent:
-		if !a.running {
+		if !a.running.Load() {
 			return
 		}
-		a.running = false
+		a.running.Store(false)
 	}
 	switch m.Channel() {
 	case messaging.ChannelControl, messaging.ChannelEmissary:
@@ -97,9 +96,9 @@ func (a *agentT) emissaryFinalize() {
 	a.ticker.Stop()
 }
 
-func (a *agentT) message(m *messaging.Message) {
+func (a *agentT) message(m *messaging.Message) *std.Status {
 	if m == nil {
-		return
+		return std.StatusOK
 	}
 	recipients := m.To()
 	if len(recipients) == 0 {
@@ -109,7 +108,7 @@ func (a *agentT) message(m *messaging.Message) {
 		} else {
 			fmt.Printf("%v\n", m)
 		}
-		return
+		return std.StatusOK
 	}
 
 	var local []string
@@ -127,32 +126,14 @@ func (a *agentT) message(m *messaging.Message) {
 		exchange.Message(m)
 	}
 	// TODO : non-local
-}
-
-func (a *agentT) advise(m *messaging.Message) {
+	return std.StatusOK
 }
 
 func (a *agentT) trace(name, task, observation, action string) {
 }
 
-func (a *agentT) configure(m *messaging.Message) {
-	switch m.ContentType() {
-	case messaging.ContentTypeMap:
-		//cfg, status := messaging.MapContent(m)
-		//if !status.OK() {
-		//	messaging.Reply(m, messaging.EmptyMapError(a.Name()), a.Name())
-		//	return
-		//}
-		//a.state = initialize(cfg)
-		// Initialize linked collectives
-		if std.Origin.Collective != "" {
-			// TODO: Initialize linked collectives by reading the configured collective links and then reference the
-			//       registry for collective host names
-		}
-	}
-	messaging.Reply(m, std.StatusOK, a.Name())
+func (a *agentT) status(status any) {
 }
 
-func (a *agentT) configureAgents() {
-
+func (a *agentT) exchangeLog(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
 }

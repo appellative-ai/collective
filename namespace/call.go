@@ -25,7 +25,7 @@ func (a *agentT) call(method, uri, route string, h http.Header, body []byte) (*h
 	}
 	start := time.Now().UTC()
 	req.Header = h
-	resp, err2 := a.ex(req)
+	resp, err2 := a.exchange(req)
 	a.log(start, time.Since(start), route, req, resp, a.timeout)
 	if err2 != nil {
 		return resp, std.NewStatus(http.StatusInternalServerError, a.Name(), err2)
