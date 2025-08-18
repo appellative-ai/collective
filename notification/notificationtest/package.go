@@ -12,16 +12,9 @@ import (
 // NewNotifier -
 func NewNotifier() *notification.Interface {
 	return &notification.Interface{
-		Message: func(msg *messaging.Message) bool {
+		Message: func(msg *messaging.Message) *std.Status {
 			fmt.Printf("%v  -> %v\n", "message", msg)
-			return true
-		},
-		Advice: func(msg *messaging.Message) *std.Status {
-			fmt.Printf("%v   -> %v\n", "advise", msg)
 			return std.StatusOK
-		},
-		Status: func(status any) {
-
 		},
 		Trace: func(name, task, observation, action string) {
 			fmt.Printf("%v [%v] [%v] [%v] [%v]", fmtx.FmtRFC3339Millis(time.Now().UTC()), name, task, observation, action)
