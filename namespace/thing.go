@@ -17,13 +17,13 @@ type thing struct {
 func (a *agentT) addThing(name, cname, author string) *std.Status {
 	buf, err := createThing(name, cname, author)
 	if err != nil {
-		return std.NewStatus(http.StatusBadRequest, a.Name(), err)
+		return std.NewStatusWithLocation(http.StatusBadRequest, err, a.Name())
 	}
 	resp, status := a.call(http.MethodPost, a.url(requestThingPath), requestThingRoute, nil, buf)
 	if !status.OK() {
 		return status
 	}
-	return std.NewStatus(resp.StatusCode, a.Name(), nil)
+	return std.NewStatus(resp.StatusCode, nil)
 }
 
 func createThing(name, cname, author string) ([]byte, error) {

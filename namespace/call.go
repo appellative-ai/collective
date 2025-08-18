@@ -21,16 +21,16 @@ func (a *agentT) call(method, uri, route string, h http.Header, body []byte) (*h
 	}
 	req, err := http.NewRequestWithContext(ctx, method, uri, reqBody)
 	if err != nil {
-		return httpx.NewResponse(http.StatusBadRequest, nil, nil), std.NewStatus(http.StatusBadRequest, a.Name(), err)
+		return httpx.NewResponse(http.StatusBadRequest, nil, nil), std.NewStatus(http.StatusBadRequest, err)
 	}
 	start := time.Now().UTC()
 	req.Header = h
 	resp, err2 := a.exchange(req)
 	a.log(start, time.Since(start), route, req, resp, a.timeout)
 	if err2 != nil {
-		return resp, std.NewStatus(http.StatusInternalServerError, a.Name(), err2)
+		return resp, std.NewStatus(http.StatusInternalServerError, err2)
 	}
-	return resp, std.NewStatus(resp.StatusCode, a.Name(), nil)
+	return resp, std.NewStatus(resp.StatusCode, nil)
 }
 
 func createContent(resp *http.Response) (*std.Content, error) {

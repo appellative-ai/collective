@@ -16,7 +16,7 @@ type relation struct {
 func (a *agentT) relation(name string, args []Arg) (*std.Content, *std.Status) {
 	buf, err := createRelation(name, args)
 	if err != nil {
-		return nil, std.NewStatus(http.StatusBadRequest, a.Name(), err)
+		return nil, std.NewStatusWithLocation(http.StatusBadRequest, err, a.Name())
 	}
 	resp, status := a.call(http.MethodPost, a.url(relationPath), relationRoute, nil, buf)
 	if !status.OK() {
@@ -24,9 +24,9 @@ func (a *agentT) relation(name string, args []Arg) (*std.Content, *std.Status) {
 	}
 	content, err3 := createContent(resp)
 	if err3 != nil {
-		return nil, std.NewStatus(http.StatusInternalServerError, a.Name(), err3)
+		return nil, std.NewStatusWithLocation(http.StatusInternalServerError, err3, a.Name())
 	}
-	return content, std.NewStatus(resp.StatusCode, a.Name(), nil)
+	return content, std.NewStatus(resp.StatusCode, nil)
 }
 
 // TODO: add validation for required arguments

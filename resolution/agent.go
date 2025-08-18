@@ -108,7 +108,7 @@ func (a *agentT) emissaryFinalize() {
 
 func (a *agentT) getRepresentation(name string) (std.Content, *std.Status) {
 	if name == "" {
-		return std.Content{}, std.NewStatus(http.StatusBadRequest, "", errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
+		return std.Content{}, std.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	ct, err := a.cache.get(name)
 	if err == nil {
@@ -124,7 +124,7 @@ func (a *agentT) getRepresentation(name string) (std.Content, *std.Status) {
 
 func (a *agentT) putRepresentation(name, author, contentType string, value any) *std.Status {
 	if name == "" || author == "" || contentType == "" || value == nil {
-		return std.NewStatus(http.StatusBadRequest, "", errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
+		return std.NewStatus(http.StatusBadRequest, errors.New(fmt.Sprintf("error: invalid argument name %v", name)))
 	}
 	ct := std.Content{Type: contentType, Value: value}
 	_, status := std.Marshal[[]byte](&ct)
