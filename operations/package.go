@@ -19,7 +19,7 @@ const (
 )
 
 var (
-	Origin *OriginT
+	Origin OriginT
 )
 
 func Startup(cfg map[string]string,
