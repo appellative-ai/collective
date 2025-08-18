@@ -99,9 +99,3 @@ func (a *agentT) emissaryFinalize() {
 	a.emissary.Close()
 	a.ticker.Stop()
 }
-
-func (a *agentT) configureLogging(log func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) {
-	if log != nil {
-		a.agents.Broadcast(messaging.NewConfigMessage(log))
-	}
-}
