@@ -19,7 +19,7 @@ type link struct {
 func (a *agentT) addLink(name, cname, thing1, thing2, author string) *std.Status {
 	buf, err := createLink(name, cname, thing1, thing2, author)
 	if err != nil {
-		return std.NewStatusWithLocation(http.StatusBadRequest, err, a.Name())
+		return std.NewStatus(http.StatusBadRequest, err).SetLocation(a.Name())
 	}
 	resp, status := a.call(http.MethodPost, a.url(requestLinkPath), requestLinkRoute, nil, buf)
 	if !status.OK() {

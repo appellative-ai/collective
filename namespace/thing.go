@@ -17,7 +17,7 @@ type thing struct {
 func (a *agentT) addThing(name, cname, author string) *std.Status {
 	buf, err := createThing(name, cname, author)
 	if err != nil {
-		return std.NewStatusWithLocation(http.StatusBadRequest, err, a.Name())
+		return std.NewStatus(http.StatusBadRequest, err).SetLocation(a.Name())
 	}
 	resp, status := a.call(http.MethodPost, a.url(requestThingPath), requestThingRoute, nil, buf)
 	if !status.OK() {

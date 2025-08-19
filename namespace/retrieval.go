@@ -16,7 +16,7 @@ type retrieval struct {
 func (a *agentT) retrieval(name string, args []Arg) (*std.Content, *std.Status) {
 	buf, err := createRetrieval(name, args)
 	if err != nil {
-		return nil, std.NewStatusWithLocation(http.StatusBadRequest, err, a.Name())
+		return nil, std.NewStatus(http.StatusBadRequest, err).SetLocation(a.Name())
 	}
 	resp, status := a.call(http.MethodPost, a.url(retrievalPath), retrievalRoute, nil, buf)
 	if !status.OK() {
@@ -24,7 +24,7 @@ func (a *agentT) retrieval(name string, args []Arg) (*std.Content, *std.Status) 
 	}
 	content, err3 := createContent(resp)
 	if err3 != nil {
-		return nil, std.NewStatusWithLocation(http.StatusInternalServerError, err3, a.Name())
+		return nil, std.NewStatus(http.StatusInternalServerError, err3).SetLocation(a.Name())
 	}
 	return content, std.NewStatus(resp.StatusCode, nil)
 }

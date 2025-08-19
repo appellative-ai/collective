@@ -16,5 +16,7 @@ github.com/appellative-ai/core v0.0.0-20250818185237-3fb7bbad9ea8 h1:9ukX8lOTYnR
 github.com/appellative-ai/core v0.0.0-20250818185237-3fb7bbad9ea8/go.mod h1:a8kfuZMJHcdtdksSK+aYw2Mp6lT+i25oQEB+UCqwyhs=
 github.com/appellative-ai/core v0.0.0-20250818193759-5a393a47130a h1:ZivAm1PHN4r4tey0E8G3fPp6r8IpoeYONMFNn5VbZSI=
 github.com/appellative-ai/core v0.0.0-20250818193759-5a393a47130a/go.mod h1:a8kfuZMJHcdtdksSK+aYw2Mp6lT+i25oQEB+UCqwyhs=
+github.com/appellative-ai/core v0.0.0-20250818203108-5886a4fed0fa h1:kmDF8XeOHUTqgvwDDU60fixqj1JyJuv5gmpWKFWIl2k=
+github.com/appellative-ai/core v0.0.0-20250818203108-5886a4fed0fa/go.mod h1:a8kfuZMJHcdtdksSK+aYw2Mp6lT+i25oQEB+UCqwyhs=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=
 github.com/google/uuid v1.6.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
