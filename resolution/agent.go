@@ -3,10 +3,12 @@ package resolution
 import (
 	"errors"
 	"fmt"
+	"github.com/appellative-ai/core/httpx"
 	"github.com/appellative-ai/core/messaging"
 	"github.com/appellative-ai/core/rest"
 	"github.com/appellative-ai/core/std"
 	"net/http"
+	"sync/atomic"
 	"time"
 )
 
@@ -25,12 +27,14 @@ type text struct {
 }
 
 type agentT struct {
-	running bool
+	running atomic.Bool
 	timeout time.Duration
+	hosts   atomic.Pointer[[]string]
 	cache   *cacheT
 
-	ex       rest.Exchange
+	exchange rest.Exchange
 	logFunc  func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
+
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 	master   *messaging.Channel
@@ -43,8 +47,12 @@ func NewAgent() messaging.Agent {
 func newAgent() *agentT {
 	a := new(agentT)
 	agent = a
+	a.running.Store(false)
 	a.timeout = timeout
+	a.hosts.Store(&[]string{"invalid-host1", "invalid-host2"})
 	a.cache = newCache()
+
+	a.exchange = httpx.Do
 
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, duration)
 	a.emissary = messaging.NewEmissaryChannel()
@@ -64,24 +72,20 @@ func (a *agentT) Message(m *messaging.Message) {
 	}
 	switch m.Name {
 	case messaging.ConfigEvent:
-		if a.running {
-			return
-		}
-		messaging.UpdateContent[time.Duration](m, &a.timeout)
-		messaging.UpdateContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](m, &a.logFunc)
+		a.configure(m)
 		return
 	case messaging.StartupEvent:
-		if a.running {
+		if a.running.Load() {
 			return
 		}
-		a.running = true
+		a.running.Store(true)
 		a.run()
 		return
 	case messaging.ShutdownEvent:
-		if !a.running {
+		if !a.running.Load() {
 			return
 		}
-		a.running = false
+		a.running.Store(false)
 	}
 	switch m.Channel() {
 	case messaging.ChannelEmissary:

@@ -10,18 +10,31 @@ func (a *agentT) configure(m *messaging.Message) {
 	if m == nil || m.Name != messaging.ConfigEvent {
 		return
 	}
-	if ex, ok := messaging.ConfigContent[rest.Exchange](m); ok && ex != nil {
+	if e, ok := messaging.ConfigContent[rest.Exchange](m); ok && e != nil {
 		if !a.running.Load() {
-			a.exchange = ex
-			return
+			a.exchange = e
 		}
+		return
 	}
-	if e, ok2 := messaging.ConfigContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](m); ok2 && e != nil {
+	if l, ok2 := messaging.ConfigContent[func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)](m); ok2 && l != nil {
 		if !a.running.Load() {
-			a.logExchange = e
-			return
+			a.logFunc = l
 		}
+		return
 	}
-	// TODO : os this needed messaging.UpdateContent[time.Duration](m, &a.timeout)
+	if h, ok3 := messaging.ConfigContent[[]string](m); ok3 && len(h) > 0 {
+		hosts := []string{h[0]}
+		if len(h) > 1 {
+			hosts = append(hosts, h[1])
+		}
+		a.hosts.Store(&hosts)
+		return
+	}
+	if c, ok4 := messaging.ConfigContent[string](m); ok4 && c != "" {
+		if !a.running.Load() {
+			a.collective = c
+		}
+		return
+	}
 
 }

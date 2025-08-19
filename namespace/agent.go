@@ -20,12 +20,13 @@ var (
 )
 
 type agentT struct {
-	running     atomic.Bool
-	timeout     time.Duration
-	hosts       []string
-	logExchange func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
+	running atomic.Bool
+	timeout time.Duration
+	hosts   atomic.Pointer[[]string]
 
 	exchange rest.Exchange
+	logFunc  func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
+
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 }
@@ -39,7 +40,7 @@ func newAgent() *agentT {
 	agent = a
 	a.running.Store(false)
 	a.timeout = timeout
-	a.hosts = []string{"invalid-host"}
+	a.hosts.Store(&[]string{"invalid-host1", "invalid-host2"})
 
 	a.exchange = httpx.Do
 
@@ -97,17 +98,17 @@ func (a *agentT) emissaryFinalize() {
 }
 
 func (a *agentT) log(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
-	if a.logExchange == nil {
+	if a.logFunc == nil {
 		return
 	}
-	a.logExchange(start, duration, route, req, resp, timeout)
+	a.logFunc(start, duration, route, req, resp, timeout)
 }
 
 func (a *agentT) url(path string) string {
 	scheme := "https"
-	i := strings.Index(a.hosts[0], localHost)
+	i := strings.Index((*a.hosts.Load())[0], localHost)
 	if i >= 0 {
 		scheme = "http"
 	}
-	return scheme + "://" + a.hosts[0] + path
+	return scheme + "://" + (*a.hosts.Load())[0] + path
 }

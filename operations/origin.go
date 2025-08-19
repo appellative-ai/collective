@@ -53,32 +53,32 @@ func NewOriginFromMessage(m *Message, collective, domain string) (OriginT, *Stat
 
 */
 
-func NewOrigin(m map[string]string) (OriginT, error) {
-	var origin OriginT
+func newOrigin(origin *OriginT, m map[string]string) error {
+	//var origin OriginT
 
 	if m == nil {
-		return origin, errors.New("origin map is nil")
+		return errors.New("origin map is nil")
 	}
 
 	origin.Collective = m[CollectiveKey]
 	if origin.Collective == "" {
-		return origin, errors.New(fmt.Sprintf("config map does not contain key: %v", CollectiveKey))
+		return errors.New(fmt.Sprintf("config map does not contain key: %v", CollectiveKey))
 	}
 	origin.Domain = m[DomainKey]
 	if origin.Domain == "" {
-		return origin, errors.New(fmt.Sprintf("config map does not contain key: %v", DomainKey))
+		return errors.New(fmt.Sprintf("config map does not contain key: %v", DomainKey))
 	}
 	origin.Region = m[RegionKey]
 	if origin.Region == "" {
-		return origin, errors.New(fmt.Sprintf("config map does not contain key: %v", RegionKey))
+		return errors.New(fmt.Sprintf("config map does not contain key: %v", RegionKey))
 	}
 	origin.Zone = m[ZoneKey]
 	if origin.Zone == "" {
-		return origin, errors.New(fmt.Sprintf("config map does not contain key: %v", ZoneKey))
+		return errors.New(fmt.Sprintf("config map does not contain key: %v", ZoneKey))
 	}
 	origin.Host = m[HostKey]
 	if origin.Host == "" {
-		return origin, errors.New(fmt.Sprintf("config map does not contain key: %v", HostKey))
+		return errors.New(fmt.Sprintf("config map does not contain key: %v", HostKey))
 	}
 
 	origin.ServiceName = m[ServiceNameKey]
@@ -88,10 +88,10 @@ func NewOrigin(m map[string]string) (OriginT, error) {
 	origin.SubZone = m[SubZoneKey]
 	origin.InstanceId = m[InstanceIdKey]
 	origin.Name = name(origin)
-	return origin, nil
+	return nil
 }
 
-func name(o OriginT) string {
+func name(o *OriginT) string {
 	var name1 = fmt.Sprintf(originNameFmt, o.Collective, o.Domain, serviceKind)
 
 	if o.Region != "" {

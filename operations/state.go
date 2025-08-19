@@ -4,6 +4,7 @@ type operationsT struct {
 	registryHosts     []string
 	collective        string
 	linkedCollectives map[string][]string
+	hosts             []string
 }
 
 // TODO: need to resolve all of the links in a collective and query the registry for the

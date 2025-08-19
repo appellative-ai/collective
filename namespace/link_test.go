@@ -37,7 +37,7 @@ func ExampleAddLink() {
 	status := a.addLink("name", "", "thing1", "thing2", "author")
 	fmt.Printf("test: addLink() -> [status:%v]\n", status)
 
-	a.logExchange = func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
+	a.logFunc = func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
 		log.Printf("%v %v %v %v %v %v\n", start, duration, route, req, resp, timeout)
 		//logx.LogEgress(nil, start, duration, route, req, resp, timeout)
 	}
@@ -48,7 +48,7 @@ func ExampleAddLink() {
 	status = a.addLink("name", "", "thing1", "thing2", "author")
 	fmt.Printf("test: addLink() -> [status:%v]\n", status)
 
-	a.hosts = []string{"localhost:8080"}
+	a.hosts.Store(&[]string{"localhost:8080"})
 	status = a.addLink("name", "", "thing1", "thing2", "author")
 	fmt.Printf("test: addLink() -> [status:%v]\n", status)
 

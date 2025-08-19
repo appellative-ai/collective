@@ -26,10 +26,10 @@ type agentT struct {
 	running    atomic.Bool
 	timeout    time.Duration
 	collective string
+	hosts      atomic.Pointer[[]string]
 
-	exchange    rest.Exchange
-	logExchange func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
-	logStatus   func(status any)
+	exchange rest.Exchange
+	logFunc  func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
 
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
@@ -44,6 +44,8 @@ func newAgent() *agentT {
 	agent = a
 	a.running.Store(false)
 	a.timeout = timeout
+	a.hosts.Store(&[]string{"invalid-host1", "invalid-host2"})
+
 	a.exchange = httpx.Do
 
 	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, duration)

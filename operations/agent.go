@@ -23,11 +23,14 @@ var (
 )
 
 type agentT struct {
-	running  atomic.Bool
-	state    *operationsT
-	exchange rest.Exchange
-	agents   *messaging.Exchange
+	running atomic.Bool
+	origin  *OriginT
+	state   atomic.Pointer[operationsT]
 
+	exchange rest.Exchange
+	logFunc  func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
+
+	agents   *messaging.Exchange
 	ticker   *messaging.Ticker
 	emissary *messaging.Channel
 }
@@ -42,7 +45,11 @@ func newAgent() *agentT {
 	a := new(agentT)
 	agent = a
 	a.running.Store(false)
+	a.origin = new(OriginT)
+	a.state.Store(new(operationsT))
+
 	a.exchange = httpx.Do
+
 	a.agents = messaging.NewExchange()
 	a.agents.Register(resolution.NewAgent())
 	a.agents.Register(namespace.NewAgent())

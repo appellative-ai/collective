@@ -10,7 +10,7 @@ import (
 func (a *agentT) startup(collective string,
 	registryHost1 string,
 	registryHost2 string,
-	exchange func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) error {
+	logFunc func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) error {
 
 	if collective == "" {
 		return errors.New("collective is required")
@@ -18,18 +18,21 @@ func (a *agentT) startup(collective string,
 	if registryHost1 == "" && registryHost2 == "" {
 		return errors.New("registryHosts are required")
 	}
-	a.messageExchange(exchange)
+	// Configure logging
+	a.logFunc = logFunc
+	a.messageExchange(logExchange)
 
-	// TODO: request collective host names and collective links
+	// TODO: request collective host names and collective links.
+	//       configure agents hosts and collective for notifications
 
 	return nil
 }
 
-func (a *agentT) messageExchange(exchange func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) {
-	if exchange == nil {
-		exchange = logExchange
+func (a *agentT) messageExchange(logFunc func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) {
+	if logFunc == nil {
+		logFunc = logExchange
 	}
-	a.agents.Broadcast(messaging.NewConfigMessage(exchange))
+	a.agents.Broadcast(messaging.NewConfigMessage(logFunc))
 }
 
 func logExchange(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
