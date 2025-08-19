@@ -28,6 +28,5 @@ func Startup(cfg map[string]string, logFunc func(start time.Time, duration time.
 	if err != nil {
 		return err
 	}
-
 	return agent.startup(cfg[CollectiveKey], cfg[RegistryHost1Key], cfg[RegistryHost2Key], logFunc)
 }
