@@ -24,6 +24,9 @@ func Origin() *OriginT {
 }
 
 func ConfigOrigin(cfg map[string]string) error {
+	if len(cfg) == 0 {
+		return errors.New("empty origin")
+	}
 	var err error
 	var o OriginT
 	err = newOrigin(&o, cfg)
