@@ -1,6 +1,7 @@
 package operations
 
 import (
+	"errors"
 	"time"
 )
 
@@ -22,11 +23,32 @@ func Origin() *OriginT {
 	return agent.origin
 }
 
-func Startup(cfg map[string]string, logFunc func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) error {
+func ConfigOrigin(cfg map[string]string) error {
 	var err error
-	err = newOrigin(agent.origin, cfg)
+	var o OriginT
+	err = newOrigin(&o, cfg)
 	if err != nil {
 		return err
 	}
-	return agent.startup(cfg[CollectiveKey], cfg[RegistryHost1Key], cfg[RegistryHost2Key], logFunc)
+	agent.origin = &o
+	return nil
+}
+
+func ConfigRegistryHosts(hosts []string) error {
+	if len(hosts) == 0 || hosts[0] == "" {
+		return errors.New("registry hosts are required")
+	}
+	s := agent.state.Load()
+	s.registryHosts = hosts
+	return nil
+}
+
+func ConfigLogging(logFunc func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) {
+	if logFunc != nil {
+		agent.logFunc = logFunc
+	}
+}
+
+func Startup() error {
+	return agent.startup()
 }

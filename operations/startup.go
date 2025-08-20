@@ -7,20 +7,16 @@ import (
 	"time"
 )
 
-func (a *agentT) startup(collective string,
-	registryHost1 string,
-	registryHost2 string,
-	logFunc func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) error {
+func (a *agentT) startup() error {
+	if a.origin == nil {
+		return errors.New("origin is required")
+	}
+	s := a.state.Load()
+	if len(s.registryHosts) == 0 || s.registryHosts[0] == "" {
+		return errors.New("registry hosts are required")
+	}
 
-	if collective == "" {
-		return errors.New("collective is required")
-	}
-	if registryHost1 == "" && registryHost2 == "" {
-		return errors.New("registryHosts are required")
-	}
-	// Configure logging
-	a.logFunc = logFunc
-	a.messageExchange(logExchange)
+	a.messageExchange(a.logFunc)
 
 	// TODO: request collective host names and collective links.
 	//       configure agents hosts and collective for notifications
@@ -30,11 +26,11 @@ func (a *agentT) startup(collective string,
 
 func (a *agentT) messageExchange(logFunc func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) {
 	if logFunc == nil {
-		logFunc = logExchange
+		logFunc = defaultLog
 	}
 	a.agents.Broadcast(messaging.NewConfigMessage(logFunc))
 }
 
-func logExchange(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
+func defaultLog(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration) {
 	log.Printf("%v %v %v %v %v %v\n", start, duration, route, req, resp, timeout)
 }

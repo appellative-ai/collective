@@ -45,7 +45,6 @@ func newAgent() *agentT {
 	a := new(agentT)
 	agent = a
 	a.running.Store(false)
-	a.origin = new(OriginT)
 	a.state.Store(new(operationsT))
 
 	a.exchange = httpx.Do
