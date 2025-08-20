@@ -2,6 +2,7 @@ package operations
 
 import (
 	"errors"
+	"github.com/appellative-ai/core/messaging"
 	"time"
 )
 
@@ -37,7 +38,7 @@ func ConfigOrigin(cfg map[string]string) error {
 	return nil
 }
 
-func ConfigRegistryHosts(hosts []string) error {
+func ConfigRegistry(hosts []string) error {
 	if len(hosts) == 0 || hosts[0] == "" {
 		return errors.New("registry hosts are required")
 	}
@@ -54,4 +55,8 @@ func ConfigLogging(logFunc func(start time.Time, duration time.Duration, route s
 
 func Startup() error {
 	return agent.startup()
+}
+
+func Shutdown() {
+	agent.Message(messaging.ShutdownMessage)
 }
