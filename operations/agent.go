@@ -18,7 +18,6 @@ var (
 type agentT struct {
 	running atomic.Bool
 	origin  *OriginT
-	state   atomic.Pointer[operationsT]
 }
 
 func init() {
@@ -31,7 +30,6 @@ func newAgent() *agentT {
 	a := new(agentT)
 	agent = a
 	a.running.Store(false)
-	a.state.Store(new(operationsT))
 	return a
 }
 
