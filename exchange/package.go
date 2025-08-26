@@ -7,9 +7,9 @@ import (
 )
 
 var (
-	exchange  = messaging.NewExchange()
-	ctor      = std.NewSyncMap[string, messaging.NewAgentFunc]()
-	exHandler = std.NewSyncMap[string, rest.ExchangeLink]()
+	exchange = messaging.NewExchange()
+	ctor     = std.NewSyncMap[string, messaging.NewAgentFunc]()
+	handler  = std.NewSyncMap[string, rest.ExchangeLink]()
 )
 
 // Register - register an agent
@@ -83,7 +83,7 @@ func RegisterExchangeHandler(name string, fn func(next rest.Exchange) rest.Excha
 	if name == "" || fn == nil {
 		return
 	}
-	exHandler.Store(name, fn)
+	handler.Store(name, fn)
 }
 
 // ExchangeHandler - return an exchange handler function
@@ -91,7 +91,7 @@ func ExchangeHandler(name string) func(next rest.Exchange) rest.Exchange {
 	if name == "" {
 		return nil
 	}
-	t, ok := exHandler.Load(name)
+	t, ok := handler.Load(name)
 	if !ok {
 		return nil
 	}

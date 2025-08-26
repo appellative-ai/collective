@@ -5,12 +5,10 @@ import (
 	"github.com/appellative-ai/collective/exchange"
 	"github.com/appellative-ai/core/messaging"
 	"sync/atomic"
-	"time"
 )
 
 const (
 	AgentName = "common:core:agent/operations/collective"
-	duration  = time.Second * 30
 )
 
 var (
