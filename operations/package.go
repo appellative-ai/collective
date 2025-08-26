@@ -3,7 +3,6 @@ package operations
 import (
 	"errors"
 	"github.com/appellative-ai/core/messaging"
-	"time"
 )
 
 // Origin map and host keys
@@ -36,21 +35,6 @@ func ConfigOrigin(cfg map[string]string) error {
 	}
 	agent.origin = &o
 	return nil
-}
-
-func ConfigRegistry(hosts []string) error {
-	if len(hosts) == 0 || hosts[0] == "" {
-		return errors.New("registry hosts are required")
-	}
-	s := agent.state.Load()
-	s.registryHosts = hosts
-	return nil
-}
-
-func ConfigLogging(logFunc func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)) {
-	if logFunc != nil {
-		agent.logFunc = logFunc
-	}
 }
 
 func Startup() error {

@@ -1,14 +1,9 @@
 package operations
 
 import (
-	"fmt"
+	"errors"
 	"github.com/appellative-ai/collective/exchange"
-	"github.com/appellative-ai/collective/namespace"
-	"github.com/appellative-ai/collective/notification"
-	"github.com/appellative-ai/collective/resolution"
-	"github.com/appellative-ai/core/httpx"
 	"github.com/appellative-ai/core/messaging"
-	"github.com/appellative-ai/core/rest"
 	"sync/atomic"
 	"time"
 )
@@ -26,13 +21,6 @@ type agentT struct {
 	running atomic.Bool
 	origin  *OriginT
 	state   atomic.Pointer[operationsT]
-
-	exchange rest.Exchange
-	logFunc  func(start time.Time, duration time.Duration, route string, req any, resp any, timeout time.Duration)
-
-	agents   *messaging.Exchange
-	ticker   *messaging.Ticker
-	emissary *messaging.Channel
 }
 
 func init() {
@@ -46,16 +34,6 @@ func newAgent() *agentT {
 	agent = a
 	a.running.Store(false)
 	a.state.Store(new(operationsT))
-
-	a.exchange = httpx.Do
-
-	a.agents = messaging.NewExchange()
-	a.agents.Register(resolution.NewAgent())
-	a.agents.Register(namespace.NewAgent())
-	a.agents.Register(notification.NewAgent())
-
-	a.ticker = messaging.NewTicker(messaging.ChannelEmissary, duration)
-	a.emissary = messaging.NewEmissaryChannel()
 	return a
 }
 
@@ -87,21 +65,21 @@ func (a *agentT) Message(m *messaging.Message) {
 		}
 		a.running.Store(false)
 	}
-	switch m.Channel() {
-	case messaging.ChannelControl, messaging.ChannelEmissary:
-
-		a.emissary.C <- m
-	default:
-		fmt.Printf("limiter - invalid channel %v\n", m)
-	}
 }
 
 // Run - run the agent
-func (a *agentT) run() {
-	go emissaryAttend(a)
+func (a *agentT) run() {}
+
+func (a *agentT) startup() error {
+	if a.origin == nil {
+		return errors.New("origin is required")
+	}
+	return nil
 }
 
-func (a *agentT) emissaryFinalize() {
-	a.emissary.Close()
-	a.ticker.Stop()
+func (a *agentT) configure(m *messaging.Message) {
+	if m == nil || m.Name != messaging.ConfigEvent {
+		return
+	}
+
 }
